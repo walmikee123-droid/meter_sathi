@@ -168,6 +168,8 @@
         document.getElementById("alert").innerText = "You are being overcharged by ₹" + difference;
       } else if (difference < 0) {
         document.getElementById("alert").innerText = "Meter shows less than official fare!";
+      } else if (difference = 0) {
+        document.getElementById("alert").innerText="enter fair ";
       } else {
         document.getElementById("alert").innerText = "Fair Fare!";
       }

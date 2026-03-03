@@ -1,35 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-IN">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Meter-Sathi Ride Auditor</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background-color: #f9f9f9; color: #333; }
-    .navbar { display: flex; justify-content: center; background-color: #ff6f91; padding: 10px 0; }
-    .nav-links { display: flex; justify-content: center; }
-    .nav-links a {
-      margin: 0 10px; padding: 8px 12px; border-radius: 5px;
-      text-decoration: none; color: #fff; font-weight: bold;
-    }
-    .nav-links a:nth-child(1) { background-color: #f9a825; }
-    .nav-links a:nth-child(2) { background-color: #00bcd4; }
-    .nav-links a:nth-child(3) { background-color: #ff7043; }
-    .nav-links a:nth-child(4) { background-color: #009688; }
-    .nav-links a:nth-child(5) { background-color: #8e24aa; }
-
+    body { font-family: Arial, sans-serif; margin: 0; background-color: #E1F5FE; color: #333; }
+    .navbar { display: flex; justify-content: center; background-color: #1565C0; padding: 12px 0; }
+    .nav-links { display: flex; justify-content: center; gap: 15px; }
+    .nav-links a { padding: 8px 14px; border-radius: 5px; text-decoration: none; color: #fff; font-weight: bold; transition: background-color 0.3s ease; }
+    .nav-links a:hover { background-color: #00E5FF; }
     .container { text-align: center; padding: 40px; }
-    .brand-title { font-size: 48px; font-weight: bold; color: #2c3e50; margin-bottom: 10px; }
-    .brand-subtitle { font-size: 24px; color: #555; margin-bottom: 30px; }
-    button { margin: 10px; padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; color: #fff; }
-    button.start { background-color: #2196f3; }
-    button.end { background-color: #6a1b9a; }
-    button.check { background-color: #ff5722; }
+    .brand-title { font-size: 48px; font-weight: bold; color: #1565C0; margin-bottom: 10px; }
+    .brand-subtitle { font-size: 22px; color: #555; margin-bottom: 30px; }
+    button { margin: 10px; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; color: #fff; font-weight: bold; }
+    button.start { background-color: #43A047; }
+    button.end { background-color: #E53935; }
+    button.check { background-color: #1E88E5; }
     input { padding: 10px; margin: 10px; border: 1px solid #ccc; border-radius: 5px; width: 200px; }
     .results { margin-top: 20px; font-weight: bold; }
-    footer { background-color: #ff9800; color: #fff; text-align: center; padding: 15px; margin-top: 40px; }
+    .message { margin-top: 15px; font-size: 18px; color: #1565C0; height: 24px; }
+    footer { background-color: #263238; color: #fff; text-align: center; padding: 15px; margin-top: 40px; }
   </style>
 </head>
 <body>
-  <!-- Navbar -->
   <div class="navbar">
     <div class="nav-links">
       <a href="index.html">Home</a>
@@ -40,48 +34,55 @@
     </div>
   </div>
 
-  <!-- Main Content -->
   <div class="container">
     <div class="brand-title">Meter-Sathi</div>
     <div class="brand-subtitle">Auto/Taxi Fare Auditor</div>
 
     <button class="start" onclick="startRide()">Start Ride</button>
     <button class="end" onclick="endRide()">End Ride</button>
-    
+    <button class="check" id="checkBtn" onclick="compareFare()">Check Fare</button>
+
     <p id="distance">Distance: 0 km</p>
 
     <label for="meter">Meter Reading (₹):</label>
-    <input type="number" id="meter" placeholder="Enter meter fare">
-    <button class="check" onclick="compareFare()">Check Fare</button>
+    <input type="text" id="meter" placeholder="Enter meter fare">
 
     <div class="results">
       <p id="official">Official Fare: ₹0</p>
       <p id="meterFare">Meter Fare: ₹0</p>
       <p id="difference">Difference: ₹0</p>
+      <p id="dayDist">Day Distance: 0 km</p>
+      <p id="nightDist">Night Distance: 0 km</p>
     </div>
 
-    <p style="color:#009688;">Based on MMRTA Official Tariff 2025</p>
+    <p class="message" id="message"></p>
+    <p style="color:#0277BD; font-weight:bold;">Based on MMRTA Official Tariff 2025</p>
   </div>
 
-  <!-- Footer -->
-  <footer>
-    <p>© 2024 Meter-Sathi</p>
-  </footer>
+  <footer><p>© 2024 Meter-Sathi</p></footer>
 
-  <!-- Script -->
   <script>
     let watchId;
     let startCoords = null;
     let totalDistance = 0;
-    let rideStarted = false; // 🚨 flag for restriction
+    let rideStarted = false;
+    let rideEnded = false;
+    let dayDistance = 0;
+    let nightDistance = 0;
 
     function startRide() {
-      totalDistance = 0;
-      rideStarted = true; // mark ride as started
-      navigator.geolocation.getCurrentPosition(function(pos) {
-        startCoords = pos.coords;
-      });
-      watchId = navigator.geolocation.watchPosition(trackRide, null, { enableHighAccuracy: true });
+      resetApp(); 
+      rideStarted = true;
+      rideEnded = false;
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(pos) {
+          startCoords = pos.coords;
+        });
+        watchId = navigator.geolocation.watchPosition(trackRide, null, { enableHighAccuracy: true });
+        // ALERT REMOVED! Tracking starts silently now.
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
     }
 
     function trackRide(position) {
@@ -91,19 +92,36 @@
         const lat2 = position.coords.latitude;
         const lon2 = position.coords.longitude;
         const dist = getDistance(lat1, lon1, lat2, lon2);
-        totalDistance += dist;
+
+        const hour = new Date().getHours();
+        if (hour >= 0 && hour < 5) {
+          nightDistance += dist;
+        } else {
+          dayDistance += dist;
+        }
+
+        totalDistance = dayDistance + nightDistance;
         startCoords = position.coords;
         document.getElementById("distance").innerText = "Distance: " + totalDistance.toFixed(2) + " km";
+        document.getElementById("dayDist").innerText = "Day Distance: " + dayDistance.toFixed(2) + " km";
+        document.getElementById("nightDist").innerText = "Night Distance: " + nightDistance.toFixed(2) + " km";
       }
     }
 
     function endRide() {
-      navigator.geolocation.clearWatch(watchId);
-      alert("Ride ended. Total Distance: " + totalDistance.toFixed(2) + " km");
+      if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+      rideEnded = true;
+      if (totalDistance === 0) {
+        alert("Minimum payable fare is ₹26 if distance is between 0 to 1.49 km.");
+      } else {
+        alert("Ride ended. Total Distance: " + totalDistance.toFixed(2) + " km");
+      }
     }
 
     function getDistance(lat1, lon1, lat2, lon2) {
-      const R = 6371;
+      const R = 6371; 
       const dLat = (lat2 - lat1) * Math.PI / 180;
       const dLon = (lon2 - lon1) * Math.PI / 180;
       const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -113,52 +131,69 @@
       return R * c;
     }
 
-    function calculateOfficialFare(distanceKm) {
-      let fare;
-      if (distanceKm <= 1.5) {
-        fare = 26; // compulsory base fare
-      } else {
-        fare = 26 + (distanceKm - 1.5) * 17.14; // ₹20 per km after 1.5 km
+    function calculateOfficialFare() {
+      let fare = 26; 
+      if (dayDistance > 0) {
+        fare += dayDistance * 17.14;
       }
-      const hour = new Date().getHours();
-      if (hour >= 0 && hour < 5) {
-        fare *= 1.25;
+      if (nightDistance > 0) {
+        fare += nightDistance * 17.14 * 1.25; 
       }
       return Math.round(fare);
     }
 
     function compareFare() {
-      // 🚨 Restriction: must start ride first
-      if (!rideStarted) {
-        alert("⚠️ You should start the ride first!");
+      if (!rideStarted || !rideEnded) {
+        alert("To access this you have to start and end the ride first.");
+        resetApp(); 
         return;
       }
 
       const meterInput = document.getElementById("meter").value;
-
-      if (!meterInput) {
-        const officialFare = calculateOfficialFare(totalDistance);
-        alert("Minimum payable fare is ₹" + officialFare + " if distance is 0 km.");
-        return;
-      }
-
+      const officialFare = calculateOfficialFare();
       const meterValue = parseFloat(meterInput) || 0;
-      const officialFare = calculateOfficialFare(totalDistance);
       const difference = meterValue - officialFare;
 
+      document.getElementById("official").innerText = "Official Fare: ₹" + officialFare;
+      document.getElementById("meterFare").innerText = "Meter Fare: ₹" + meterValue;
+      document.getElementById("difference").innerText = "Difference: ₹" + difference.toFixed(2);
+
       if (difference > 0) {
-        alert("You are being overcharged by ₹" + difference);
+        document.getElementById("message").innerText = "You are being overcharged by ₹" + difference.toFixed(2);
       } else if (difference < 0) {
-        alert("Meter shows less than official fare!");
+        document.getElementById("message").innerText = "Meter shows less than official fare.";
       } else {
-        alert("Fair Fare!");
+        document.getElementById("message").innerText = "Fair Fare!";
       }
+    }
+
+    function resetApp() {
+      totalDistance = 0;
+      dayDistance = 0;
+      nightDistance = 0;
+      rideStarted = false;
+      rideEnded = false;
+      startCoords = null;
+      
+      document.getElementById("distance").innerText = "Distance: 0 km";
+      document.getElementById("dayDist").innerText = "Day Distance: 0 km";
+      document.getElementById("nightDist").innerText = "Night Distance: 0 km";
+      document.getElementById("official").innerText = "Official Fare: ₹0";
+      document.getElementById("meterFare").innerText = "Meter Fare: ₹0";
+      document.getElementById("difference").innerText = "Difference: ₹0";
+      document.getElementById("message").innerText = "";
+      document.getElementById("meter").value = "";
     }
 
     document.getElementById("meter").addEventListener("keydown", function(event) {
       if (event.key === "Enter") {
-        event.preventDefault();
         compareFare();
+      }
+    });
+
+    document.getElementById("meter").addEventListener("keypress", function(event) {
+      if (!/[0-9]/.test(event.key)) {
+        event.preventDefault();
       }
     });
   </script>

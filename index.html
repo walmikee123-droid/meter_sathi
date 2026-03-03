@@ -42,17 +42,17 @@
     <button class="end" onclick="endRide()">End Ride</button>
     <button class="check" id="checkBtn" onclick="compareFare()">Check Fare</button>
 
-    <p id="distance">Distance: 0 km</p>
+    <p id="distance">Distance: 0.00 km</p>
 
     <label for="meter">Meter Reading (₹):</label>
     <input type="text" id="meter" placeholder="Enter meter fare">
 
     <div class="results">
-      <p id="official">Official Fare: ₹0</p>
-      <p id="meterFare">Meter Fare: ₹0</p>
-      <p id="difference">Difference: ₹0</p>
-      <p id="dayDist">Day Distance: 0 km</p>
-      <p id="nightDist">Night Distance: 0 km</p>
+      <p id="official">Official Fare: ₹0.00</p>
+      <p id="meterFare">Meter Fare: ₹0.00</p>
+      <p id="difference">Difference: ₹0.00</p>
+      <p id="dayDist">Day Distance: 0.00 km</p>
+      <p id="nightDist">Night Distance: 0.00 km</p>
     </div>
 
     <p class="message" id="message"></p>
@@ -64,11 +64,11 @@
   <script>
     let watchId;
     let startCoords = null;
-    let totalDistance = 0;
+    let totalDistance = 0.00;
     let rideStarted = false;
     let rideEnded = false;
-    let dayDistance = 0;
-    let nightDistance = 0;
+    let dayDistance = 0.00;
+    let nightDistance = 0.00;
 
     function startRide() {
       resetApp(); 
@@ -113,7 +113,7 @@
         navigator.geolocation.clearWatch(watchId);
       }
       rideEnded = true;
-      if (totalDistance === 0) {
+      if (totalDistance === 0.00) {
         alert("Minimum payable fare is ₹26 if distance is between 0 to 1.49 km.");
       } else {
         alert("Ride ended. Total Distance: " + totalDistance.toFixed(2) + " km");
@@ -133,10 +133,10 @@
 
     function calculateOfficialFare() {
       let fare = 26; 
-      if (dayDistance > 0) {
+      if (dayDistance > 0.00) {
         fare += dayDistance * 17.14;
       }
-      if (nightDistance > 0) {
+      if (nightDistance > 0.00) {
         fare += nightDistance * 17.14 * 1.25; 
       }
       return Math.round(fare);
@@ -168,19 +168,19 @@
     }
 
     function resetApp() {
-      totalDistance = 0;
-      dayDistance = 0;
-      nightDistance = 0;
+      totalDistance = 0.00;
+      dayDistance = 0.00;
+      nightDistance = 0.00;
       rideStarted = false;
       rideEnded = false;
       startCoords = null;
       
-      document.getElementById("distance").innerText = "Distance: 0 km";
-      document.getElementById("dayDist").innerText = "Day Distance: 0 km";
-      document.getElementById("nightDist").innerText = "Night Distance: 0 km";
-      document.getElementById("official").innerText = "Official Fare: ₹0";
-      document.getElementById("meterFare").innerText = "Meter Fare: ₹0";
-      document.getElementById("difference").innerText = "Difference: ₹0";
+      document.getElementById("distance").innerText = "Distance: 0.00 km";
+      document.getElementById("dayDist").innerText = "Day Distance: 0.00 km";
+      document.getElementById("nightDist").innerText = "Night Distance: 0.00 km";
+      document.getElementById("official").innerText = "Official Fare: ₹0.00";
+      document.getElementById("meterFare").innerText = "Meter Fare: ₹0.00";
+      document.getElementById("difference").innerText = "Difference: ₹0.00";
       document.getElementById("message").innerText = "";
       document.getElementById("meter").value = "";
     }

@@ -80,7 +80,7 @@
     <button class="check" onclick="compareFare()">Check Fare</button>
 
     <div class="results">
-      <p id="official">Official Fare: ₹0</p>
+      <p id="official">Official Fare: ₹26</p>
       <p id="meterFare">Meter Fare: ₹0</p>
       <p id="difference">Difference: ₹0</p>
       <p id="alert" class="alert"></p>
@@ -143,9 +143,9 @@
 
     // Fare calculation (example tariff)
     function calculateOfficialFare(distanceKm) {
-      let fare = 30; // base fare for first 1.5 km
+      let fare = 26; // base fare for first 1.5 km
       if (distanceKm > 1.5) {
-        fare += (distanceKm - 1.5) * 20; // ₹20 per km after 1.5 km
+        fare += (distanceKm - 1.5) * 17.14; // ₹17.14 per km after 1.5 km
       }
       // Night surcharge (12 AM - 5 AM)
       const hour = new Date().getHours();

@@ -1,39 +1,204 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-IN">
 <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FAQ - Meter-Sathi</title>
+
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background-color: #E1F5FE; color: #333; }
-    .navbar { display: flex; justify-content: center; background-color: #1565C0; padding: 12px 0; }
-    .nav-links { display: flex; justify-content: center; gap: 15px; }
-    .nav-links a { padding: 8px 14px; border-radius: 5px; text-decoration: none; color: #fff; font-weight: bold; transition: background-color 0.3s ease; }
-    .nav-links a:hover { background-color: #00E5FF; }
-    .container { text-align: center; padding: 40px; }
-    h2 { font-size: 32px; color: #1565C0; margin-bottom: 20px; }
-    p { font-size: 18px; color: #555; }
-    footer { background-color: #263238; color: #fff; text-align: center; padding: 15px; margin-top: 40px; }
-    footer a { color: #fff; margin: 0 10px; text-decoration: none; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #000000, #111111);
+      color: #ffffff;
+      min-height: 100vh;
+    }
+    .navbar {
+      display: flex;
+      justify-content: center;
+      background-color: #000000;
+      padding: 18px 0;
+      border-bottom: 4px solid #FFD700;
+      box-shadow: 0 4px 10px rgba(255, 215, 0, 0.2);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      padding: 8px 18px;
+      border-radius: 25px;
+      text-decoration: none;
+      color: #FFD700;
+      font-weight: bold;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      background-color: #FFD700;
+      color: #000000;
+      transform: scale(1.05);
+    }
+    .container {
+      text-align: center;
+      padding: 60px 20px;
+      max-width: 980px;
+      margin: 28px auto;
+    }
+
+    .brand-title {
+      font-size: 42px;
+      font-weight: bold;
+      color: #FFD700;
+      text-shadow: 0 0 12px rgba(255, 215, 0, 0.45);
+      margin-bottom: 8px;
+    }
+
+    .brand-subtitle {
+      font-size: 18px;
+      color: #dddddd;
+      margin-bottom: 28px;
+    }
+
+    .lead {
+      color: #e6e6e6;
+      font-size: 16px;
+      margin-bottom: 22px;
+      line-height: 1.6;
+      max-width: 820px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* FAQ list */
+    .faq {
+      margin-top: 18px;
+      text-align: left;
+      display: grid;
+      gap: 14px;
+    }
+
+    .faq-item {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid rgba(255,215,0,0.06);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.45);
+    }
+
+    .faq-item h3 {
+      color: #FFD700;
+      font-size: 16px;
+      margin-bottom: 8px;
+      font-weight: 800;
+    }
+
+    .faq-item p {
+      color: #f0f0f0;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0;
+    }
+    footer {
+      background-color: #000000;
+      color: #FFD700;
+      text-align: center;
+      padding: 18px;
+      margin-top: 50px;
+      border-top: 4px solid #FFD700;
+      letter-spacing: 1px;
+    }
+
+    footer a {
+      color: #FFD700;
+      text-decoration: none;
+      margin: 0 8px;
+      font-weight: bold;
+    }
+    @media (max-width: 768px) {
+      .brand-title {
+        font-size: 36px;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .faq-item { padding: 12px; }
+    }
   </style>
 </head>
 <body>
-  <div class="navbar">
-    <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="services.html">Services</a>
-      <a href="faq.html">FAQ</a>
-      <a href="contact.html">Contact Us</a>
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-links" role="menubar" aria-label="Primary">
+      <a href="welcome.html" role="menuitem">Home</a>
+      <a href="about.html" role="menuitem">About</a>
+      <a href="services.html" role="menuitem">Services</a>
+      <a href="faq.html" role="menuitem" aria-current="page">FAQ</a>
+      <a href="contact.html" role="menuitem">Contact Us</a>
     </div>
-  </div>
+  </nav>
 
-  <div class="container">
-    <h2>Frequently Asked Questions</h2>
-    <p>This page will be updated soon with answers to common queries about Meter-Sathi, fare calculation, and usage guidelines.</p>
-  </div>
+  <main class="container" role="main" aria-labelledby="faq-title">
+    <h1 id="faq-title" class="brand-title">Frequently Asked Questions</h1>
+    <p class="brand-subtitle">Answers to common questions about Meter-Sathi and how to use the app.</p>
 
-  <footer>
-    <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
-    <p>© 2024 Meter-Sathi</p>
+    <p class="lead">
+      Below are quick answers to the questions we hear most often. If you don't find what you're looking for, visit the Contact page to get in touch.
+    </p>
+
+    <section class="faq" role="list" aria-label="Frequently asked questions">
+      <article class="faq-item" role="listitem" aria-labelledby="q1">
+        <h3 id="q1">How does ride tracking work?</h3>
+        <p>Ride tracking uses your device's geolocation (with your permission) to record start and end points, calculate distance, and estimate the official fare based on the selected vehicle tariff.</p>
+      </article>
+
+      <article class="faq-item" role="listitem" aria-labelledby="q2">
+        <h3 id="q2">What if my browser blocks location access?</h3>
+        <p>Geolocation requires a secure context (HTTPS) or http://localhost. If blocked, enable location in your browser's site settings or test locally. The app will show a helpful message if location is unavailable.</p>
+      </article>
+
+      <article class="faq-item" role="listitem" aria-labelledby="q3">
+        <h3 id="q3">Which tariffs are used for calculations?</h3>
+        <p>Meter-Sathi applies official tariffs for the selected vehicle type and city. Choose Auto Rickshaw or Taxi at the start; taxi and auto pages use different base fares and per-kilometer rates.</p>
+      </article>
+
+      <article class="faq-item" role="listitem" aria-labelledby="q4">
+        <h3 id="q4">Why does the official fare show a base amount immediately?</h3>
+        <p>The official fare displays the minimum base fare (for example, ₹26 for autos) so you always see the minimum payable amount even before any distance is recorded.</p>
+      </article>
+
+      <article class="faq-item" role="listitem" aria-labelledby="q5">
+        <h3 id="q5">Can I use the app without granting location permission?</h3>
+        <p>Core features require location permission for accurate tracking. If you prefer not to grant permission, you can still enter meter values manually on the ride page to compare fares.</p>
+      </article>
+
+      <article class="faq-item" role="listitem" aria-labelledby="q6">
+        <h3 id="q6">How accurate is the distance calculation?</h3>
+        <p>Distance is calculated using the Haversine formula between successive GPS coordinates. Accuracy depends on device GPS/Wi‑Fi positioning and signal quality; enable high accuracy in device settings for best results.</p>
+      </article>
+
+      <article class="faq-item" role="listitem" aria-labelledby="q7">
+        <h3 id="q7">Where can I report repeated overcharging?</h3>
+        <p>Use the Contact page to report incidents. Provide ride details, date/time, and any supporting information so we can guide you on next steps and escalate if necessary.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer role="contentinfo">
+    <a href="privacy.html">Privacy Policy</a>
+    <span style="opacity:0.5">|</span>
+    <a href="terms.html">Terms of Service</a>
+    <div style="margin-top:8px; font-weight:700">© 2024 Meter-Sathi</div>
   </footer>
 </body>
 </html>

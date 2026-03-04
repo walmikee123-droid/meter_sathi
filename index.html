@@ -1,194 +1,357 @@
+```html
 <!DOCTYPE html>
 <html lang="en-IN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Meter-Sathi Ride Auditor</title>
-
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    html,body { height:100%; }
     body {
-      background: linear-gradient(135deg, #000000, #1c1c1c);
+      background: linear-gradient(135deg, #000000, #111111);
       color: #ffffff;
+      min-height: 100vh;
+      display:flex;
+      flex-direction:column;
     }
+    .navbar { display:flex; justify-content:center; background:#000; padding:18px 0; border-bottom:4px solid #FFD700; box-shadow:0 4px 10px rgba(255,215,0,0.2); }
+    .nav-links { display:flex; gap:30px; }
+    .nav-links a { padding:8px 18px; border-radius:25px; text-decoration:none; color:#FFD700; font-weight:700; letter-spacing:1px; transition:all .3s; }
+    .nav-links a:hover { background:#FFD700; color:#000; transform:scale(1.05); }
 
-    /* Navbar */
-    .navbar {
-      display: flex;
-      justify-content: center;
-      background-color: #000000;
-      padding: 15px 0;
-      border-bottom: 4px solid #ffcc00;
-    }
+    .container { text-align:center; padding:40px 20px; max-width:980px; margin:18px auto; flex:1; }
+    .brand-title { font-size:48px; font-weight:800; color:#FFD700; text-shadow:0 0 15px rgba(255,215,0,0.5); margin-bottom:8px; }
+    .brand-subtitle { font-size:18px; color:#ddd; margin-bottom:20px; }
 
-    .nav-links {
-      display: flex;
-      gap: 20px;
-    }
+    .controls { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:14px; }
+    button { margin:8px; padding:12px 20px; border:none; border-radius:30px; cursor:pointer; font-size:15px; font-weight:800; transition:all .18s; }
+    button.start { background:#2E7D32; color:#fff; }
+    button.end { background:#C62828; color:#fff; }
+    button.check { background:#FFD700; color:#000; }
+    button:hover { transform:translateY(-3px); box-shadow:0 5px 15px rgba(255,215,0,0.18); }
 
-    .nav-links a {
-      padding: 8px 15px;
-      border-radius: 20px;
-      text-decoration: none;
-      color: #ffcc00;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    .nav-links a:hover {
-      background-color: #ffcc00;
-      color: #000000;
-    }
-
-    /* Main Container */
-    .container {
-      text-align: center;
-      padding: 50px 20px;
-    }
-
-    .brand-title {
-      font-size: 48px;
-      font-weight: bold;
-      color: #ffcc00;
-      margin-bottom: 10px;
-    }
-
-    .brand-subtitle {
-      font-size: 22px;
-      color: #dddddd;
-      margin-bottom: 30px;
-    }
-
-    /* Buttons */
-    button {
-      margin: 10px;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 25px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    button.start {
-      background-color: #43A047;
-      color: white;
-    }
-
-    button.end {
-      background-color: #E53935;
-      color: white;
-    }
-
-    button.check {
-      background-color: #ffcc00;
-      color: #000000;
-    }
-
-    button:hover {
-      transform: scale(1.05);
-    }
-
-    input {
-      padding: 10px;
-      margin: 10px;
-      border-radius: 20px;
-      border: 2px solid #ffcc00;
-      width: 220px;
-      background: #111111;
-      color: #ffffff;
-      text-align: center;
-    }
-
-    input::placeholder {
-      color: #bbbbbb;
-    }
+    .meter-row { margin-top:12px; display:flex; gap:12px; justify-content:center; align-items:center; flex-wrap:wrap; }
+    label { color:#FFD700; font-weight:700; display:block; }
+    input { padding:12px; margin:6px; border-radius:25px; border:2px solid #FFD700; width:240px; background:#1a1a1a; color:#fff; text-align:center; font-size:15px; transition:.18s; }
+    input:focus { outline:none; box-shadow:0 0 10px #FFD700; }
+    input::placeholder { color:#aaaaaa; }
 
     .results {
-      margin-top: 20px;
-      font-weight: bold;
-      color: #ffcc00;
+      margin-top:18px; font-weight:700; color:#FFD700; font-size:17px;
+      display:inline-block; text-align:left; min-width:320px; background:rgba(255,255,255,0.03);
+      padding:14px 18px; border-radius:12px;
+    }
+    .results p { margin:8px 0; color:#FFD700; font-weight:700; }
+    .results p span { color:#fff; margin-left:8px; font-weight:800; }
+
+    .message { margin-top:14px; font-size:16px; min-height:22px; color:#fff; font-weight:700; }
+
+    footer { background:#000; color:#FFD700; text-align:center; padding:18px; margin-top:18px; border-top:4px solid #FFD700; letter-spacing:1px; }
+
+    #toastContainer { position:fixed; right:18px; bottom:18px; z-index:9999; pointer-events:none; }
+    .toast { background:rgba(33,33,33,0.95); color:#fff; padding:10px 14px; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,0.4); margin-top:8px; font-weight:700; pointer-events:auto; transform:translateY(8px); opacity:0; transition:opacity .18s, transform .18s; }
+    .toast.show { opacity:1; transform:translateY(0); }
+
+    @media (max-width:768px) {
+      .brand-title { font-size:36px; }
+      .nav-links { flex-direction:column; gap:12px; }
+      button { width:80%; }
+      input { width:80%; }
+      .results { min-width:260px; width:92%; }
     }
 
-    .message {
-      margin-top: 15px;
-      font-size: 18px;
-      color: #ffffff;
-      height: 24px;
-    }
-
-    footer {
-      background-color: #000000;
-      color: #ffcc00;
-      text-align: center;
-      padding: 15px;
-      margin-top: 40px;
-      border-top: 4px solid #ffcc00;
-    }
-
-    @media (max-width: 768px) {
-      .brand-title {
-        font-size: 36px;
-      }
-    }
-
+    /* Overlay kept available but hidden by default */
+    .overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; padding:20px; z-index:60; }
+    .modal { width:100%; max-width:420px; background:#111; border-radius:12px; padding:20px; box-shadow:0 20px 40px rgba(0,0,0,0.6); text-align:center; color:#fff; position:relative; }
+    .modal h3 { margin:0 0 8px; font-size:20px; color:#FFD700; }
+    .vehicle-grid { display:flex; gap:12px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
+    .vehicle { min-width:140px; padding:14px; border-radius:10px; cursor:pointer; border:2px solid transparent; transition:transform .12s, box-shadow .12s, border-color .12s; background:linear-gradient(180deg,#1a1a1a,#0f0f0f); color:#fff; }
+    .vehicle:hover { transform:translateY(-6px); box-shadow:0 12px 30px rgba(0,0,0,0.5); border-color:#FFD700; }
+    .close-x { position:absolute; right:12px; top:10px; background:transparent; border:0; font-size:20px; color:#ccc; cursor:pointer; }
   </style>
 </head>
-
 <body>
-
-  <div class="navbar">
-    <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="services.html">Services</a>
-      <a href="faq.html">FAQ</a>
-      <a href="contact.html">Contact Us</a>
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-links" role="menubar">
+      <a href="index.html" role="menuitem">Home</a>
+      <a href="about.html" role="menuitem">About</a>
+      <a href="services.html" role="menuitem">Services</a>
+      <a href="faq.html" role="menuitem">FAQ</a>
+      <a href="contact.html" role="menuitem">Contact</a>
     </div>
-  </div>
+  </nav>
 
-  <div class="container">
+  <main class="container" role="main">
     <div class="brand-title">🚕 Meter-Sathi</div>
     <div class="brand-subtitle">Auto / Taxi Fare Auditor</div>
 
-    <button class="start" onclick="startRide()">Start Ride</button>
-    <button class="end" onclick="endRide()">End Ride</button>
-    <button class="check" onclick="compareFare()">Check Fare</button>
-
-    <p id="distance">Distance: 0.00 km</p>
-
-    <label for="meter">Meter Reading (₹):</label><br>
-    <input type="text" id="meter" placeholder="Enter meter fare">
-
-    <div class="results">
-      <p id="official">Official Fare: ₹0.00</p>
-      <p id="meterFare">Meter Fare: ₹0.00</p>
-      <p id="difference">Difference: ₹0.00</p>
-      <p id="dayDist">Day Distance: 0.00 km</p>
-      <p id="nightDist">Night Distance: 0.00 km</p>
+    <div class="controls" aria-hidden="false">
+      <button class="start" id="startBtn" aria-label="Start Ride">Start Ride</button>
+      <button class="end" id="endBtn" aria-label="End Ride">End Ride</button>
+      <button class="check" id="checkBtn" aria-label="Check Fare">Check Fare</button>
     </div>
 
-    <p class="message" id="message"></p>
-    <p style="color:#ffcc00; font-weight:bold;">
-      Based on MMRTA Official Tariff 2025
-    </p>
-  </div>
+    <p id="distance" style="font-weight:700; color:#dddddd;">Distance: 0.00 km</p>
+
+    <div class="meter-row">
+      <div style="text-align:center;">
+        <label for="meter">Meter Reading (₹):</label>
+        <input type="text" id="meter" placeholder="Enter meter fare" inputmode="decimal" autocomplete="off" aria-label="Meter reading in rupees">
+      </div>
+    </div>
+
+    <div class="results" aria-live="polite">
+      <p id="official">Official Fare: <span>₹0.00</span></p>
+      <p id="meterFare">Meter Fare: <span>₹0.00</span></p>
+      <p id="difference">Difference: <span>₹0.00</span></p>
+      <p id="dayDist">Day Distance: <span>0.00 km</span></p>
+      <p id="nightDist">Night Distance: <span>0.00 km</span></p>
+    </div>
+
+    <p class="message" id="message" aria-live="assertive"></p>
+    <p style="color:#FFD700; font-weight:bold; margin-top:12px;">Based on MMRTA Official Tariff 2025</p>
+  </main>
 
   <footer>
-    <p>© 2024 Meter-Sathi</p>
+    <a href="#" style="color:#FFD700; text-decoration:none; font-weight:700; margin-right:8px;">Privacy Policy</a>
+    <span style="color:rgba(255,215,0,0.45)">|</span>
+    <a href="#" style="color:#FFD700; text-decoration:none; font-weight:700; margin-left:8px;">Terms of Service</a>
+    <div style="margin-top:8px; font-weight:700; color:rgba(255,215,0,0.85)">© 2024 Meter-Sathi</div>
   </footer>
 
-  <!-- YOUR ORIGINAL JAVASCRIPT REMAINS SAME BELOW -->
-  <script>
-    /* Keep your entire original JavaScript code here unchanged */
-  </script>
+  <div class="overlay" id="vehicleOverlay" role="dialog" aria-modal="true" aria-labelledby="vehicleTitle">
+    <div class="modal" role="document">
+      <button class="close-x" id="closeOverlay" aria-label="Close dialog">✕</button>
+      <h3 id="vehicleTitle">Choose your vehicle</h3>
+      <p style="color:#ccc; margin:6px 0 12px; font-weight:700;">Select Auto Rickshaw or Taxi to continue</p>
+      <div class="vehicle-grid">
+        <div class="vehicle auto" id="autoOption" role="button" tabindex="0" aria-pressed="false" aria-label="Auto Rickshaw">
+          <div style="font-weight:800; margin-top:8px;">Auto Rickshaw</div>
+        </div>
+        <div class="vehicle taxi" id="taxiOption" role="button" tabindex="0" aria-pressed="false" aria-label="Taxi">
+          <div style="font-weight:800; margin-top:8px;">Taxi</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Elements
+      const startBtn = document.getElementById('startBtn');
+      const endBtn = document.getElementById('endBtn');
+      const checkBtn = document.getElementById('checkBtn');
+      const meterInput = document.getElementById('meter');
+      const distanceEl = document.getElementById('distance');
+      const officialEl = document.getElementById('official');
+      const meterFareEl = document.getElementById('meterFare');
+      const diffEl = document.getElementById('difference');
+      const dayDistEl = document.getElementById('dayDist');
+      const nightDistEl = document.getElementById('nightDist');
+      const messageEl = document.getElementById('message');
+
+      // Overlay elements (kept available)
+      const overlay = document.getElementById('vehicleOverlay');
+      const closeOverlay = document.getElementById('closeOverlay');
+      const autoOption = document.getElementById('autoOption');
+      const taxiOption = document.getElementById('taxiOption');
+
+      // State
+      let watchId = undefined;
+      let startCoords = null;
+      let totalDistance = 0.00;
+      let rideStarted = false;
+      let rideEnded = false;
+      let dayDistance = 0.00;
+      let nightDistance = 0.00;
+
+      // Helpers
+      function toFixed2(n){ return Number(n).toFixed(2); }
+
+      function showToast(text, timeout = 3000) {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+        const t = document.createElement('div');
+        t.className = 'toast';
+        t.textContent = text;
+        container.appendChild(t);
+        requestAnimationFrame(() => t.classList.add('show'));
+        setTimeout(() => { t.classList.remove('show'); setTimeout(() => { try { container.removeChild(t); } catch(e){} }, 220); }, timeout);
+      }
+
+      function showInlineMessage(text, color = '#FFD700') {
+        messageEl.style.color = color;
+        messageEl.innerText = text;
+      }
+
+      function clearInlineMessage() {
+        messageEl.innerText = '';
+      }
+
+      function getDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+      }
+
+      function updateUI() {
+        distanceEl.innerText = "Distance: " + toFixed2(totalDistance) + " km";
+        dayDistEl.innerHTML = "Day Distance: <span>" + toFixed2(dayDistance) + " km</span>";
+        nightDistEl.innerHTML = "Night Distance: <span>" + toFixed2(nightDistance) + " km</span>";
+      }
+
+      function calculateOfficialFare() {
+        let fare = 26;
+        if (dayDistance > 0) fare += dayDistance * 17.14;
+        if (nightDistance > 0) fare += nightDistance * 17.14 * 1.25;
+        return Math.round(fare * 100) / 100;
+      }
+
+      function resetApp() {
+        if (typeof watchId !== 'undefined') {
+          try { navigator.geolocation.clearWatch(watchId); } catch(e) {}
+          watchId = undefined;
+        }
+        startCoords = null;
+        totalDistance = 0.00;
+        dayDistance = 0.00;
+        nightDistance = 0.00;
+        rideStarted = false;
+        rideEnded = false;
+        meterInput.value = '';
+        officialEl.innerHTML = "Official Fare: <span>₹0.00</span>";
+        meterFareEl.innerHTML = "Meter Fare: <span>₹0.00</span>";
+        diffEl.innerHTML = "Difference: <span>₹0.00</span>";
+        clearInlineMessage();
+        updateUI();
+      }
+
+      // Improved geolocation error handler
+      function geoErrorHandler(err) {
+        console.warn('Geolocation error', err);
+        if (!messageEl) return;
+        if (err && err.code === 1) {
+          showInlineMessage('Location access denied. Please enable location for this site (address bar → site settings).', '#E53935');
+          showToast('Location access denied. Enable location or test on localhost/HTTPS.');
+        } else if (err && err.code === 2) {
+          showInlineMessage('Location unavailable. Try again or move to an open area.', '#E53935');
+          showToast('Location unavailable.');
+        } else if (err && err.code === 3) {
+          showInlineMessage('Location request timed out. Try again.', '#E53935');
+          showToast('Location request timed out.');
+        } else {
+          showInlineMessage('Unable to access location. Serve over HTTPS or use http://localhost for testing.', '#E53935');
+          showToast('Unable to access location.');
+        }
+      }
+
+      // Start ride
+      startBtn.addEventListener('click', function () {
+        resetApp();
+        rideStarted = true;
+        rideEnded = false;
+        if (!navigator.geolocation) {
+          showInlineMessage('Geolocation not supported by this browser.', '#E53935');
+          showToast('Geolocation not supported.');
+          return;
+        }
+
+        navigator.geolocation.getCurrentPosition(function(pos){
+          startCoords = pos.coords;
+          clearInlineMessage();
+          showToast('Location access granted. Tracking started.');
+        }, geoErrorHandler, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 });
+
+        watchId = navigator.geolocation.watchPosition(function(position){
+          if (!startCoords) { startCoords = position.coords; return; }
+          const lat1 = startCoords.latitude;
+          const lon1 = startCoords.longitude;
+          const lat2 = position.coords.latitude;
+          const lon2 = position.coords.longitude;
+          const dist = getDistance(lat1, lon1, lat2, lon2);
+
+          const hour = new Date().getHours();
+          if (hour >= 0 && hour < 5) nightDistance += dist;
+          else dayDistance += dist;
+
+          totalDistance = dayDistance + nightDistance;
+          startCoords = position.coords;
+          updateUI();
+        }, geoErrorHandler, { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 });
+      });
+
+      // End ride
+      endBtn.addEventListener('click', function () {
+        if (typeof watchId !== 'undefined') {
+          try { navigator.geolocation.clearWatch(watchId); } catch(e) {}
+          watchId = undefined;
+        }
+        rideEnded = true;
+        if (totalDistance === 0.00) {
+          showToast("RIDE ENDED — Minimum payable fare is ₹26 for 0–1.49 km.");
+        } else {
+          showToast("Ride ended. Total Distance: " + toFixed2(totalDistance) + " km");
+        }
+      });
+
+      // Compare fare
+      checkBtn.addEventListener('click', function () {
+        if (!rideStarted || !rideEnded) {
+          showToast("Start and end the ride before checking fare.");
+          return;
+        }
+        const meterInputVal = meterInput.value.trim();
+        const officialFare = calculateOfficialFare();
+        const meterValue = parseFloat(meterInputVal) || 0;
+        const difference = meterValue - officialFare;
+
+        officialEl.innerHTML = "Official Fare: <span>₹" + officialFare.toFixed(2) + "</span>";
+        meterFareEl.innerHTML = "Meter Fare: <span>₹" + meterValue.toFixed(2) + "</span>";
+        diffEl.innerHTML = "Difference: <span>₹" + difference.toFixed(2) + "</span>";
+
+        if (difference > 0) showInlineMessage("You are being overcharged by ₹" + difference.toFixed(2), '#FFD700');
+        else if (difference < 0) showInlineMessage("Meter shows less than official fare.", '#FFD700');
+        else showInlineMessage("Fair Fare!", '#00E676');
+      });
+
+      // Input restrictions
+      meterInput.addEventListener('keypress', function (e) {
+        const char = e.key;
+        if (!/^[0-9.]$/.test(char)) e.preventDefault();
+        if (char === '.' && this.value.includes('.')) e.preventDefault();
+      });
+      meterInput.addEventListener('paste', function (e) {
+        const paste = (e.clipboardData || window.clipboardData).getData('text');
+        if (!/^[0-9]*\.?[0-9]*$/.test(paste.trim())) e.preventDefault();
+      });
+      meterInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); checkBtn.click(); }
+      });
+
+      // Overlay controls (kept available)
+      function openOverlay(){ overlay.style.display = 'flex'; autoOption.focus(); }
+      function closeOverlayFn(){ overlay.style.display = 'none'; }
+      closeOverlay.addEventListener('click', closeOverlayFn);
+      overlay.addEventListener('click', function(e){ if(e.target === overlay) closeOverlayFn(); });
+      autoOption.addEventListener('click', function(){ overlay.style.display='none'; window.location.href='auto.html'; });
+      taxiOption.addEventListener('click', function(){ overlay.style.display='none'; window.location.href='taxi.html'; });
+      autoOption.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); autoOption.click(); } if(e.key==='ArrowRight') taxiOption.focus(); });
+      taxiOption.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); taxiOption.click(); } if(e.key==='ArrowLeft') autoOption.focus(); });
+
+      if (location.protocol === 'file:') {
+        showInlineMessage('Serving via file:// may block location. Use http://localhost or HTTPS for geolocation.', '#E53935');
+      }
+
+      resetApp();
+    });
+  </script>
 </body>
 </html>

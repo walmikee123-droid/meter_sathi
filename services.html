@@ -1,31 +1,140 @@
 <!DOCTYPE html>
-<html lang="en-IN">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Services - Meter-Sathi</title>
-  <link rel="stylesheet" href="site.css">
-</head>
-<body>
-  <nav class="navbar">
-    <div class="brand">🚕 Meter-Sathi</div>
-    <div class="nav-links">
-      <a href="welcome.html" class="nav-link">Home</a>
-      <a href="about.html" class="nav-link">About</a>
-      <a href="services.html" class="nav-link active">Services</a>
-      <a href="faq.html" class="nav-link">FAQ</a>
-      <a href="contact.html" class="nav-link">Contact</a>
-    </div>
-  </nav>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <main class="container">
-    <h1 class="brand-title">Services Page</h1>
-    <p class="brand-subtitle">This page will be edited soon.</p>
-  </main>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #000000, #1c1c1c);
+      color: #ffffff;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: #000000;
+      border-bottom: 4px solid #ffcc00;
+    }
+
+    .navbar h1 {
+      color: #ffcc00;
+      font-size: 24px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #ffcc00;
+      margin: 0 10px;
+      padding: 8px 15px;
+      border-radius: 20px;
+      transition: 0.3s;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      background-color: #ffcc00;
+      color: #000000;
+    }
+
+    /* Main Container */
+    .container {
+      padding: 60px 20px;
+      text-align: center;
+      min-height: calc(100vh - 160px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .message-card {
+      background: #111111;
+      max-width: 600px;
+      margin: auto;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(255, 204, 0, 0.3);
+      border: 2px solid #ffcc00;
+    }
+
+    .message-card h2 {
+      font-size: 28px;
+      color: #ffcc00;
+      text-align: center;
+    }
+
+    /* Footer */
+    footer {
+      background: #000000;
+      color: #ffcc00;
+      text-align: center;
+      padding: 20px;
+      margin-top: 60px;
+      border-top: 4px solid #ffcc00;
+    }
+
+    footer a {
+      color: #ffcc00;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .message-card { padding: 28px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="navbar">
+    <h1>🚕 Meter-Sathi</h1>
+    <div class="nav-links">
+      <a href="welcome.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="message-card">
+      <h2>This page will be edited soon.</h2>
+    </div>
+  </div>
 
   <footer>
-    <a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a>
-    <div>© 2024 Meter-Sathi</div>
+    <p>© 2024 Meter-Sathi | 
+      <a href="#">Privacy Policy</a> | 
+      <a href="#">Terms of Service</a>
+    </p>
   </footer>
+
+  <script>
+    (function () {
+      const links = document.querySelectorAll('.nav-links a');
+      const current = location.pathname.split('/').pop() || 'welcome.html';
+      links.forEach(a => {
+        if (a.getAttribute('href') === current) a.classList.add('active');
+      });
+    })();
+  </script>
 </body>
 </html>

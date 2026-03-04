@@ -1,42 +1,206 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Meter-Sathi</title>
-  <title> About - Meter-Sathi</title>
+  <meta charset="UTF-8">
+  <title>About - Meter-Sathi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background-color: #f9f9f9; color: #333; }
-    .navbar { display: flex; justify-content: space-between; align-items: center; background-color: #ff6f91; padding: 10px 20px; }
-    .navbar h1 { color: #fff; margin: 0; }
-    .nav-links a { margin: 0 10px; padding: 8px 12px; border-radius: 5px; text-decoration: none; color: #fff; font-weight: bold; }
-    .nav-links a:nth-child(1) { background-color: #f9a825; }
-    .nav-links a:nth-child(2) { background-color: #00bcd4; }
-    .nav-links a:nth-child(3) { background-color: #ff7043; }
-    .nav-links a:nth-child(4) { background-color: #009688; }
-    .nav-links a:nth-child(5) { background-color: #8e24aa; }
-    .container { text-align: center; padding: 40px; }
-    h2 { color: #2c3e50; }
-    footer { background-color: #ff9800; color: #fff; text-align: center; padding: 15px; margin-top: 40px; }
-    footer a { color: #fff; margin: 0 10px; text-decoration: none; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #000000, #1c1c1c);
+      color: #ffffff;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: #000000;
+      border-bottom: 4px solid #ffcc00;
+    }
+
+    .navbar h1 {
+      color: #ffcc00;
+      font-size: 24px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #ffcc00;
+      margin: 0 10px;
+      padding: 8px 15px;
+      border-radius: 20px;
+      transition: 0.3s;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      background-color: #ffcc00;
+      color: #000000;
+    }
+
+    /* Main Container */
+    .container {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .about-card {
+      background: #111111;
+      max-width: 900px;
+      margin: auto;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(255, 204, 0, 0.3);
+      border: 2px solid #ffcc00;
+    }
+
+    .about-card h2 {
+      margin-bottom: 20px;
+      font-size: 32px;
+      color: #ffcc00;
+    }
+
+    .about-card p {
+      line-height: 1.7;
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #dddddd;
+    }
+
+    /* Team Section */
+    .team {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .member {
+      background: #000000;
+      padding: 20px;
+      border-radius: 15px;
+      width: 200px;
+      transition: 0.3s;
+      border: 2px solid #ffcc00;
+    }
+
+    .member:hover {
+      transform: translateY(-10px);
+      background: #ffcc00;
+      color: #000000;
+    }
+
+    /* Button */
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 25px;
+      background: #ffcc00;
+      color: #000000;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #e6b800;
+    }
+
+    /* Footer */
+    footer {
+      background: #000000;
+      color: #ffcc00;
+      text-align: center;
+      padding: 20px;
+      margin-top: 60px;
+      border-top: 4px solid #ffcc00;
+    }
+
+    footer a {
+      color: #ffcc00;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .team {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
   </style>
 </head>
+
 <body>
+
   <div class="navbar">
-    <h1>Meter-Sathi</h1>
+    <h1>🚕 Meter-Sathi</h1>
     <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="services.html">Services</a>
       <a href="faq.html">FAQ</a>
-      <a href="contact.html">Contact Us</a>
+      <a href="contact.html">Contact</a>
     </div>
   </div>
+
   <div class="container">
-    <h2>About Page</h2>
-    <p>This page will be updated soon.</p>
+    <div class="about-card">
+      <h2>About Meter-Sathi</h2>
+      <p>
+        Meter-Sathi is a smart fare-checking platform designed to help users 
+        verify auto and taxi meter fares quickly and accurately.
+      </p>
+
+      <p>
+        Our goal is to promote fair pricing, transparency, and convenience 
+        for daily commuters. With Meter-Sathi, you can check estimated fare 
+        before or after your ride and avoid overcharging.
+      </p>
+
+      <a href="services.html" class="btn">Explore Service</a>
+
+      <div class="team">
+        <div class="member">
+          <h3>Founder</h3>
+          <p>Project Lead</p>
+        </div>
+        <div class="member">
+          <h3>Developer</h3>
+          <p>Frontend & Backend</p>
+        </div>
+        <div class="member">
+          <h3>Designer</h3>
+          <p>UI/UX Specialist</p>
+        </div>
+      </div>
+
+    </div>
   </div>
+
   <footer>
-    <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
-    <p>© 2024 Meter-Sathi</p>
+    <p>© 2024 Meter-Sathi | 
+      <a href="#">Privacy Policy</a> | 
+      <a href="#">Terms of Service</a>
+    </p>
   </footer>
+
 </body>
 </html>

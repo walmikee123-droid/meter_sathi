@@ -201,9 +201,20 @@
         nightDistEl.innerHTML = "Night Distance: <span>" + toFixed2(nightDistance) + " km</span>";
       }
 
-      // MODIFIED: Returns constant base fare
+      // SMART CALCULATION LOGIC
       function calculateOfficialFare() {
-        return 26.00; 
+        let baseFare = 26.00;
+        let ratePerKm = 17.14;
+        let finalFare = baseFare;
+
+        // If distance > 1.5km, calculate extra
+        if (totalDistance > 1.5) {
+          let extraDistance = totalDistance - 1.5;
+          finalFare = baseFare + (extraDistance * ratePerKm);
+        }
+        
+        // Return rounded to 2 decimals
+        return Math.round(finalFare * 100) / 100;
       }
 
       function resetApp() {
@@ -229,11 +240,7 @@
         console.warn('Geolocation error', err);
         if (!messageEl) return;
         if (err && err.code === 1) {
-          showInlineMessage('Location access denied. Please enable location for this site.', '#E53935');
-        } else if (err && err.code === 2) {
-          showInlineMessage('Location unavailable.', '#E53935');
-        } else if (err && err.code === 3) {
-          showInlineMessage('Location request timed out.', '#E53935');
+          showInlineMessage('Location access denied. Please enable location.', '#E53935');
         } else {
           showInlineMessage('Unable to access location.', '#E53935');
         }
@@ -270,7 +277,8 @@
           startCoords = position.coords;
           updateUI();
           
-          // REMOVED live official fare update to keep it constant at ₹26.00
+          // KEEPING IT AS ₹26.00 ON SCREEN WHILE RIDING
+          officialEl.innerHTML = "Official Fare: <span>₹26.00</span>";
         }, geoErrorHandler, { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 });
       });
 
@@ -282,8 +290,9 @@
         rideEnded = true;
         showToast("Ride ended. Total Distance: " + toFixed2(totalDistance) + " km");
         
-        const officialFare = calculateOfficialFare();
-        officialEl.innerHTML = "Official Fare: <span>₹" + officialFare.toFixed(2) + "</span>";
+        // CALCULATE FINAL PRICE ON END
+        const finalOfficialFare = calculateOfficialFare();
+        officialEl.innerHTML = "Official Fare: <span>₹" + finalOfficialFare.toFixed(2) + "</span>";
       });
 
       checkBtn.addEventListener('click', function () {
@@ -292,11 +301,11 @@
           return;
         }
         const meterInputVal = meterInput.value.trim();
-        const officialFare = calculateOfficialFare();
+        const finalOfficialFare = calculateOfficialFare();
         const meterValue = parseFloat(meterInputVal) || 0;
-        const difference = meterValue - officialFare;
+        const difference = meterValue - finalOfficialFare;
 
-        officialEl.innerHTML = "Official Fare: <span>₹" + officialFare.toFixed(2) + "</span>";
+        officialEl.innerHTML = "Official Fare: <span>₹" + finalOfficialFare.toFixed(2) + "</span>";
         meterFareEl.innerHTML = "Meter Fare: <span>₹" + meterValue.toFixed(2) + "</span>";
         diffEl.innerHTML = "Difference: <span>₹" + difference.toFixed(2) + "</span>";
 

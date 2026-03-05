@@ -302,9 +302,9 @@
         }
         rideEnded = true;
         if (totalDistance === 0.00) {
-          showToast("RIDE ENDED — Minimum payable fare is ₹26 for 0–1.49 km.");
+          showToast("RIDE ENDED — Minimum payable fare is ₹26 between 0–1.49 km.");
         } else {
-          showToast("Ride ended. Total Distance: " + toFixed2(totalDistance) + " km");
+          showToast("Ride ended. Total Distance: \n Minimum payable fare is ₹26 between 0–1.49 km." + toFixed2(totalDistance) + " km");
         }
         // ensure official fare reflects final distances
         const officialFare = calculateOfficialFare();

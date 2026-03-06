@@ -1,122 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>FAQ - Meter-Sathi</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Meter-Sathi</title>
+    <style>
+        /* General Reset & Theme */
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
+        /* Navigation Bar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffcc00;
+            text-decoration: none;
+        }
+        nav a {
+            color: #ffcc00;
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #fff;
+        }
 
-    body {
-      background: linear-gradient(135deg, #000000, #1c1c1c);
-      color: #ffffff;
-    }
+        /* Divider Lines */
+        .divider {
+            border: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffcc00, transparent);
+            margin: 0;
+        }
 
-    /* Navbar */
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 40px;
-      background: #000000;
-      border-bottom: 4px solid #ffcc00;
-    }
+        /* Main FAQ Container */
+        .faq-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+            min-height: 60vh;
+        }
+        .faq-container h1 {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 36px;
+            /* Fancy Gradient Text */
+            background: linear-gradient(45deg, #ffcc00, #fffaaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-    .navbar h1 {
-      color: #ffcc00;
-      font-size: 24px;
-    }
+        /* Fancy Accordion Styling */
+        .faq-item {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
 
-    .nav-links a {
-      text-decoration: none;
-      color: #ffcc00;
-      margin: 0 10px;
-      padding: 8px 15px;
-      border-radius: 20px;
-      transition: 0.3s;
-      font-weight: 500;
-    }
+        /* Hover and Active states for the "Out of the box" feel */
+        .faq-item:hover {
+            border-color: #555;
+            transform: translateY(-2px);
+        }
+        .faq-item.active {
+            border-color: #ffcc00;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.15); /* Yellow Glow */
+            transform: translateY(0);
+        }
 
-    .nav-links a:hover {
-      background-color: #ffcc00;
-      color: #000000;
-    }
+        /* The Question Button */
+        .faq-question {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 20px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: color 0.3s;
+        }
+        .faq-item.active .faq-question {
+            color: #ffcc00;
+        }
 
-    /* Main Container */
-    .container {
-      padding: 60px 20px;
-      text-align: center;
-      min-height: calc(100vh - 160px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+        /* Animated Plus/Cross Icon */
+        .icon {
+            font-size: 28px;
+            font-weight: 300;
+            line-height: 1;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .faq-item.active .icon {
+            transform: rotate(45deg); /* Turns the + into an x */
+            color: #ffcc00;
+        }
 
-    .message-card {
-      background: #111111;
-      max-width: 600px;
-      margin: auto;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(255, 204, 0, 0.3);
-      border: 2px solid #ffcc00;
-    }
+        /* The Answer (Using modern CSS Grid for smooth height animation) */
+        .faq-answer-wrapper {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .faq-item.active .faq-answer-wrapper {
+            grid-template-rows: 1fr;
+        }
+        
+        .faq-answer {
+            overflow: hidden;
+        }
+        
+        .faq-answer p {
+            padding: 0 25px 25px 25px;
+            margin: 0;
+            color: #cccccc;
+            font-size: 16px;
+            line-height: 1.7;
+            opacity: 0;
+            transform: translateY(-10px); /* Slight slide-down inside the container */
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .faq-item.active .faq-answer p {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.1s; /* Delays text appearance until box opens */
+        }
 
-    .message-card h2 {
-      font-size: 28px;
-      color: #ffcc00;
-      text-align: center;
-    }
-
-    /* Footer */
-    footer {
-      background: #000000;
-      color: #ffcc00;
-      text-align: center;
-      padding: 20px;
-      margin-top: 60px;
-      border-top: 4px solid #ffcc00;
-    }
-
-    footer a {
-      color: #ffcc00;
-      text-decoration: none;
-      margin: 0 10px;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .message-card { padding: 28px; }
-    }
-  </style>
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #ffcc00;
+            font-size: 14px;
+        }
+        footer a {
+            color: #ffcc00;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        footer a:hover {
+            color: #fff;
+        }
+    </style>
 </head>
-
 <body>
 
-  <div class="navbar">
-    <h1>🚕 Meter-Sathi</h1>
-    <div class="nav-links">
-      <a href="welcome.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="services.html">Services</a>
-      <a href="faq.html">FAQ</a>
-      <a href="contact.html">Contact</a>
-    </div>
-  </div>
+    <header>
+        <a href="#" class="logo">🚕 Meter-Sathi</a>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Services</a>
+            <a href="#">FAQ</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+    <hr class="divider">
 
-  <div class="container">
-    <div class="message-card">
-      <h1>Frequently Asked Questions</h1>
+    <div class="faq-container">
+        <h1>Frequently Asked Questions</h1>
 
         <div class="faq-item">
             <button class="faq-question">
@@ -179,23 +241,34 @@
         </div>
 
     </div>
-  </div>
 
-  <footer>
-    <p>© 2026 Meter-Sathi | 
-      <a href="#">Privacy Policy</a> | 
-      <a href="#">Terms of Service</a>
-    </p>
-  </footer>
+    <hr class="divider">
+    
+    <footer>
+        &copy; 2026 Meter-Sathi | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
+    </footer>
 
-  <script>
-    (function () {
-      const links = document.querySelectorAll('.nav-links a');
-      const current = location.pathname.split('/').pop() || 'welcome.html';
-      links.forEach(a => {
-        if (a.getAttribute('href') === current) a.classList.add('active');
-      });
-    })();
-  </script>
+    <script>
+        const faqItems = document.querySelectorAll('.faq-item');
+
+        faqItems.forEach(item => {
+            const questionBtn = item.querySelector('.faq-question');
+
+            questionBtn.addEventListener('click', () => {
+                // Optional: This part closes other open FAQs when you click a new one.
+                // If you want multiple to stay open at once, delete the next 5 lines.
+                const isActive = item.classList.contains('active');
+                faqItems.forEach(otherItem => {
+                    otherItem.classList.remove('active');
+                });
+
+                // Toggle the clicked item
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+
 </body>
-</html>
+</html> 

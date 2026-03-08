@@ -14,12 +14,14 @@
             padding: 0;
         }
 
-        /* Navigation Bar */
+        /* Navigation Bar (updated to match index.html pill hover style) */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 40px;
+            padding: 15px 40px;
+            background: #000000;
+            border-bottom: 4px solid #ffcc00;
         }
         .logo {
             font-size: 24px;
@@ -27,15 +29,22 @@
             color: #ffcc00;
             text-decoration: none;
         }
+        nav {
+            display: flex;
+            gap: 10px;
+        }
         nav a {
-            color: #ffcc00;
             text-decoration: none;
-            margin-left: 25px;
-            font-size: 16px;
-            transition: color 0.3s;
+            color: #ffcc00;
+            margin: 0 10px;
+            padding: 8px 15px;
+            border-radius: 20px; /* pill shape */
+            transition: 0.3s;
+            font-weight: 500;
         }
         nav a:hover {
-            color: #fff;
+            background-color: #ffcc00;
+            color: #000000;
         }
 
         /* Divider Lines */
@@ -168,11 +177,11 @@
     <header>
         <a href="#" class="logo">🚕 Meter-Sathi</a>
         <nav>
-            <a href="#">Home</a>
-            <a href="#">About</a>
-            <a href="#">Services</a>
-            <a href="#">FAQ</a>
-            <a href="#">Contact</a>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Contact</a>
         </nav>
     </header>
     <hr class="divider">
@@ -271,4 +280,4 @@
     </script>
 
 </body>
-</html> 
+</html>

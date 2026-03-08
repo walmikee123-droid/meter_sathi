@@ -5,49 +5,125 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Meter-Sathi — Ride Tracker</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial; }
-    body { background: linear-gradient(135deg,#000,#1c1c1c); color:#fff; min-height:100vh; display:flex; flex-direction:column; }
-    .navbar { display:flex; justify-content:space-between; align-items:center; padding:14px 24px; background:#000; border-bottom:4px solid #ffcc00; }
-    .brand { color:#ffcc00; font-weight:800; font-size:20px; display:flex; gap:12px; align-items:center; }
-    /* Restored nav button styles as earlier */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #000000, #1c1c1c);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: #000000;
+      border-bottom: 4px solid #ffcc00;
+    }
+
+    .navbar h1 {
+      color: #ffcc00;
+      font-size: 24px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
     .nav-links { display:flex; gap:10px; }
-    .nav-links a { color:#ffcc00; text-decoration:none; padding:6px 12px; border-radius:18px; font-weight:600; transition:background .15s ease; }
-    .nav-links a:hover { background: rgba(255,204,0,0.08); }
-    .container { max-width:980px; margin:28px auto; width:100%; padding:0 18px; flex:1; }
-    .card { background:#111; border:2px solid #ffcc00; border-radius:14px; padding:18px; box-shadow:0 10px 30px rgba(255,204,0,0.08); }
+    .nav-links a {
+      text-decoration: none;
+      color: #ffcc00;
+      margin: 0 10px;
+      padding: 8px 15px;
+      border-radius: 20px;
+      transition: 0.3s;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      background-color: #ffcc00;
+      color: #000000;
+    }
+
+    /* Main Container */
+    .container {
+      padding: 60px 20px;
+      text-align: center;
+      max-width: 980px;
+      margin: 28px auto;
+      width: 100%;
+      flex: 1;
+    }
+
+    .card {
+      background:#111;
+      border:2px solid #ffcc00;
+      border-radius:14px;
+      padding:18px;
+      box-shadow:0 10px 30px rgba(255,204,0,0.08);
+    }
+
     .card h1 { color:#ffcc00; font-size:22px; margin-bottom:12px; }
-    .controls { display:flex; gap:12px; flex-wrap:wrap; margin:12px 0; }
+
+    .controls { display:flex; gap:12px; flex-wrap:wrap; margin:12px 0; align-items:center; }
+
     .btn { padding:10px 16px; border-radius:10px; border:none; cursor:pointer; font-weight:700; }
     .btn.start { background:#28a745; color:#fff; }
     .btn.end { background:#dc3545; color:#fff; }
     .btn.reset { background:#ffc107; color:#000; }
     .btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+
     .status-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:12px; margin-top:12px; }
     .status { background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:12px; border-radius:10px; text-align:center; border:1px solid rgba(255,215,0,0.06); }
     .status h3 { color:#ffd966; font-size:13px; margin-bottom:6px; font-weight:700; }
     .status p { font-size:20px; font-weight:800; color:#fff; margin:0; }
+
     .fare-summary { margin-top:14px; display:flex; gap:12px; flex-wrap:wrap; align-items:stretch; }
     .summary-box { background:#0f0f0f; border-radius:10px; padding:12px; border:1px solid rgba(255,204,0,0.06); min-width:160px; flex:1; text-align:center; }
     .summary-box h4 { color:#ffd966; font-size:13px; margin-bottom:6px; font-weight:700; }
     .summary-box p { font-size:18px; font-weight:800; color:#fff; margin:0; }
-    .input-row { margin-top:12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+    .input-row { margin-top:12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:center; }
     input[type="text"], input[type="number"] { padding:8px 10px; border-radius:8px; border:1px solid rgba(255,204,0,0.12); background:#0b0b0b; color:#fff; width:180px; }
     label { color:#ffd966; font-weight:700; }
+
     .note { margin-top:12px; color:#ddd; font-size:13px; }
     .notice { margin-top:12px; background:#1a1a1a; border-left:4px solid #ffcc00; padding:12px; border-radius:8px; color:#fff; font-size:13px; }
     .notice p { margin:6px 0; color:#ddd; }
-    footer { background:#000; color:#ffcc00; text-align:center; padding:12px; border-top:4px solid #ffcc00; margin-top:18px; }
-    @media (max-width:640px){ .card h1{font-size:18px} .status p{font-size:18px} input[type="number"]{width:140px} .fare-summary{flex-direction:column} }
+
+    footer {
+      background: #000000;
+      color: #ffcc00;
+      text-align: center;
+      padding: 12px;
+      border-top: 4px solid #ffcc00;
+      margin-top: 18px;
+    }
+
+    @media (max-width:640px){
+      .card h1{font-size:18px}
+      .status p{font-size:18px}
+      input[type="number"]{width:140px}
+      .fare-summary{flex-direction:column}
+      .navbar { padding: 12px 18px; }
+      .navbar h1 { font-size: 18px; }
+    }
   </style>
 </head>
 <body>
   <header class="navbar" role="navigation" aria-label="Main navigation">
-    <div class="brand">
-      <span>🚕 Meter-Sathi</span>
-      <!-- Current mode badge removed as requested -->
-    </div>
+    <h1>🚕 Meter-Sathi</h1>
     <nav class="nav-links" role="menubar" aria-label="Primary">
-      <a href="welcome.html">Home</a>
+      <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="services.html">Services</a>
       <a href="faq.html">FAQ</a>
@@ -63,12 +139,11 @@
         <button id="startBtn" class="btn start">Start Ride</button>
         <button id="endBtn" class="btn end" disabled>End Ride</button>
         <button id="resetBtn" class="btn reset" disabled>Reset</button>
-        <!-- Ride started label removed as requested -->
       </div>
 
       <div class="notice" id="noticeBox" aria-live="polite">
         <p><strong>"The minimum payable fare is ₹26 for distances from 0 km up to 1.49 km, as the base distance is 1.5 km."</strong></p>
-        <p>Based on MMRTA Official Tariff. Day window: 05:00–00:00. Night window: 00:00–05:00.</p>
+        <p>"Based on MMRTA Official Tariff. Day window: 05:00–00:00. Night window: 00:00–05:00."</p>
       </div>
 
       <div class="status-grid" aria-live="polite">

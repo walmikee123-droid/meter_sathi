@@ -3,334 +3,519 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Meter-Sathi Ride Auditor</title>
+  <title>Meter-Sathi — Ride Tracker</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    html,body { height:100%; }
-    body {
-      background: linear-gradient(135deg, #000000, #111111);
-      color: #ffffff;
-      min-height: 100vh;
-      display:flex;
-      flex-direction:column;
-    }
-    .navbar { display:flex; justify-content:center; background:#000; padding:18px 0; border-bottom:4px solid #FFD700; box-shadow:0 4px 10px rgba(255,215,0,0.2); }
-    .nav-links { display:flex; gap:30px; }
-    .nav-links a { padding:8px 18px; border-radius:25px; text-decoration:none; color:#FFD700; font-weight:700; letter-spacing:1px; transition:all .3s; }
-    .nav-links a:hover { background:#FFD700; color:#000; transform:scale(1.05); }
-
-    .container { text-align:center; padding:40px 20px; max-width:980px; margin:18px auto; flex:1; }
-    .brand-title { font-size:48px; font-weight:800; color:#FFD700; text-shadow:0 0 15px rgba(255,215,0,0.5); margin-bottom:8px; }
-    .brand-subtitle { font-size:18px; color:#ddd; margin-bottom:20px; }
-
-    .controls { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:14px; }
-    button { margin:8px; padding:12px 20px; border:none; border-radius:30px; cursor:pointer; font-size:15px; font-weight:800; transition:all .18s; }
-    button.start { background:#2E7D32; color:#fff; }
-    button.end { background:#C62828; color:#fff; }
-    button.check { background:#FFD700; color:#000; }
-    button:hover { transform:translateY(-3px); box-shadow:0 5px 15px rgba(255,215,0,0.18); }
-
-    .meter-row { margin-top:12px; display:flex; gap:12px; justify-content:center; align-items:center; flex-wrap:wrap; }
-    label { color:#FFD700; font-weight:700; display:block; }
-    input { padding:12px; margin:6px; border-radius:25px; border:2px solid #FFD700; width:240px; background:#1a1a1a; color:#fff; text-align:center; font-size:15px; transition:.18s; }
-    input:focus { outline:none; box-shadow:0 0 10px #FFD700; }
-    input::placeholder { color:#aaaaaa; }
-
-    .results {
-      margin-top:18px; font-weight:700; color:#FFD700; font-size:17px;
-      display:inline-block; text-align:left; min-width:320px; background:rgba(255,255,255,0.03);
-      padding:14px 18px; border-radius:12px;
-    }
-    .results p { margin:8px 0; color:#FFD700; font-weight:700; }
-    .results p span { color:#fff; margin-left:8px; font-weight:800; }
-
-    .message { margin-top:14px; font-size:16px; min-height:22px; color:#fff; font-weight:700; }
-
-    footer { background:#000; color:#FFD700; text-align:center; padding:18px; margin-top:18px; border-top:4px solid #FFD700; letter-spacing:1px; }
-
-    #toastContainer { position:fixed; right:18px; bottom:18px; z-index:9999; pointer-events:none; }
-    .toast { background:rgba(33,33,33,0.95); color:#fff; padding:10px 14px; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,0.4); margin-top:8px; font-weight:700; pointer-events:auto; transform:translateY(8px); opacity:0; transition:opacity .18s, transform .18s; }
-    .toast.show { opacity:1; transform:translateY(0); }
-
-    @media (max-width:768px) {
-      .brand-title { font-size:36px; }
-      .nav-links { flex-direction:column; gap:12px; }
-      button { width:80%; }
-      input { width:80%; }
-      .results { min-width:260px; width:92%; }
-    }
-
-    .overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; padding:20px; z-index:60; }
-    .modal { width:100%; max-width:420px; background:#111; border-radius:12px; padding:20px; box-shadow:0 20px 40px rgba(0,0,0,0.6); text-align:center; color:#fff; position:relative; }
-    .modal h3 { margin:0 0 8px; font-size:20px; color:#FFD700; }
-    .vehicle-grid { display:flex; gap:12px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
-    .vehicle { min-width:140px; padding:14px; border-radius:10px; cursor:pointer; border:2px solid transparent; transition:transform .12s, box-shadow .12s, border-color .12s; background:linear-gradient(180deg,#1a1a1a,#0f0f0f); color:#fff; }
-    .vehicle:hover { transform:translateY(-6px); box-shadow:0 12px 30px rgba(0,0,0,0.5); border-color:#FFD700; }
-    .close-x { position:absolute; right:12px; top:10px; background:transparent; border:0; font-size:20px; color:#ccc; cursor:pointer; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial; }
+    body { background: linear-gradient(135deg,#000,#1c1c1c); color:#fff; min-height:100vh; display:flex; flex-direction:column; }
+    .navbar { display:flex; justify-content:space-between; align-items:center; padding:14px 24px; background:#000; border-bottom:4px solid #ffcc00; }
+    .brand { color:#ffcc00; font-weight:800; font-size:20px; display:flex; gap:12px; align-items:center; }
+    /* Restored nav button styles as earlier */
+    .nav-links { display:flex; gap:10px; }
+    .nav-links a { color:#ffcc00; text-decoration:none; padding:6px 12px; border-radius:18px; font-weight:600; transition:background .15s ease; }
+    .nav-links a:hover { background: rgba(255,204,0,0.08); }
+    .container { max-width:980px; margin:28px auto; width:100%; padding:0 18px; flex:1; }
+    .card { background:#111; border:2px solid #ffcc00; border-radius:14px; padding:18px; box-shadow:0 10px 30px rgba(255,204,0,0.08); }
+    .card h1 { color:#ffcc00; font-size:22px; margin-bottom:12px; }
+    .controls { display:flex; gap:12px; flex-wrap:wrap; margin:12px 0; }
+    .btn { padding:10px 16px; border-radius:10px; border:none; cursor:pointer; font-weight:700; }
+    .btn.start { background:#28a745; color:#fff; }
+    .btn.end { background:#dc3545; color:#fff; }
+    .btn.reset { background:#ffc107; color:#000; }
+    .btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+    .status-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:12px; margin-top:12px; }
+    .status { background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:12px; border-radius:10px; text-align:center; border:1px solid rgba(255,215,0,0.06); }
+    .status h3 { color:#ffd966; font-size:13px; margin-bottom:6px; font-weight:700; }
+    .status p { font-size:20px; font-weight:800; color:#fff; margin:0; }
+    .fare-summary { margin-top:14px; display:flex; gap:12px; flex-wrap:wrap; align-items:stretch; }
+    .summary-box { background:#0f0f0f; border-radius:10px; padding:12px; border:1px solid rgba(255,204,0,0.06); min-width:160px; flex:1; text-align:center; }
+    .summary-box h4 { color:#ffd966; font-size:13px; margin-bottom:6px; font-weight:700; }
+    .summary-box p { font-size:18px; font-weight:800; color:#fff; margin:0; }
+    .input-row { margin-top:12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    input[type="text"], input[type="number"] { padding:8px 10px; border-radius:8px; border:1px solid rgba(255,204,0,0.12); background:#0b0b0b; color:#fff; width:180px; }
+    label { color:#ffd966; font-weight:700; }
+    .note { margin-top:12px; color:#ddd; font-size:13px; }
+    .notice { margin-top:12px; background:#1a1a1a; border-left:4px solid #ffcc00; padding:12px; border-radius:8px; color:#fff; font-size:13px; }
+    .notice p { margin:6px 0; color:#ddd; }
+    footer { background:#000; color:#ffcc00; text-align:center; padding:12px; border-top:4px solid #ffcc00; margin-top:18px; }
+    @media (max-width:640px){ .card h1{font-size:18px} .status p{font-size:18px} input[type="number"]{width:140px} .fare-summary{flex-direction:column} }
   </style>
 </head>
 <body>
-  <nav class="navbar" role="navigation" aria-label="Main navigation">
-    <div class="nav-links" role="menubar">
-      <a href="index.html" role="menuitem">Home</a>
-      <a href="about.html" role="menuitem">About</a>
-      <a href="services.html" role="menuitem">Services</a>
-      <a href="faq.html" role="menuitem">FAQ</a>
-      <a href="contact.html" role="menuitem">Contact</a>
+  <header class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="brand">
+      <span>🚕 Meter-Sathi</span>
+      <!-- Current mode badge removed as requested -->
     </div>
-  </nav>
+    <nav class="nav-links" role="menubar" aria-label="Primary">
+      <a href="welcome.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
 
   <main class="container" role="main">
-    <div class="brand-title">🚕 Meter-Sathi</div>
-    <div class="brand-subtitle">Auto / Taxi Fare Auditor</div>
+    <div class="card" role="region" aria-label="Ride tracker">
+      <h1>Ride Tracker</h1>
 
-    <div class="controls" aria-hidden="false">
-      <button class="start" id="startBtn" aria-label="Start Ride">Start Ride</button>
-      <button class="end" id="endBtn" aria-label="End Ride">End Ride</button>
-      <button class="check" id="checkBtn" aria-label="Check Fare">Check Fare</button>
-    </div>
+      <div class="controls" role="group" aria-label="Ride controls">
+        <button id="startBtn" class="btn start">Start Ride</button>
+        <button id="endBtn" class="btn end" disabled>End Ride</button>
+        <button id="resetBtn" class="btn reset" disabled>Reset</button>
+        <!-- Ride started label removed as requested -->
+      </div>
 
-    <p id="distance" style="font-weight:700; color:#dddddd;">Distance: 0.00 km</p>
+      <div class="notice" id="noticeBox" aria-live="polite">
+        <p><strong>"The minimum payable fare is ₹26 for distances from 0 km up to 1.49 km, as the base distance is 1.5 km."</strong></p>
+        <p>Based on MMRTA Official Tariff. Day window: 05:00–00:00. Night window: 00:00–05:00.</p>
+      </div>
 
-    <div class="meter-row">
-      <div style="text-align:center;">
-        <label for="meter">Meter Reading (₹):</label>
-        <input type="text" id="meter" placeholder="Enter meter fare" inputmode="decimal" autocomplete="off" aria-label="Meter reading in rupees">
+      <div class="status-grid" aria-live="polite">
+        <div class="status">
+          <h3>Distance</h3>
+          <p id="distance">0.00 km</p>
+        </div>
+
+        <div class="status">
+          <h3>Official Fare</h3>
+          <p id="officialFare">₹26.00</p>
+        </div>
+
+        <div class="status">
+          <h3>GPS Status</h3>
+          <p id="gpsStatus">Idle</p>
+        </div>
+
+        <div class="status">
+          <h3>Ride Fare (after 1.5 kms)</h3>
+          <p id="tariffFare">₹26.00</p>
+        </div>
+
+        <div class="status">
+          <h3>Day Distance</h3>
+          <p id="dayDistance">0.00 km</p>
+        </div>
+
+        <div class="status">
+          <h3>Night Distance</h3>
+          <p id="nightDistance">0.00 km</p>
+        </div>
+      </div>
+
+      <div class="input-row" aria-label="Meter fare input">
+        <label for="meterFare">Meter Fare (₹):</label>
+        <input id="meterFare" type="text" inputmode="decimal" placeholder="Enter meter fare" />
+      </div>
+
+      <div class="fare-summary" aria-hidden="false">
+        <div class="summary-box">
+          <h4>Official Fare</h4>
+          <p id="summaryOfficial">₹26.00</p>
+        </div>
+
+        <div class="summary-box">
+          <h4>Meter Fare</h4>
+          <p id="summaryMeter">₹0.00</p>
+        </div>
+
+        <div class="summary-box">
+          <h4>Difference</h4>
+          <p id="summaryDiff">₹0.00</p>
+        </div>
+
+        <div class="summary-box" id="fareStatusBox" aria-live="polite">
+          <h4>Fare Status</h4>
+          <p id="fareStatus" style="color:#ffd966">Please start and end your ride to use this service.</p>
+        </div>
       </div>
     </div>
-
-    <div class="results" aria-live="polite">
-      <p id="official">Official Fare: <span>₹26.00</span></p>
-      <p id="meterFare">Meter Fare: <span>₹0.00</span></p>
-      <p id="difference">Difference: <span>₹0.00</span></p>
-      <p id="dayDist">Day Distance: <span>0.00 km</span></p>
-      <p id="nightDist">Night Distance: <span>0.00 km</span></p>
-    </div>
-
-    <p class="message" id="message" aria-live="assertive"></p>
-    <p style="color:#FFD700; font-weight:bold; margin-top:12px;">Based on MMRTA Official Tariff 2025</p>
   </main>
 
-  <footer>
-    <a href="#" style="color:#FFD700; text-decoration:none; font-weight:700; margin-right:8px;">Privacy Policy</a>
-    <span style="color:rgba(255,215,0,0.45)">|</span>
-    <a href="#" style="color:#FFD700; text-decoration:none; font-weight:700; margin-left:8px;">Terms of Service</a>
-    <div style="margin-top:8px; font-weight:700; color:rgba(255,215,0,0.85)">© 2026 Meter-Sathi</div>
-  </footer>
-
-  <div class="overlay" id="vehicleOverlay" role="dialog" aria-modal="true" aria-labelledby="vehicleTitle">
-    <div class="modal" role="document">
-      <button class="close-x" id="closeOverlay" aria-label="Close dialog">✕</button>
-      <h3 id="vehicleTitle">Choose your vehicle</h3>
-      <p style="color:#ccc; margin:6px 0 12px; font-weight:700;">Select Auto Rickshaw or Taxi to continue</p>
-      <div class="vehicle-grid">
-        <div class="vehicle auto" id="autoOption" role="button" tabindex="0" aria-pressed="false" aria-label="Auto Rickshaw">
-          <div style="font-weight:800; margin-top:8px;">Auto Rickshaw</div>
-        </div>
-        <div class="vehicle taxi" id="taxiOption" role="button" tabindex="0" aria-pressed="false" aria-label="Taxi">
-          <div style="font-weight:800; margin-top:8px;">Taxi</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+  <footer role="contentinfo">© 2026 Meter-Sathi</footer>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const startBtn = document.getElementById('startBtn');
-      const endBtn = document.getElementById('endBtn');
-      const checkBtn = document.getElementById('checkBtn');
-      const meterInput = document.getElementById('meter');
-      const distanceEl = document.getElementById('distance');
-      const officialEl = document.getElementById('official');
-      const meterFareEl = document.getElementById('meterFare');
-      const diffEl = document.getElementById('difference');
-      const dayDistEl = document.getElementById('dayDist');
-      const nightDistEl = document.getElementById('nightDist');
-      const messageEl = document.getElementById('message');
-      const overlay = document.getElementById('vehicleOverlay');
-      const closeOverlay = document.getElementById('closeOverlay');
-      const autoOption = document.getElementById('autoOption');
-      const taxiOption = document.getElementById('taxiOption');
+    /* Configuration */
+    const BASE_FARE = 26.0;
+    const BASE_DISTANCE_M = 1500;            // meters
+    const PER_KM_RATE = 17.14;               // per km after base
+    const MIN_MOVE_METERS = 8;               // jitter threshold
+    const MAX_ACCEPTABLE_ACCURACY = 60;      // meters considered acceptable
+    const POOR_FIX_LIMIT = 3;                // consecutive poor fixes before showing waiting
+    const HARD_ACCURACY_LIMIT = 120;         // immediate "very poor" threshold
+    const FARE_TOLERANCE = 0.00;             // tolerance set to 0
 
-      let watchId = undefined;
-      let startCoords = null;
-      let totalDistance = 0.00;
-      let rideStarted = false;
-      let rideEnded = false;
-      let dayDistance = 0.00;
-      let nightDistance = 0.00;
+    /* UI elements */
+    const startBtn = document.getElementById('startBtn');
+    const endBtn = document.getElementById('endBtn');
+    const resetBtn = document.getElementById('resetBtn');
 
-      function toFixed2(n){ return Number(n).toFixed(2); }
+    const distanceEl = document.getElementById('distance');
+    const officialFareEl = document.getElementById('officialFare');
+    const gpsStatusEl = document.getElementById('gpsStatus');
+    const tariffFareEl = document.getElementById('tariffFare');
+    const dayDistanceEl = document.getElementById('dayDistance');
+    const nightDistanceEl = document.getElementById('nightDistance');
 
-      function showToast(text, timeout = 3000) {
-        const container = document.getElementById('toastContainer');
-        if (!container) return;
-        const t = document.createElement('div');
-        t.className = 'toast';
-        t.textContent = text;
-        container.appendChild(t);
-        requestAnimationFrame(() => t.classList.add('show'));
-        setTimeout(() => { t.classList.remove('show'); setTimeout(() => { try { container.removeChild(t); } catch(e){} }, 220); }, timeout);
+    const meterFareInput = document.getElementById('meterFare');
+    const summaryOfficial = document.getElementById('summaryOfficial');
+    const summaryMeter = document.getElementById('summaryMeter');
+    const summaryDiff = document.getElementById('summaryDiff');
+    const fareStatusEl = document.getElementById('fareStatus');
+    const fareStatusBox = document.getElementById('fareStatusBox');
+
+    /* Tracking state */
+    let watchId = null;
+    let gpsPoints = []; // ordered array of {lat, lon, timestamp}
+    let totalDistanceMeters = 0;
+    let poorFixCount = 0;
+    let rideStartTime = null;
+    let rideActive = false;
+    let rideSummary = null; // computed breakdown after end
+
+    /* Helpers */
+    function toKm(m) { return m / 1000; }
+    function fmtKm(m) { return toKm(m).toFixed(2); }
+    function fmtCurrency(x) { return '₹' + Number(x).toFixed(2); }
+
+    function haversineDistance(lat1, lon1, lat2, lon2) {
+      const toRad = d => d * Math.PI / 180;
+      const R = 6371000;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    /* Mode helpers */
+    function getModeAtTimestamp(ts) {
+      const d = new Date(ts);
+      const h = d.getHours();
+      return (h >= 0 && h < 5) ? 'night' : 'day';
+    }
+
+    function getNextBoundaryAfter(ts) {
+      const d = new Date(ts);
+      const y = d.getFullYear(), m = d.getMonth(), day = d.getDate();
+      let nextMid = new Date(y, m, day, 0, 0, 0, 0);
+      if (nextMid <= d) nextMid.setDate(nextMid.getDate() + 1);
+      let nextFive = new Date(y, m, day, 5, 0, 0, 0);
+      if (nextFive <= d) nextFive.setDate(nextFive.getDate() + 1);
+      return Math.min(nextMid.getTime(), nextFive.getTime());
+    }
+
+    function splitSegmentAtBoundaries(p1, p2, segMeters) {
+      const t1 = p1.timestamp;
+      const t2 = p2.timestamp;
+      const segMs = t2 - t1;
+      if (segMs <= 0 || segMeters <= 0) {
+        return [{ start: t1, end: t2, meters: segMeters, mode: getModeAtTimestamp(t1) }];
+      }
+      let parts = [];
+      let cursor = t1;
+      while (cursor < t2 - 1) {
+        const nextBoundary = getNextBoundaryAfter(cursor);
+        const subEnd = Math.min(nextBoundary, t2);
+        const subMs = subEnd - cursor;
+        const subMeters = segMeters * (subMs / segMs);
+        parts.push({ start: cursor, end: subEnd, meters: subMeters, mode: getModeAtTimestamp(cursor) });
+        cursor = subEnd;
+      }
+      if (cursor < t2) {
+        const remMs = t2 - cursor;
+        const remMeters = segMeters * (remMs / segMs);
+        parts.push({ start: cursor, end: t2, meters: remMeters, mode: getModeAtTimestamp(cursor) });
+      }
+      return parts;
+    }
+
+    function computeRideBreakdown(points) {
+      if (!points || points.length < 2) {
+        return {
+          totalMeters: 0,
+          dayMeters: 0,
+          nightMeters: 0,
+          baseAllocatedDay: 0,
+          baseAllocatedNight: 0,
+          distanceFareDay: 0,
+          distanceFareNight: 0,
+          rawDayFare: 0,
+          rawNightFare: 0,
+          finalDayFare: 0,
+          finalNightFare: 0,
+          finalFare: BASE_FARE,
+          segments: []
+        };
       }
 
-      function showInlineMessage(text, color = '#FFD700') {
-        messageEl.style.color = color;
-        messageEl.innerText = text;
-      }
-
-      function clearInlineMessage() {
-        messageEl.innerText = '';
-      }
-
-      function getDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371;
-        const dLat = (lat2 - lat1) * Math.PI / 180;
-        const dLon = (lon2 - lon1) * Math.PI / 180;
-        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                  Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
-                  Math.sin(dLon/2) * Math.sin(dLon/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return R * c;
-      }
-
-      function updateUI() {
-        distanceEl.innerText = "Distance: " + toFixed2(totalDistance) + " km";
-        dayDistEl.innerHTML = "Day Distance: <span>" + toFixed2(dayDistance) + " km</span>";
-        nightDistEl.innerHTML = "Night Distance: <span>" + toFixed2(nightDistance) + " km</span>";
-      }
-
-      // SMART CALCULATION LOGIC
-      function calculateOfficialFare() {
-        let baseFare = 26.00;
-        let ratePerKm = 17.14;
-        let finalFare = baseFare;
-
-        // If distance > 1.5km, calculate extra
-        if (totalDistance > 1.5) {
-          let extraDistance = totalDistance - 1.5;
-          finalFare = baseFare + (extraDistance * ratePerKm);
+      let subsegments = [];
+      let totalMeters = 0;
+      for (let i = 0; i < points.length - 1; i++) {
+        const p1 = points[i];
+        const p2 = points[i+1];
+        const d = haversineDistance(p1.lat, p1.lon, p2.lat, p2.lon);
+        if (d < 0.0001) continue;
+        const parts = splitSegmentAtBoundaries(p1, p2, d);
+        for (const part of parts) {
+          subsegments.push(part);
+          totalMeters += part.meters;
         }
-        
-        // Return rounded to 2 decimals
-        return Math.round(finalFare * 100) / 100;
       }
 
-      function resetApp() {
-        if (typeof watchId !== 'undefined') {
-          try { navigator.geolocation.clearWatch(watchId); } catch(e) {}
-          watchId = undefined;
-        }
-        startCoords = null;
-        totalDistance = 0.00;
-        dayDistance = 0.00;
-        nightDistance = 0.00;
-        rideStarted = false;
-        rideEnded = false;
-        meterInput.value = '';
-        officialEl.innerHTML = "Official Fare: <span>₹26.00</span>";
-        meterFareEl.innerHTML = "Meter Fare: <span>₹0.00</span>";
-        diffEl.innerHTML = "Difference: <span>₹0.00</span>";
-        clearInlineMessage();
-        updateUI();
+      let dayMeters = 0, nightMeters = 0;
+      for (const s of subsegments) {
+        if (s.mode === 'day') dayMeters += s.meters;
+        else nightMeters += s.meters;
       }
 
-      function geoErrorHandler(err) {
-        console.warn('Geolocation error', err);
-        if (!messageEl) return;
-        if (err && err.code === 1) {
-          showInlineMessage('Location access denied. Please enable location.', '#E53935');
+      let remainingBase = BASE_DISTANCE_M;
+      let baseAllocatedDay = 0, baseAllocatedNight = 0;
+      for (const s of subsegments) {
+        if (remainingBase <= 0) break;
+        const alloc = Math.min(remainingBase, s.meters);
+        if (s.mode === 'day') baseAllocatedDay += alloc;
+        else baseAllocatedNight += alloc;
+        remainingBase -= alloc;
+      }
+
+      const chargeableDayMeters = Math.max(0, dayMeters - baseAllocatedDay);
+      const chargeableNightMeters = Math.max(0, nightMeters - baseAllocatedNight);
+
+      const distanceFareDay = (chargeableDayMeters / 1000) * PER_KM_RATE;
+      const distanceFareNight = (chargeableNightMeters / 1000) * PER_KM_RATE;
+
+      const baseShareDay = BASE_FARE * (baseAllocatedDay / BASE_DISTANCE_M);
+      const baseShareNight = BASE_FARE * (baseAllocatedNight / BASE_DISTANCE_M);
+
+      const rawDayFare = baseShareDay + distanceFareDay;
+      const rawNightFare = baseShareNight + distanceFareNight;
+
+      const finalNightFare = rawNightFare * 1.25;
+      const finalDayFare = rawDayFare;
+
+      const finalFare = finalDayFare + finalNightFare;
+
+      return {
+        totalMeters,
+        dayMeters,
+        nightMeters,
+        baseAllocatedDay,
+        baseAllocatedNight,
+        chargeableDayMeters,
+        chargeableNightMeters,
+        distanceFareDay,
+        distanceFareNight,
+        baseShareDay,
+        baseShareNight,
+        rawDayFare,
+        rawNightFare,
+        finalDayFare,
+        finalNightFare,
+        finalFare,
+        segments: subsegments
+      };
+    }
+
+    function updateDisplays() {
+      distanceEl.textContent = fmtKm(totalDistanceMeters) + ' km';
+      officialFareEl.textContent = fmtCurrency(BASE_FARE);
+
+      const tariff = rideSummary ? rideSummary.finalFare : BASE_FARE;
+      tariffFareEl.textContent = fmtCurrency(tariff);
+
+      const dayMeters = rideSummary ? rideSummary.dayMeters : 0;
+      const nightMeters = rideSummary ? rideSummary.nightMeters : 0;
+      dayDistanceEl.textContent = fmtKm(dayMeters) + ' km';
+      nightDistanceEl.textContent = fmtKm(nightMeters) + ' km';
+
+      summaryOfficial.textContent = fmtCurrency(BASE_FARE);
+
+      const meterRaw = (meterFareInput.value || '').trim();
+      const meterVal = meterRaw === '' ? 0 : parseFloat(meterRaw) || 0;
+      summaryMeter.textContent = fmtCurrency(meterVal);
+      summaryDiff.textContent = fmtCurrency(meterVal - tariff);
+
+      if (meterFareInput.disabled) {
+        fareStatusEl.textContent = 'Please start and end your ride to use this service.';
+        fareStatusEl.style.color = '#ffd966';
+        fareStatusBox.style.borderColor = 'rgba(255,204,0,0.06)';
+        return;
+      }
+
+      if (!meterRaw) {
+        fareStatusEl.textContent = 'Enter meter fare';
+        fareStatusEl.style.color = '#ffd966';
+        fareStatusBox.style.borderColor = 'rgba(255,204,0,0.06)';
+        return;
+      }
+
+      const diff = meterVal - tariff;
+      if (Math.abs(diff) <= FARE_TOLERANCE) {
+        fareStatusEl.textContent = 'Enjoy a fair and transparent fare.';
+        fareStatusEl.style.color = '#28a745';
+        fareStatusBox.style.borderColor = 'rgba(40,167,69,0.12)';
+      } else if (diff > FARE_TOLERANCE) {
+        fareStatusEl.textContent = `It seems you are being overcharged by ₹${diff.toFixed(2)}.`;
+        fareStatusEl.style.color = '#dc3545';
+        fareStatusBox.style.borderColor = 'rgba(220,53,69,0.12)';
+      } else {
+        fareStatusEl.textContent = 'Enjoy a fair and transparent fare.';
+        fareStatusEl.style.color = '#28a745';
+        fareStatusBox.style.borderColor = 'rgba(40,167,69,0.12)';
+      }
+    }
+
+    function startRide() {
+      if (!('geolocation' in navigator)) {
+        gpsStatusEl.textContent = 'Geolocation not supported';
+        return;
+      }
+      gpsPoints = [];
+      totalDistanceMeters = 0;
+      rideSummary = null;
+      rideStartTime = Date.now();
+      rideActive = true;
+      meterFareInput.value = '';
+      meterFareInput.disabled = true;
+      updateDisplays();
+
+      gpsStatusEl.textContent = 'Requesting permission...';
+      startBtn.disabled = true;
+      endBtn.disabled = false;
+      resetBtn.disabled = true;
+
+      poorFixCount = 0;
+      watchId = navigator.geolocation.watchPosition(onPosition, onError, {
+        enableHighAccuracy: true,
+        maximumAge: 1000,
+        timeout: 10000
+      });
+    }
+
+    function endRide() {
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+      }
+      gpsStatusEl.textContent = 'Stopped';
+      startBtn.disabled = false;
+      endBtn.disabled = true;
+      resetBtn.disabled = false;
+
+      rideActive = false;
+
+      rideSummary = computeRideBreakdown(gpsPoints);
+      totalDistanceMeters = rideSummary.totalMeters;
+
+      meterFareInput.disabled = false;
+      updateDisplays();
+    }
+
+    function resetRide() {
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+      }
+      gpsPoints = [];
+      totalDistanceMeters = 0;
+      rideSummary = null;
+      rideStartTime = null;
+      rideActive = false;
+      meterFareInput.value = '';
+      meterFareInput.disabled = true;
+      updateDisplays();
+      gpsStatusEl.textContent = 'Idle';
+      resetBtn.disabled = true;
+    }
+
+    function onPosition(pos) {
+      const { latitude, longitude, accuracy } = pos.coords;
+      const ts = pos.timestamp || Date.now();
+
+      if (accuracy > HARD_ACCURACY_LIMIT) {
+        poorFixCount++;
+        if (poorFixCount >= POOR_FIX_LIMIT) {
+          gpsStatusEl.textContent = `Low accuracy (${Math.round(accuracy)} m) — waiting`;
         } else {
-          showInlineMessage('Unable to access location.', '#E53935');
+          gpsStatusEl.textContent = `Low accuracy (${Math.round(accuracy)} m) — waiting`;
+        }
+        if (gpsPoints.length === 0 && accuracy <= HARD_ACCURACY_LIMIT) {
+        } else {
+          return;
+        }
+      } else if (accuracy <= MAX_ACCEPTABLE_ACCURACY) {
+        poorFixCount = 0;
+        gpsStatusEl.textContent = `OK (accuracy ${Math.round(accuracy)} m)`;
+      } else {
+        poorFixCount++;
+        if (poorFixCount < POOR_FIX_LIMIT) {
+          gpsStatusEl.textContent = `OK (accuracy ${Math.round(accuracy)} m)`;
+        } else {
+          gpsStatusEl.textContent = `Low accuracy (${Math.round(accuracy)} m) — waiting`;
         }
       }
 
-      startBtn.addEventListener('click', function () {
-        resetApp();
-        rideStarted = true;
-        rideEnded = false;
-        if (!navigator.geolocation) {
-          showInlineMessage('Geolocation not supported.', '#E53935');
-          return;
+      const current = { lat: latitude, lon: longitude, timestamp: ts };
+
+      if (gpsPoints.length === 0) {
+        gpsPoints.push(current);
+        updateDisplays();
+        return;
+      }
+
+      const last = gpsPoints[gpsPoints.length - 1];
+      const d = haversineDistance(last.lat, last.lon, current.lat, current.lon);
+      if (d >= MIN_MOVE_METERS) {
+        gpsPoints.push(current);
+        totalDistanceMeters += d;
+        rideSummary = computeRideBreakdown(gpsPoints);
+        updateDisplays();
+      }
+    }
+
+    function onError(err) {
+      gpsStatusEl.textContent = `Error: ${err.message}`;
+      if (err.code === 1) {
+        if (watchId !== null) {
+          navigator.geolocation.clearWatch(watchId);
+          watchId = null;
         }
+        startBtn.disabled = false;
+        endBtn.disabled = true;
+        resetBtn.disabled = false;
+      }
+    }
 
-        navigator.geolocation.getCurrentPosition(function(pos){
-          startCoords = pos.coords;
-          clearInlineMessage();
-          showToast('Tracking started.');
-        }, geoErrorHandler, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 });
-
-        watchId = navigator.geolocation.watchPosition(function(position){
-          if (!startCoords) { startCoords = position.coords; return; }
-          const lat1 = startCoords.latitude;
-          const lon1 = startCoords.longitude;
-          const lat2 = position.coords.latitude;
-          const lon2 = position.coords.longitude;
-          const dist = getDistance(lat1, lon1, lat2, lon2);
-
-          const hour = new Date().getHours();
-          if (hour >= 0 && hour < 5) nightDistance += dist;
-          else dayDistance += dist;
-
-          totalDistance = dayDistance + nightDistance;
-          startCoords = position.coords;
-          updateUI();
-          
-          // KEEPING IT AS ₹26.00 ON SCREEN WHILE RIDING
-          officialEl.innerHTML = "Official Fare: <span>₹26.00</span>";
-        }, geoErrorHandler, { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 });
-      });
-
-      endBtn.addEventListener('click', function () {
-        if (typeof watchId !== 'undefined') {
-          try { navigator.geolocation.clearWatch(watchId); } catch(e) {}
-          watchId = undefined;
-        }
-        rideEnded = true;
-        showToast("Ride ended. Total Distance: " + toFixed2(totalDistance) + " km");
-        
-        // CALCULATE FINAL PRICE ON END
-        const finalOfficialFare = calculateOfficialFare();
-        officialEl.innerHTML = "Official Fare: <span>₹" + finalOfficialFare.toFixed(2) + "</span>";
-      });
-
-      checkBtn.addEventListener('click', function () {
-        if (!rideStarted || !rideEnded) {
-          showToast("Please begin and end the ride before checking fare.");
-          return;
-        }
-        const meterInputVal = meterInput.value.trim();
-        const finalOfficialFare = calculateOfficialFare();
-        const meterValue = parseFloat(meterInputVal) || 0;
-        const difference = meterValue - finalOfficialFare;
-
-        officialEl.innerHTML = "Official Fare: <span>₹" + finalOfficialFare.toFixed(2) + "</span>";
-        meterFareEl.innerHTML = "Meter Fare: <span>₹" + meterValue.toFixed(2) + "</span>";
-        diffEl.innerHTML = "Difference: <span>₹" + difference.toFixed(2) + "</span>";
-
-        if (difference > 0) showInlineMessage("You are being overcharged by ₹" + difference.toFixed(2), '#FFD700');
-        else if (difference < 0) showInlineMessage("Meter shows less than official fare.", '#FFD700');
-        else showInlineMessage("Fair Fare!", '#00E676');
-      });
-
-      meterInput.addEventListener('keypress', function (e) {
-        const char = e.key;
-        if (!/^[0-9.]$/.test(char)) e.preventDefault();
-        if (char === '.' && this.value.includes('.')) e.preventDefault();
-      });
-      meterInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') { e.preventDefault(); checkBtn.click(); }
-      });
-
-      function closeOverlayFn(){ overlay.style.display = 'none'; }
-      closeOverlay.addEventListener('click', closeOverlayFn);
-      overlay.addEventListener('click', function(e){ if(e.target === overlay) closeOverlayFn(); });
-      autoOption.addEventListener('click', function(){ overlay.style.display='none'; window.location.href='auto.html'; });
-      taxiOption.addEventListener('click', function(){ overlay.style.display='none'; window.location.href='taxi.html'; });
-
-      resetApp();
+    meterFareInput.addEventListener('input', (e) => {
+      if (meterFareInput.disabled) {
+        meterFareInput.value = '';
+        fareStatusEl.textContent = 'Please start and end your ride to use this service.';
+        fareStatusEl.style.color = '#ffd966';
+        fareStatusBox.style.borderColor = 'rgba(255,204,0,0.06)';
+        return;
+      }
+      let v = meterFareInput.value || '';
+      v = v.replace(/[^\d.]/g, '');
+      const parts = v.split('.');
+      if (parts.length > 2) v = parts[0] + '.' + parts.slice(1).join('');
+      if (v.includes('.')) {
+        const [intPart, decPart] = v.split('.');
+        v = intPart + '.' + (decPart || '').slice(0,2);
+      }
+      if (v.length > 1 && v[0] === '0' && v[1] !== '.') {
+        v = String(Number(v));
+      }
+      meterFareInput.value = v;
+      updateDisplays();
     });
+
+    meterFareInput.disabled = true;
+    updateDisplays();
+
+    startBtn.addEventListener('click', startRide);
+    endBtn.addEventListener('click', endRide);
+    resetBtn.addEventListener('click', resetRide);
   </script>
 </body>
 </html>

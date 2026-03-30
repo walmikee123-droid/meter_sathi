@@ -80,6 +80,7 @@
     .btn.start { background:#28a745; color:#fff; }
     .btn.end { background:#dc3545; color:#fff; }
     .btn.reset { background:#ffc107; color:#000; }
+    .btn.pause { background:#6c757d; color:#fff; } /* Pause button style */
     .btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
 
     .status-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:12px; margin-top:12px; }
@@ -123,7 +124,7 @@
   <header class="navbar" role="navigation" aria-label="Main navigation">
     <h1>🚕 Meter-Sathi</h1>
     <nav class="nav-links" role="menubar" aria-label="Primary">
-      <a href="index.html">Home</a>
+      <a href="welcome.html">Home</a>
       <a href="about.html">About</a>
       <a href="services.html">Services</a>
       <a href="faq.html">FAQ</a>
@@ -138,12 +139,13 @@
       <div class="controls" role="group" aria-label="Ride controls">
         <button id="startBtn" class="btn start">Start Ride</button>
         <button id="endBtn" class="btn end" disabled>End Ride</button>
+        <button id="pauseBtn" class="btn pause" disabled>Pause</button>
         <button id="resetBtn" class="btn reset" disabled>Reset</button>
       </div>
 
       <div class="notice" id="noticeBox" aria-live="polite">
-        <p><strong>"The minimum payable fare is ₹26 for distances from 0 km up to 1.49 km, as the base distance is 1.5 km."</strong></p>
-        <p>"Based on MMRTA Official Tariff. Day window: 05:00–00:00. Night window: 00:00–05:00."</p>
+        <p><strong>The minimum payable fare is ₹26 for distances between 0 km and 1.49 km.</strong></p>
+        <p>Based on MMRTA Official Tariff. Day window: 05:00–00:00. Night window: 00:00–05:00.</p>
       </div>
 
       <div class="status-grid" aria-live="polite">
@@ -163,7 +165,7 @@
         </div>
 
         <div class="status">
-          <h3>Ride Fare (after 1.5 kms)</h3>
+          <h3>Tariff Fare</h3>
           <p id="tariffFare">₹26.00</p>
         </div>
 
@@ -204,26 +206,38 @@
           <p id="fareStatus" style="color:#ffd966">Please start and end your ride to use this service.</p>
         </div>
       </div>
+
+      <p class="note">Note: Official fare is fixed at <strong>₹26</strong>. Base distance is <strong>1.5 km</strong>.</p>
     </div>
   </main>
 
-  <footer role="contentinfo">© 2026 Meter-Sathi</footer>
+  <footer role="contentinfo">© 2024 Meter-Sathi</footer>
 
   <script>
     /* Configuration */
     const BASE_FARE = 26.0;
     const BASE_DISTANCE_M = 1500;            // meters
     const PER_KM_RATE = 17.14;               // per km after base
-    const MIN_MOVE_METERS = 8;               // jitter threshold
+    const MIN_MOVE_METERS_OLD = 8;           // original jitter threshold (kept for reference)
     const MAX_ACCEPTABLE_ACCURACY = 60;      // meters considered acceptable
     const POOR_FIX_LIMIT = 3;                // consecutive poor fixes before showing waiting
     const HARD_ACCURACY_LIMIT = 120;         // immediate "very poor" threshold
     const FARE_TOLERANCE = 0.00;             // tolerance set to 0
 
+    // --- Hardening config (new) ---
+    const MIN_MOVE_METERS = 20;                // ignore tiny jitter
+    const MIN_SPEED_KMH = 1;                   // ignore very slow implied speed
+    const CONSECUTIVE_VALID = 2;               // require N consecutive valid moves
+    const MEDIAN_WINDOW = 3;                   // median smoothing window (3 fixes)
+    const STATIONARY_THRESHOLD_METERS = 10;    // movement below this considered stationary
+    const STATIONARY_WINDOW_MS = 2 * 60 * 1000; // 2 minutes stationary window
+    const MAX_PLAUSIBLE_SPEED_KMH = 120;       // ignore impossible jumps
+
     /* UI elements */
     const startBtn = document.getElementById('startBtn');
     const endBtn = document.getElementById('endBtn');
     const resetBtn = document.getElementById('resetBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
 
     const distanceEl = document.getElementById('distance');
     const officialFareEl = document.getElementById('officialFare');
@@ -248,6 +262,12 @@
     let rideActive = false;
     let rideSummary = null; // computed breakdown after end
 
+    // --- New runtime state for hardening ---
+    let recentFixes = [];          // sliding window for median smoothing
+    let consecutiveValidMoves = 0;
+    let stationaryStartTs = null;
+    let paused = false;            // Pause/Resume flag
+
     /* Helpers */
     function toKm(m) { return m / 1000; }
     function fmtKm(m) { return toKm(m).toFixed(2); }
@@ -261,6 +281,14 @@
       const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
       return R * c;
+    }
+
+    /* Median helper for smoothing */
+    function medianCoord(points) {
+      const lats = points.map(p => p.lat).sort((a,b)=>a-b);
+      const lons = points.map(p => p.lon).sort((a,b)=>a-b);
+      const mid = Math.floor(points.length/2);
+      return { lat: lats[mid], lon: lons[mid] };
     }
 
     /* Mode helpers */
@@ -460,7 +488,16 @@
       endBtn.disabled = false;
       resetBtn.disabled = true;
 
+      // enable pause button
+      pauseBtn.disabled = false;
+      pauseBtn.textContent = 'Pause';
+      paused = false;
+
       poorFixCount = 0;
+      recentFixes = [];
+      consecutiveValidMoves = 0;
+      stationaryStartTs = null;
+
       watchId = navigator.geolocation.watchPosition(onPosition, onError, {
         enableHighAccuracy: true,
         maximumAge: 1000,
@@ -477,6 +514,9 @@
       startBtn.disabled = false;
       endBtn.disabled = true;
       resetBtn.disabled = false;
+
+      // disable pause button
+      pauseBtn.disabled = true;
 
       rideActive = false;
 
@@ -502,51 +542,91 @@
       updateDisplays();
       gpsStatusEl.textContent = 'Idle';
       resetBtn.disabled = true;
+
+      // reset pause button
+      pauseBtn.disabled = true;
+      pauseBtn.textContent = 'Pause';
+      paused = false;
+
+      recentFixes = [];
+      consecutiveValidMoves = 0;
+      stationaryStartTs = null;
     }
 
+    /* Hardened onPosition implementation (median smoothing, speed/displacement filters, stationary detection, consecutive validation) */
     function onPosition(pos) {
+      if (paused) return; // do nothing while paused
+
       const { latitude, longitude, accuracy } = pos.coords;
       const ts = pos.timestamp || Date.now();
 
-      if (accuracy > HARD_ACCURACY_LIMIT) {
-        poorFixCount++;
-        if (poorFixCount >= POOR_FIX_LIMIT) {
-          gpsStatusEl.textContent = `Low accuracy (${Math.round(accuracy)} m) — waiting`;
-        } else {
-          gpsStatusEl.textContent = `Low accuracy (${Math.round(accuracy)} m) — waiting`;
-        }
-        if (gpsPoints.length === 0 && accuracy <= HARD_ACCURACY_LIMIT) {
-        } else {
-          return;
-        }
-      } else if (accuracy <= MAX_ACCEPTABLE_ACCURACY) {
-        poorFixCount = 0;
-        gpsStatusEl.textContent = `OK (accuracy ${Math.round(accuracy)} m)`;
-      } else {
-        poorFixCount++;
-        if (poorFixCount < POOR_FIX_LIMIT) {
-          gpsStatusEl.textContent = `OK (accuracy ${Math.round(accuracy)} m)`;
-        } else {
-          gpsStatusEl.textContent = `Low accuracy (${Math.round(accuracy)} m) — waiting`;
-        }
+      // Push raw fix into recent window for median smoothing
+      recentFixes.push({ lat: latitude, lon: longitude, ts, accuracy });
+      if (recentFixes.length > MEDIAN_WINDOW) recentFixes.shift();
+
+      // Use median coordinate to reduce single-fix spikes
+      const median = medianCoord(recentFixes);
+      const current = { lat: median.lat, lon: median.lon, timestamp: ts, accuracy };
+
+      // Accuracy gating: ignore extremely poor fixes
+      if (current.accuracy > 200) {
+        gpsStatusEl.textContent = `Very poor accuracy (${Math.round(current.accuracy)} m) — waiting`;
+        return;
       }
 
-      const current = { lat: latitude, lon: longitude, timestamp: ts };
-
+      // If first accepted point, push but do not add distance
       if (gpsPoints.length === 0) {
         gpsPoints.push(current);
+        stationaryStartTs = ts;
+        gpsStatusEl.textContent = `Fix OK (${Math.round(current.accuracy)} m)`;
         updateDisplays();
         return;
       }
 
       const last = gpsPoints[gpsPoints.length - 1];
       const d = haversineDistance(last.lat, last.lon, current.lat, current.lon);
-      if (d >= MIN_MOVE_METERS) {
-        gpsPoints.push(current);
-        totalDistanceMeters += d;
-        rideSummary = computeRideBreakdown(gpsPoints);
-        updateDisplays();
+      const dtSec = Math.max(1, (current.timestamp - last.timestamp) / 1000);
+      const speedKmh = (d / dtSec) * 3.6;
+
+      // Ignore implausible spikes (teleportation)
+      if (speedKmh > MAX_PLAUSIBLE_SPEED_KMH) {
+        console.warn('Ignored spike:', { d, dtSec, speedKmh, accuracy: current.accuracy });
+        gpsStatusEl.textContent = `Spike ignored (speed ${Math.round(speedKmh)} km/h)`;
+        consecutiveValidMoves = 0;
+        return;
       }
+
+      // If displacement is tiny or implied speed is very low, treat as potential drift
+      if (d < MIN_MOVE_METERS || speedKmh < MIN_SPEED_KMH) {
+        consecutiveValidMoves = 0;
+        // If we have been effectively stationary for the configured window, mark stationary
+        if (!stationaryStartTs) stationaryStartTs = ts;
+        const stationaryElapsed = ts - stationaryStartTs;
+        if (stationaryElapsed >= STATIONARY_WINDOW_MS) {
+          gpsStatusEl.textContent = `Stationary (${Math.round(stationaryElapsed/1000)}s)`;
+          // do not add distance while stationary
+          return;
+        } else {
+          gpsStatusEl.textContent = `Waiting for movement (validating)`;
+          return;
+        }
+      }
+
+      // Movement looks meaningful: require consecutive valid moves to avoid single-fix acceptance
+      consecutiveValidMoves++;
+      if (consecutiveValidMoves < CONSECUTIVE_VALID) {
+        gpsStatusEl.textContent = `Validating movement (${consecutiveValidMoves}/${CONSECUTIVE_VALID})`;
+        return;
+      }
+
+      // Accept movement
+      gpsPoints.push(current);
+      totalDistanceMeters += d;
+      rideSummary = computeRideBreakdown(gpsPoints);
+      stationaryStartTs = null;
+      consecutiveValidMoves = 0;
+      gpsStatusEl.textContent = `Moving (speed ${Math.round(speedKmh)} km/h, acc ${Math.round(current.accuracy)} m)`;
+      updateDisplays();
     }
 
     function onError(err) {
@@ -583,6 +663,18 @@
       }
       meterFareInput.value = v;
       updateDisplays();
+    });
+
+    // Pause/Resume button behavior
+    pauseBtn.addEventListener('click', () => {
+      paused = !paused;
+      pauseBtn.textContent = paused ? 'Resume' : 'Pause';
+      pauseBtn.classList.toggle('active', paused);
+      if (paused) {
+        gpsStatusEl.textContent = 'Paused';
+      } else {
+        gpsStatusEl.textContent = 'Resumed';
+      }
     });
 
     meterFareInput.disabled = true;

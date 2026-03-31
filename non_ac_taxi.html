@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kaali Peeli Taxi Tracker — Non AC</title>
+  <style>
+    * { box-sizing: border-box; margin:0; padding:0; font-family: 'Segoe UI', sans-serif; }
+    body { background: linear-gradient(135deg,#000,#1b1b1b); color:#fff; min-height:100vh; display:flex; flex-direction:column; }
+    .navbar { display:flex; justify-content:space-between; align-items:center; padding:14px 28px; background:#000; border-bottom:4px solid #ffd700; }
+    .navbar h1 { color:#ffd700; font-size:20px; }
+    .container { max-width:980px; margin:28px auto; padding:36px 18px; width:100%; }
+    .card { background:#111; border:2px solid #ffd700; border-radius:12px; padding:18px; }
+    .controls { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+    .btn { padding:10px 14px; border-radius:8px; border:none; cursor:pointer; font-weight:700; }
+    .btn.start { background:#28a745; color:#fff; } .btn.end { background:#dc3545; color:#fff; } .btn.pause { background:#6c757d; color:#fff; } .btn.reset { background:#ffc107; color:#000; }
+    .status-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-top:12px; }
+    .status { background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:12px; border-radius:8px; text-align:center; border:1px solid rgba(255,215,0,0.06); }
+    .status h3 { color:#ffd966; font-size:13px; margin-bottom:6px; font-weight:700; }
+    .status p { font-size:18px; font-weight:800; color:#fff; margin:0; }
+    .input-row { margin-top:12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:center; }
+    input[type="text"] { padding:8px 10px; border-radius:8px; border:1px solid rgba(255,204,0,0.12); background:#0b0b0b; color:#fff; width:180px; }
+    .fare-summary { margin-top:14px; display:flex; gap:12px; flex-wrap:wrap; }
+    .summary-box { background:#0f0f0f; border-radius:8px; padding:12px; min-width:160px; flex:1; text-align:center; border:1px solid rgba(255,204,0,0.06); }
+    .note { margin-top:12px; color:#ddd; font-size:13px; }
+    footer { text-align:center; padding:12px; color:#ffd700; border-top:4px solid #ffd700; margin-top:18px; background:#000; }
+    @media (max-width:640px){ .status p{font-size:16px} input[type="text"]{width:140px} }
+  </style>
+</head>
+<body>
+  <header class="navbar" role="navigation" aria-label="Main navigation">
+    <h1>🚖 Kaali Peeli Taxi Tracker — Non AC</h1>
+  </header>
+
+  <main class="container" role="main">
+    <div class="card" role="region" aria-label="Taxi tracker">
+      <div class="controls" role="group" aria-label="Ride controls">
+        <button id="startBtn" class="btn start">Start Ride</button>
+        <button id="endBtn" class="btn end" disabled>End Ride</button>
+        <button id="pauseBtn" class="btn pause" disabled>Pause</button>
+        <button id="resetBtn" class="btn reset" disabled>Reset</button>
+      </div>
+
+      <div class="status-grid" aria-live="polite">
+        <div class="status"><h3>Distance</h3><p id="distance">0.00 km</p></div>
+        <div class="status"><h3>Official Fare</h3><p id="officialFare">₹31.00</p></div>
+        <div class="status"><h3>GPS Status</h3><p id="gpsStatus">Idle</p></div>
+        <div class="status"><h3>Tariff Fare</h3><p id="tariffFare">₹31.00</p></div>
+        <div class="status"><h3>Day Distance</h3><p id="dayDistance">0.00 km</p></div>
+        <div class="status"><h3>Night Distance</h3><p id="nightDistance">0.00 km</p></div>
+      </div>
+
+      <div class="input-row" aria-label="Meter fare input">
+        <label for="meterFare" style="color:#ffd966;font-weight:700">Meter Fare (₹):</label>
+        <input id="meterFare" type="text" inputmode="decimal" placeholder="Enter meter fare" />
+        <button id="checkFareBtn" class="btn reset" disabled>Check Fare</button>
+      </div>
+
+      <div class="fare-summary" aria-hidden="false">
+        <div class="summary-box"><h4 style="color:#ffd966">Official Fare</h4><p id="summaryOfficial">₹31.00</p></div>
+        <div class="summary-box"><h4 style="color:#ffd966">Meter Fare</h4><p id="summaryMeter">₹0.00</p></div>
+        <div class="summary-box"><h4 style="color:#ffd966">Difference</h4><p id="summaryDiff">₹0.00</p></div>
+        <div class="summary-box" id="fareStatusBox" aria-live="polite"><h4 style="color:#ffd966">Fare Status</h4><p id="fareStatus" style="color:#ffd966">Please start and end your ride to use this service.</p></div>
+      </div>
+
+      <p class="note">Note: <strong>Base fare ₹31</strong> for first <strong>1.49 km</strong>. Per km after base: <strong>₹20.66</strong>. Waiting charge: <strong>₹102/hr (₹1.70/min)</strong>. Night surcharge: <strong>25% (00:00–05:00)</strong>.</p>
+    </div>
+  </main>
+
+  <footer>© 2026 Kaali Peeli Taxi Tracker</footer>
+
+  <script>
+    /* Fare configuration for Non-AC Kaali Peeli */
+    const BASE_FARE = 31.0;
+    const BASE_DISTANCE_M = 1490;        // 1.49 km in meters
+    const PER_KM_RATE = 20.66;           // per km after base
+    const WAITING_PER_MIN = 1.70;        // ₹ per minute (102/hr)
+    const NIGHT_SURCHARGE = 0.25;        // 25% extra between 00:00-05:00
+
+    /* GPS / detection tuning (robust) */
+    const MIN_MOVE_METERS = 40;
+    const MIN_SPEED_KMH = 1;
+    const CONSECUTIVE_VALID = 2;
+    const MEDIAN_WINDOW = 3;
+    const STATIONARY_THRESHOLD_METERS = 50;
+    const STATIONARY_WINDOW_MS = 90 * 1000;
+    const MAX_PLAUSIBLE_SPEED_KMH = 120;
+    const DEBUG = false;
+
+    /* UI refs */
+    const startBtn = document.getElementById('startBtn');
+    const endBtn = document.getElementById('endBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const checkFareBtn = document.getElementById('checkFareBtn');
+    const meterFareInput = document.getElementById('meterFare');
+
+    const distanceEl = document.getElementById('distance');
+    const officialFareEl = document.getElementById('officialFare');
+    const gpsStatusEl = document.getElementById('gpsStatus');
+    const tariffFareEl = document.getElementById('tariffFare');
+    const dayDistanceEl = document.getElementById('dayDistance');
+    const nightDistanceEl = document.getElementById('nightDistance');
+    const summaryOfficial = document.getElementById('summaryOfficial');
+    const summaryMeter = document.getElementById('summaryMeter');
+    const summaryDiff = document.getElementById('summaryDiff');
+    const fareStatusEl = document.getElementById('fareStatus');
+    const fareStatusBox = document.getElementById('fareStatusBox');
+
+    /* Runtime state */
+    let watchId = null;
+    let gpsPoints = []; // {lat, lon, timestamp, accuracy}
+    let totalDistanceMeters = 0;
+    let rideSummary = null;
+    let rideActive = false;
+    let paused = false;
+
+    let recentFixes = [];
+    let consecutiveValidMoves = 0;
+    let windowFixes = [];
+    let fareChecked = false;
+
+    /* Helpers */
+    function toKm(m){ return m/1000; }
+    function fmtKm(m){ return toKm(m).toFixed(2); }
+    function fmtCurrency(x){ return '₹' + Number(x).toFixed(2); }
+    function toRad(d){ return d * Math.PI / 180; }
+    function haversineDistance(lat1, lon1, lat2, lon2){
+      const R = 6371000;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+    function medianCoord(points){
+      const lats = points.map(p=>p.lat).sort((a,b)=>a-b);
+      const lons = points.map(p=>p.lon).sort((a,b)=>a-b);
+      const mid = Math.floor(points.length/2);
+      return { lat: lats[mid], lon: lons[mid] };
+    }
+    function getModeAtTimestamp(ts){
+      const d = new Date(ts);
+      const h = d.getHours();
+      return (h >= 0 && h < 5) ? 'night' : 'day';
+    }
+    function getNextBoundaryAfter(ts){
+      const d = new Date(ts);
+      const y = d.getFullYear(), m = d.getMonth(), day = d.getDate();
+      let nextMid = new Date(y,m,day,0,0,0,0);
+      if (nextMid <= d) nextMid.setDate(nextMid.getDate()+1);
+      let nextFive = new Date(y,m,day,5,0,0,0);
+      if (nextFive <= d) nextFive.setDate(nextFive.getDate()+1);
+      return Math.min(nextMid.getTime(), nextFive.getTime());
+    }
+
+    /* Splits a segment into parts that don't cross day/night boundaries */
+    function splitSegmentAtBoundaries(p1, p2, segMeters){
+      const t1 = p1.timestamp, t2 = p2.timestamp;
+      const segMs = t2 - t1;
+      if (segMs <= 0 || segMeters <= 0) {
+        return [{ start: t1, end: t2, meters: segMeters, mode: getModeAtTimestamp(t1) }];
+      }
+      let parts = [];
+      let cursor = t1;
+      while (cursor < t2 - 1) {
+        const nextBoundary = getNextBoundaryAfter(cursor);
+        const subEnd = Math.min(nextBoundary, t2);
+        const subMs = subEnd - cursor;
+        const subMeters = segMeters * (subMs / segMs);
+        parts.push({ start: cursor, end: subEnd, meters: subMeters, mode: getModeAtTimestamp(cursor) });
+        cursor = subEnd;
+      }
+      if (cursor < t2) {
+        const remMs = t2 - cursor;
+        const remMeters = segMeters * (remMs / segMs);
+        parts.push({ start: cursor, end: t2, meters: remMeters, mode: getModeAtTimestamp(cursor) });
+      }
+      return parts;
+    }
+
+    /* computeRideBreakdown
+       - Splits segments across day/night boundaries
+       - Allocates base distance across parts in chronological order
+       - Computes distance fares, waiting charges, and applies night surcharge to night portions
+    */
+    function computeRideBreakdown(points){
+      if (!points || points.length < 2) {
+        return {
+          totalMeters:0, dayMeters:0, nightMeters:0,
+          baseAllocatedDay:0, baseAllocatedNight:0,
+          chargeableDayMeters:0, chargeableNightMeters:0,
+          distanceFareDay:0, distanceFareNight:0,
+          waitingMinutesDay:0, waitingMinutesNight:0,
+          waitingChargeDay:0, waitingChargeNight:0,
+          finalDayFare:0, finalNightFare:0,
+          finalFare: BASE_FARE,
+          segments: []
+        };
+      }
+
+      // Build subsegments (split at boundaries)
+      let subsegments = [];
+      let totalMeters = 0;
+      for (let i=0;i<points.length-1;i++){
+        const p1 = points[i], p2 = points[i+1];
+        const d = haversineDistance(p1.lat,p1.lon,p2.lat,p2.lon);
+        if (d < 0.0001) {
+          const parts = splitSegmentAtBoundaries(p1,p2,0);
+          for (const part of parts) subsegments.push(part);
+          continue;
+        }
+        const parts = splitSegmentAtBoundaries(p1,p2,d);
+        for (const part of parts) {
+          subsegments.push(part);
+          totalMeters += part.meters;
+        }
+      }
+
+      // Sum day/night meters
+      let dayMeters = 0, nightMeters = 0;
+      for (const s of subsegments) {
+        if (s.mode === 'day') dayMeters += s.meters;
+        else nightMeters += s.meters;
+      }
+
+      // Allocate base distance across chronological subsegments
+      let remainingBase = BASE_DISTANCE_M;
+      let baseAllocatedDay = 0, baseAllocatedNight = 0;
+      for (const s of subsegments) {
+        if (remainingBase <= 0) break;
+        const alloc = Math.min(remainingBase, s.meters);
+        if (s.mode === 'day') baseAllocatedDay += alloc;
+        else baseAllocatedNight += alloc;
+        remainingBase -= alloc;
+      }
+
+      const chargeableDayMeters = Math.max(0, dayMeters - baseAllocatedDay);
+      const chargeableNightMeters = Math.max(0, nightMeters - baseAllocatedNight);
+
+      const distanceFareDay = (chargeableDayMeters / 1000) * PER_KM_RATE;
+      const distanceFareNight = (chargeableNightMeters / 1000) * PER_KM_RATE;
+
+      // Compute waiting minutes by summing durations of subsegments that are effectively non-moving
+      // Threshold: treat subsegment as waiting if meters < 0.5 m (tiny noise)
+      let waitingMsDay = 0, waitingMsNight = 0;
+      let movingMs = 0;
+      for (const s of subsegments) {
+        const dur = Math.max(0, s.end - s.start);
+        if (s.meters < 0.5) {
+          if (s.mode === 'day') waitingMsDay += dur;
+          else waitingMsNight += dur;
+        } else {
+          movingMs += dur;
+        }
+      }
+
+      // If there is time gap at end (e.g., last point timestamp - first), ensure waiting allocation covers idle time
+      const totalTimeMs = points[points.length-1].timestamp - points[0].timestamp;
+      const computedMs = movingMs + waitingMsDay + waitingMsNight;
+      if (computedMs < totalTimeMs) {
+        const remainder = totalTimeMs - computedMs;
+        const lastMode = getModeAtTimestamp(points[points.length-1].timestamp);
+        if (lastMode === 'day') waitingMsDay += remainder;
+        else waitingMsNight += remainder;
+      }
+
+      const waitingMinutesDay = waitingMsDay / 60000;
+      const waitingMinutesNight = waitingMsNight / 60000;
+
+      const waitingChargeDay = waitingMinutesDay * WAITING_PER_MIN;
+      const waitingChargeNight = waitingMinutesNight * WAITING_PER_MIN;
+
+      // Base fare share allocation
+      const baseShareDay = BASE_FARE * (baseAllocatedDay / BASE_DISTANCE_M);
+      const baseShareNight = BASE_FARE * (baseAllocatedNight / BASE_DISTANCE_M);
+
+      // Raw fares before night surcharge
+      const rawDayFare = baseShareDay + distanceFareDay + waitingChargeDay;
+      const rawNightFare = baseShareNight + distanceFareNight + waitingChargeNight;
+
+      // Apply night surcharge to night portion
+      const finalNightFare = rawNightFare * (1 + NIGHT_SURCHARGE);
+      const finalDayFare = rawDayFare;
+
+      const finalFare = finalDayFare + finalNightFare;
+
+      return {
+        totalMeters,
+        dayMeters,
+        nightMeters,
+        baseAllocatedDay,
+        baseAllocatedNight,
+        chargeableDayMeters,
+        chargeableNightMeters,
+        distanceFareDay,
+        distanceFareNight,
+        waitingMinutesDay,
+        waitingMinutesNight,
+        waitingChargeDay,
+        waitingChargeNight,
+        rawDayFare,
+        rawNightFare,
+        finalDayFare,
+        finalNightFare,
+        finalFare,
+        segments: subsegments
+      };
+    }
+
+    /* UI update */
+    function updateDisplays(){
+      distanceEl.textContent = fmtKm(totalDistanceMeters) + ' km';
+      officialFareEl.textContent = fmtCurrency(BASE_FARE);
+      const tariff = rideSummary ? rideSummary.finalFare : BASE_FARE;
+      tariffFareEl.textContent = fmtCurrency(tariff);
+
+      const dayMeters = rideSummary ? rideSummary.dayMeters : 0;
+      const nightMeters = rideSummary ? rideSummary.nightMeters : 0;
+      dayDistanceEl.textContent = fmtKm(dayMeters) + ' km';
+      nightDistanceEl.textContent = fmtKm(nightMeters) + ' km';
+
+      summaryOfficial.textContent = fmtCurrency(BASE_FARE);
+
+      const meterRaw = (meterFareInput.value || '').trim();
+      const meterVal = meterRaw === '' ? 0 : parseFloat(meterRaw) || 0;
+
+      if (meterFareInput.disabled) {
+        summaryMeter.textContent = fmtCurrency(0);
+        summaryDiff.textContent = fmtCurrency(0);
+        fareStatusEl.textContent = 'Please start and end your ride to use this service.';
+        fareStatusEl.style.color = '#ffd966';
+        fareStatusBox.style.borderColor = 'rgba(255,204,0,0.06)';
+        return;
+      }
+
+      if (!fareChecked) {
+        summaryMeter.textContent = fmtCurrency(0);
+        summaryDiff.textContent = fmtCurrency(0);
+        fareStatusEl.textContent = 'Enter meter fare and click Check Fare';
+        fareStatusEl.style.color = '#ffd966';
+        fareStatusBox.style.borderColor = 'rgba(255,204,0,0.06)';
+        return;
+      }
+
+      summaryMeter.textContent = fmtCurrency(meterVal);
+      const diff = meterVal - tariff;
+      summaryDiff.textContent = fmtCurrency(diff);
+
+      if (Math.abs(diff) <= 0.01) {
+        fareStatusEl.textContent = 'Enjoy a fair and transparent fare.';
+        fareStatusEl.style.color = '#28a745';
+      } else if (diff > 0.01) {
+        fareStatusEl.textContent = `It seems you are being overcharged by ₹${diff.toFixed(2)}.`;
+        fareStatusEl.style.color = '#dc3545';
+      } else {
+        fareStatusEl.textContent = 'Enjoy a fair and transparent fare.';
+        fareStatusEl.style.color = '#28a745';
+      }
+    }
+
+    /* Start / End / Reset */
+    function startRide(){
+      if (!('geolocation' in navigator)) { gpsStatusEl.textContent = 'Geolocation not supported'; return; }
+      gpsPoints = [];
+      totalDistanceMeters = 0;
+      rideSummary = null;
+      rideActive = true;
+      meterFareInput.value = '';
+      meterFareInput.disabled = true;
+      fareChecked = false;
+      checkFareBtn.disabled = true;
+      updateDisplays();
+
+      gpsStatusEl.textContent = 'Requesting permission...';
+      startBtn.disabled = true; endBtn.disabled = false; resetBtn.disabled = true;
+      pauseBtn.disabled = false; pauseBtn.textContent = 'Pause'; paused = false;
+
+      recentFixes = []; consecutiveValidMoves = 0; windowFixes = [];
+
+      watchId = navigator.geolocation.watchPosition(onPosition, onError, { enableHighAccuracy:true, maximumAge:1000, timeout:10000 });
+    }
+
+    function endRide(){
+      if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
+      gpsStatusEl.textContent = 'Stopped';
+      startBtn.disabled = false; endBtn.disabled = true; resetBtn.disabled = false;
+      pauseBtn.disabled = true; rideActive = false;
+
+      rideSummary = computeRideBreakdown(gpsPoints);
+      totalDistanceMeters = rideSummary.totalMeters;
+
+      meterFareInput.disabled = false; fareChecked = false; checkFareBtn.disabled = false;
+      updateDisplays();
+    }
+
+    function resetRide(){
+      if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
+      gpsPoints = []; totalDistanceMeters = 0; rideSummary = null; rideActive = false;
+      meterFareInput.value = ''; meterFareInput.disabled = true; fareChecked = false; checkFareBtn.disabled = true;
+      updateDisplays();
+      gpsStatusEl.textContent = 'Idle';
+      resetBtn.disabled = true;
+      pauseBtn.disabled = true; pauseBtn.textContent = 'Pause'; paused = false;
+      recentFixes = []; consecutiveValidMoves = 0; windowFixes = [];
+    }
+
+    /* Position handler (robust) */
+    function onPosition(pos){
+      if (paused) return;
+      const { latitude, longitude, accuracy } = pos.coords;
+      const ts = pos.timestamp || Date.now();
+
+      recentFixes.push({ lat: latitude, lon: longitude, ts, accuracy });
+      if (recentFixes.length > MEDIAN_WINDOW) recentFixes.shift();
+
+      const median = medianCoord(recentFixes);
+      const current = { lat: median.lat, lon: median.lon, timestamp: ts, accuracy };
+
+      if (current.accuracy > 200) {
+        gpsStatusEl.textContent = `Very poor accuracy (${Math.round(current.accuracy)} m) — waiting`;
+        if (DEBUG) console.debug('ignored poor accuracy', current.accuracy);
+        return;
+      }
+
+      if (gpsPoints.length === 0) {
+        gpsPoints.push(current);
+        windowFixes = [{ lat: current.lat, lon: current.lon, ts: current.timestamp }];
+        gpsStatusEl.textContent = `Fix OK (${Math.round(current.accuracy)} m)`;
+        updateDisplays();
+        if (DEBUG) console.debug('first fix', current);
+        return;
+      }
+
+      const last = gpsPoints[gpsPoints.length - 1];
+      const d = haversineDistance(last.lat, last.lon, current.lat, current.lon);
+      const dtSec = Math.max(1, (current.timestamp - last.timestamp) / 1000);
+      const speedKmh = (d / dtSec) * 3.6;
+
+      if (speedKmh > MAX_PLAUSIBLE_SPEED_KMH) {
+        consecutiveValidMoves = Math.max(0, consecutiveValidMoves - 1);
+        gpsStatusEl.textContent = `Spike ignored (speed ${Math.round(speedKmh)} km/h)`;
+        if (DEBUG) console.debug('spike ignored', { d, speedKmh });
+        return;
+      }
+
+      // maintain window fixes for stationary detection
+      windowFixes.push({ lat: current.lat, lon: current.lon, ts: current.timestamp });
+      const windowStart = current.timestamp - STATIONARY_WINDOW_MS;
+      while (windowFixes.length && windowFixes[0].ts < windowStart) windowFixes.shift();
+
+      let windowDistance = 0;
+      for (let i=0;i<windowFixes.length-1;i++){
+        windowDistance += haversineDistance(windowFixes[i].lat, windowFixes[i].lon, windowFixes[i+1].lat, windowFixes[i+1].lon);
+      }
+
+      if (windowDistance < STATIONARY_THRESHOLD_METERS) {
+        consecutiveValidMoves = 0;
+        gpsStatusEl.textContent = `Stationary (${Math.round(STATIONARY_WINDOW_MS/1000)}s window)`;
+        if (DEBUG) console.debug('stationary', { windowDistance });
+        return;
+      }
+
+      if (d < MIN_MOVE_METERS || speedKmh < MIN_SPEED_KMH) {
+        consecutiveValidMoves = Math.max(0, consecutiveValidMoves - 1);
+        gpsStatusEl.textContent = `Waiting for sustained movement`;
+        if (DEBUG) console.debug('drift', { d, speedKmh, windowDistance });
+        return;
+      }
+
+      consecutiveValidMoves++;
+      if (consecutiveValidMoves < CONSECUTIVE_VALID) {
+        gpsStatusEl.textContent = `Validating movement (${consecutiveValidMoves}/${CONSECUTIVE_VALID})`;
+        if (DEBUG) console.debug('validating', { d, speedKmh });
+        return;
+      }
+
+      // accept movement
+      gpsPoints.push(current);
+      totalDistanceMeters += d;
+      rideSummary = computeRideBreakdown(gpsPoints);
+      consecutiveValidMoves = 0;
+      windowFixes = [];
+      gpsStatusEl.textContent = `Moving (speed ${Math.round(speedKmh)} km/h, acc ${Math.round(current.accuracy)} m)`;
+      updateDisplays();
+      if (DEBUG) console.debug('accepted movement', { d, speedKmh, totalDistanceMeters });
+    }
+
+    function onError(err){
+      gpsStatusEl.textContent = `Error: ${err.message}`;
+      if (err.code === 1 && watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+        startBtn.disabled = false; endBtn.disabled = true; resetBtn.disabled = false;
+      }
+    }
+
+    /* Input handlers */
+    meterFareInput.addEventListener('input', () => {
+      let v = meterFareInput.value || '';
+      v = v.replace(/[^\d.]/g,'');
+      const parts = v.split('.');
+      if (parts.length > 2) v = parts[0] + '.' + parts.slice(1).join('');
+      if (v.includes('.')) {
+        const [intPart, decPart] = v.split('.');
+        v = intPart + '.' + (decPart || '').slice(0,2);
+      }
+      if (v.length > 1 && v[0] === '0' && v[1] !== '.') v = String(Number(v));
+      meterFareInput.value = v;
+      if (fareChecked) fareChecked = false;
+      updateDisplays();
+    });
+
+    pauseBtn.addEventListener('click', () => {
+      paused = !paused;
+      pauseBtn.textContent = paused ? 'Resume' : 'Pause';
+      gpsStatusEl.textContent = paused ? 'Paused' : 'Resumed';
+    });
+
+    checkFareBtn.addEventListener('click', () => {
+      if (meterFareInput.disabled) return;
+      fareChecked = true;
+      updateDisplays();
+    });
+
+    /* Init */
+    meterFareInput.disabled = true;
+    checkFareBtn.disabled = true;
+    updateDisplays();
+
+    startBtn.addEventListener('click', startRide);
+    endBtn.addEventListener('click', endRide);
+    resetBtn.addEventListener('click', resetRide);
+  </script>
+</body>
+</html>

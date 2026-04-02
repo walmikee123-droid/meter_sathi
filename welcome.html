@@ -174,21 +174,50 @@ footer {
 .overlay[aria-hidden="false"] { display: flex; }
 .modal {
   width: 100%;
-  max-width: 420px;
+  /* increased modal width to avoid horizontal scrollbar for the three buttons */
+  max-width: 760px;
   background: #111;
   border-radius: 12px;
-  padding: 20px;
+  padding: 24px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.6);
   text-align: center;
   color: #fff;
   position: relative;
 }
-.modal h3 { margin: 0 0 8px; font-size: 20px; color: #FFD700; }
 .modal p { color: #ccc; margin: 6px 0 12px; font-weight:700; }
-.vehicle-grid { display:flex; gap:12px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
-.vehicle { min-width:140px; padding:14px; border-radius:10px; cursor:pointer; border:2px solid transparent; transition: transform .12s, box-shadow .12s, border-color .12s; background: linear-gradient(180deg,#1a1a1a,#0f0f0f); color:#fff; font-weight:800; }
+
+/* Make all vehicle buttons appear in one line on wider screens */
+.vehicle-grid {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 18px;
+  flex-wrap: nowrap;
+  /* remove horizontal scroll by allowing modal to be wide enough */
+  overflow: visible;
+}
+.vehicle {
+  min-width: 180px;
+  padding: 16px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform .12s, box-shadow .12s, border-color .12s;
+  background: linear-gradient(180deg,#1a1a1a,#0f0f0f);
+  color: #fff;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+}
 .vehicle:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.5); border-color: #FFD700; }
 .close-x { position:absolute; right:12px; top:10px; background:transparent; border:0; font-size:20px; color:#ccc; cursor:pointer; }
+
+/* On very small screens allow wrapping so buttons remain accessible without overflow */
+@media (max-width: 520px) {
+  .modal { padding: 18px; max-width: 92%; }
+  .vehicle-grid { flex-wrap: wrap; gap: 12px; }
+  .vehicle { min-width: 140px; flex: 1 1 40%; }
+}
   </style>
 </head>
 <body>
@@ -222,11 +251,11 @@ footer {
   <div class="overlay" id="vehicleOverlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="vehicleTitle">
     <div class="modal" role="document">
       <button class="close-x" id="closeOverlay" aria-label="Close dialog">✕</button>
-      <h3 id="vehicleTitle">Choose your vehicle</h3>
-      <p>Select Auto Rickshaw or Taxi to continue</p>
+      <p id="vehicleTitle">Select a vehicle to continue</p>
       <div class="vehicle-grid" role="group" aria-label="Vehicle options">
         <div class="vehicle" id="autoOption" role="button" tabindex="0" aria-pressed="false" aria-label="Auto Rickshaw">Auto Rickshaw</div>
-        <div class="vehicle" id="taxiOption" role="button" tabindex="0" aria-pressed="false" aria-label="Taxi">Taxi</div>
+        <div class="vehicle" id="nonAcOption" role="button" tabindex="0" aria-pressed="false" aria-label="Non AC Taxi">Non AC Taxi</div>
+        <div class="vehicle" id="acOption" role="button" tabindex="0" aria-pressed="false" aria-label="AC Taxi">AC Taxi</div>
       </div>
     </div>
   </div>
@@ -244,7 +273,8 @@ footer {
       const openBtn = document.getElementById('getStartedBtn');
       const closeBtn = document.getElementById('closeOverlay');
       const autoOption = document.getElementById('autoOption');
-      const taxiOption = document.getElementById('taxiOption');
+      const nonAcOption = document.getElementById('nonAcOption');
+      const acOption = document.getElementById('acOption');
 
       function showOverlay() {
         overlay.setAttribute('aria-hidden', 'false');
@@ -281,11 +311,14 @@ footer {
       autoOption.addEventListener('click', function () {
         window.location.href = 'index.html';
       });
-      taxiOption.addEventListener('click', function () {
+      nonAcOption.addEventListener('click', function () {
         window.location.href = 'non_ac_taxi.html';
       });
+      acOption.addEventListener('click', function () {
+        window.location.href = 'ac_taxi.html';
+      });
 
-      [autoOption, taxiOption].forEach(el => {
+      [autoOption, nonAcOption, acOption].forEach(el => {
         el.addEventListener('keydown', function (e) {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();

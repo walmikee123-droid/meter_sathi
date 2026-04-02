@@ -80,7 +80,6 @@
     .btn.start { background:#28a745; color:#fff; }
     .btn.end { background:#dc3545; color:#fff; }
     .btn.reset { background:#ffc107; color:#000; }
-    .btn.pause { background:#6c757d; color:#fff; } /* Pause button style */
     .btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
 
     .status-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:12px; margin-top:12px; }
@@ -124,7 +123,7 @@
   <header class="navbar" role="navigation" aria-label="Main navigation">
     <h1>🚕 Meter-Sathi</h1>
     <nav class="nav-links" role="menubar" aria-label="Primary">
-      <a href="welcome.html">Home</a>
+      <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="services.html">Services</a>
       <a href="faq.html">FAQ</a>
@@ -139,13 +138,12 @@
       <div class="controls" role="group" aria-label="Ride controls">
         <button id="startBtn" class="btn start">Start Ride</button>
         <button id="endBtn" class="btn end" disabled>End Ride</button>
-        <button id="pauseBtn" class="btn pause" disabled>Pause</button>
         <button id="resetBtn" class="btn reset" disabled>Reset</button>
       </div>
 
       <div class="notice" id="noticeBox" aria-live="polite">
-        <p><strong>The minimum payable fare is ₹26 for distances between 0 km to 1.49 km.</strong></p>
-        <p>Based on MMRTA Official Tariff. Day window: 05:00–00:00. Night window: 00:00–05:00.</p>
+        <p><strong>"The minimum payable fare is ₹26 for distances from 0 km up to 1.49 km, as the base distance is 1.5 km."</strong></p>
+        <p>"Based on MMRTA Official Tariff. Day window: 05:00–00:00. Night window: 00:00–05:00."</p>
       </div>
 
       <div class="status-grid" aria-live="polite">
@@ -165,7 +163,7 @@
         </div>
 
         <div class="status">
-          <h3>Expected Fare</h3>
+          <h3>Ride Fare (after 1.5 kms)</h3>
           <p id="tariffFare">₹26.00</p>
         </div>
 
@@ -183,7 +181,6 @@
       <div class="input-row" aria-label="Meter fare input">
         <label for="meterFare">Meter Fare (₹):</label>
         <input id="meterFare" type="text" inputmode="decimal" placeholder="Enter meter fare" />
-        <button id="checkFareBtn" class="btn reset" disabled>Check Fare</button>
       </div>
 
       <div class="fare-summary" aria-hidden="false">
@@ -207,8 +204,6 @@
           <p id="fareStatus" style="color:#ffd966">Please start and end your ride to use this service.</p>
         </div>
       </div>
-
-      <p class="note">Note: Official fare is fixed at <strong>₹26</strong>. Base distance is <strong>1.5 km</strong>.</p>
     </div>
   </main>
 
@@ -219,30 +214,16 @@
     const BASE_FARE = 26.0;
     const BASE_DISTANCE_M = 1500;            // meters
     const PER_KM_RATE = 17.14;               // per km after base
-    const MIN_MOVE_METERS_OLD = 8;           // original jitter threshold (kept for reference)
+    const MIN_MOVE_METERS = 8;               // jitter threshold
     const MAX_ACCEPTABLE_ACCURACY = 60;      // meters considered acceptable
     const POOR_FIX_LIMIT = 3;                // consecutive poor fixes before showing waiting
     const HARD_ACCURACY_LIMIT = 120;         // immediate "very poor" threshold
     const FARE_TOLERANCE = 0.00;             // tolerance set to 0
 
-    // --- Hardening config (updated per your request) ---
-    const MIN_MOVE_METERS = 40;                // ignore jumps smaller than 40 m
-    const MIN_SPEED_KMH = 1;                   // ignore very slow implied speed
-    const CONSECUTIVE_VALID = 2;               // require N consecutive valid moves
-    const MEDIAN_WINDOW = 3;                   // median smoothing window (3 fixes)
-    const STATIONARY_THRESHOLD_METERS = 10;    // allow up to 50 m drift in window
-    const STATIONARY_WINDOW_MS = 90 * 1000;    // 1.5 minute stationary window
-    const MAX_PLAUSIBLE_SPEED_KMH = 120;       // ignore impossible jumps
-
-    // Debug flag (set to true to see per-fix diagnostics in console)
-    const DEBUG = true;
-
     /* UI elements */
     const startBtn = document.getElementById('startBtn');
     const endBtn = document.getElementById('endBtn');
     const resetBtn = document.getElementById('resetBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
-    const checkFareBtn = document.getElementById('checkFareBtn');
 
     const distanceEl = document.getElementById('distance');
     const officialFareEl = document.getElementById('officialFare');
@@ -267,30 +248,11 @@
     let rideActive = false;
     let rideSummary = null; // computed breakdown after end
 
-    // --- New runtime state for hardening ---
-    let recentFixes = [];          // sliding window for median smoothing
-    let consecutiveValidMoves = 0;
-    let stationaryStartTs = null;
-    let paused = false;            // Pause/Resume flag
-
-    // window buffer for time-window stationary detection
-    let windowFixes = [];          // array of {lat, lon, ts}
-
-    // --- Fare check state ---
-    let fareChecked = false;       // whether user clicked "Check Fare" after entering meter fare
-
     /* Helpers */
-
-    // O(1) — constant-time conversion
     function toKm(m) { return m / 1000; }
-
-    // O(1) — formatting only
     function fmtKm(m) { return toKm(m).toFixed(2); }
-
-    // O(1) — formatting only
     function fmtCurrency(x) { return '₹' + Number(x).toFixed(2); }
 
-    // haversineDistance: O(1) — fixed number of arithmetic ops regardless of input size
     function haversineDistance(lat1, lon1, lat2, lon2) {
       const toRad = d => d * Math.PI / 180;
       const R = 6371000;
@@ -301,27 +263,13 @@
       return R * c;
     }
 
-    /* Median helper for smoothing
-       Complexity: O(m log m) where m = points.length (we sort lat/lon arrays).
-       In practice m = MEDIAN_WINDOW (a small constant like 3), so this is effectively O(1).
-    */
-    function medianCoord(points) {
-      const lats = points.map(p => p.lat).sort((a,b)=>a-b);
-      const lons = points.map(p => p.lon).sort((a,b)=>a-b);
-      const mid = Math.floor(points.length/2);
-      return { lat: lats[mid], lon: lons[mid] };
-    }
-
     /* Mode helpers */
-
-    // getModeAtTimestamp: O(1)
     function getModeAtTimestamp(ts) {
       const d = new Date(ts);
       const h = d.getHours();
       return (h >= 0 && h < 5) ? 'night' : 'day';
     }
 
-    // getNextBoundaryAfter: O(1)
     function getNextBoundaryAfter(ts) {
       const d = new Date(ts);
       const y = d.getFullYear(), m = d.getMonth(), day = d.getDate();
@@ -332,10 +280,6 @@
       return Math.min(nextMid.getTime(), nextFive.getTime());
     }
 
-    /* splitSegmentAtBoundaries
-       Splits a segment into parts that don't cross day/night boundaries.
-       Complexity: O(k) where k = number of subsegments created (usually small).
-    */
     function splitSegmentAtBoundaries(p1, p2, segMeters) {
       const t1 = p1.timestamp;
       const t2 = p2.timestamp;
@@ -361,16 +305,6 @@
       return parts;
     }
 
-    /* computeRideBreakdown
-       Processes the ordered gps points and computes day/night splits and fares.
-
-       Complexity analysis:
-       - The outer loop iterates over consecutive point pairs: O(n) where n = gpsPoints.length.
-       - For each pair we compute haversineDistance (O(1)) and call splitSegmentAtBoundaries which
-         produces a small number of parts (k). Overall cost is O(n + totalParts).
-       - Aggregations over subsegments are linear in the number of subsegments.
-       So overall complexity is O(n) in typical usage (assuming boundaries per segment are bounded).
-    */
     function computeRideBreakdown(points) {
       if (!points || points.length < 2) {
         return {
@@ -458,9 +392,6 @@
       };
     }
 
-    /* updateDisplays
-       Updates UI elements. Complexity: O(1) — constant-time DOM updates and simple calculations.
-    */
     function updateDisplays() {
       distanceEl.textContent = fmtKm(totalDistanceMeters) + ' km';
       officialFareEl.textContent = fmtCurrency(BASE_FARE);
@@ -475,39 +406,26 @@
 
       summaryOfficial.textContent = fmtCurrency(BASE_FARE);
 
-      // Meter fare display logic:
-      // - If meter input is disabled (ride not ended), keep prompts as before.
-      // - If meter input is enabled but user has not clicked "Check Fare", show 0.00 for meter and difference.
-      // - Only after user clicks "Check Fare" (fareChecked === true) compute and show actual values.
       const meterRaw = (meterFareInput.value || '').trim();
       const meterVal = meterRaw === '' ? 0 : parseFloat(meterRaw) || 0;
+      summaryMeter.textContent = fmtCurrency(meterVal);
+      summaryDiff.textContent = fmtCurrency(meterVal - tariff);
 
       if (meterFareInput.disabled) {
-        // ride not ended yet or input locked
-        summaryMeter.textContent = fmtCurrency(0);
-        summaryDiff.textContent = fmtCurrency(0);
         fareStatusEl.textContent = 'Please start and end your ride to use this service.';
         fareStatusEl.style.color = '#ffd966';
         fareStatusBox.style.borderColor = 'rgba(255,204,0,0.06)';
         return;
       }
 
-      // meter input enabled (ride ended)
-      if (!fareChecked) {
-        // user hasn't clicked Check Fare yet — show zeros
-        summaryMeter.textContent = fmtCurrency(0);
-        summaryDiff.textContent = fmtCurrency(0);
-        fareStatusEl.textContent = 'Enter meter fare and click Check Fare';
+      if (!meterRaw) {
+        fareStatusEl.textContent = 'Enter meter fare';
         fareStatusEl.style.color = '#ffd966';
         fareStatusBox.style.borderColor = 'rgba(255,204,0,0.06)';
         return;
       }
 
-      // fareChecked === true: show actual meter and difference
-      summaryMeter.textContent = fmtCurrency(meterVal);
       const diff = meterVal - tariff;
-      summaryDiff.textContent = fmtCurrency(diff);
-
       if (Math.abs(diff) <= FARE_TOLERANCE) {
         fareStatusEl.textContent = 'Enjoy a fair and transparent fare.';
         fareStatusEl.style.color = '#28a745';
@@ -523,9 +441,6 @@
       }
     }
 
-    /* startRide
-       Complexity: O(1) — initializes state and starts geolocation watch.
-    */
     function startRide() {
       if (!('geolocation' in navigator)) {
         gpsStatusEl.textContent = 'Geolocation not supported';
@@ -538,8 +453,6 @@
       rideActive = true;
       meterFareInput.value = '';
       meterFareInput.disabled = true;
-      fareChecked = false;
-      checkFareBtn.disabled = true;
       updateDisplays();
 
       gpsStatusEl.textContent = 'Requesting permission...';
@@ -547,17 +460,7 @@
       endBtn.disabled = false;
       resetBtn.disabled = true;
 
-      // enable pause button
-      pauseBtn.disabled = false;
-      pauseBtn.textContent = 'Pause';
-      paused = false;
-
       poorFixCount = 0;
-      recentFixes = [];
-      consecutiveValidMoves = 0;
-      stationaryStartTs = null;
-      windowFixes = [];
-
       watchId = navigator.geolocation.watchPosition(onPosition, onError, {
         enableHighAccuracy: true,
         maximumAge: 1000,
@@ -565,9 +468,6 @@
       });
     }
 
-    /* endRide
-       Complexity: O(1) — stops watch and enables meter input for user check.
-    */
     function endRide() {
       if (watchId !== null) {
         navigator.geolocation.clearWatch(watchId);
@@ -578,24 +478,15 @@
       endBtn.disabled = true;
       resetBtn.disabled = false;
 
-      // disable pause button
-      pauseBtn.disabled = true;
-
       rideActive = false;
 
       rideSummary = computeRideBreakdown(gpsPoints);
       totalDistanceMeters = rideSummary.totalMeters;
 
-      // enable meter input and check button; require user to click Check Fare
       meterFareInput.disabled = false;
-      fareChecked = false;
-      checkFareBtn.disabled = false;
       updateDisplays();
     }
 
-    /* resetRide
-       Complexity: O(1) — clears state and UI.
-    */
     function resetRide() {
       if (watchId !== null) {
         navigator.geolocation.clearWatch(watchId);
@@ -608,123 +499,54 @@
       rideActive = false;
       meterFareInput.value = '';
       meterFareInput.disabled = true;
-      fareChecked = false;
-      checkFareBtn.disabled = true;
       updateDisplays();
       gpsStatusEl.textContent = 'Idle';
       resetBtn.disabled = true;
-
-      // reset pause button
-      pauseBtn.disabled = true;
-      pauseBtn.textContent = 'Pause';
-      paused = false;
-
-      recentFixes = [];
-      consecutiveValidMoves = 0;
-      stationaryStartTs = null;
-      windowFixes = [];
     }
 
-    /* onPosition (replaced)
-       Windowed stationary detection + soft validation to avoid long "Validating movement" hang.
-       Complexity per call: effectively O(1) because MEDIAN_WINDOW and windowFixes size are bounded in practice.
-    */
     function onPosition(pos) {
-      if (paused) return; // do nothing while paused
-
       const { latitude, longitude, accuracy } = pos.coords;
       const ts = pos.timestamp || Date.now();
 
-      // Push raw fix into recent window for median smoothing
-      recentFixes.push({ lat: latitude, lon: longitude, ts, accuracy });
-      if (recentFixes.length > MEDIAN_WINDOW) recentFixes.shift();
-
-      // Use median coordinate to reduce single-fix spikes
-      const median = medianCoord(recentFixes);
-      const current = { lat: median.lat, lon: median.lon, timestamp: ts, accuracy };
-
-      // Accuracy gating: ignore extremely poor fixes
-      if (current.accuracy > 200) {
-        gpsStatusEl.textContent = `Very poor accuracy (${Math.round(current.accuracy)} m) — waiting`;
-        if (DEBUG) console.debug('fix ignored - poor accuracy', { acc: current.accuracy });
-        return;
+      if (accuracy > HARD_ACCURACY_LIMIT) {
+        poorFixCount++;
+        if (poorFixCount >= POOR_FIX_LIMIT) {
+          gpsStatusEl.textContent = `Low accuracy (${Math.round(accuracy)} m) — waiting`;
+        } else {
+          gpsStatusEl.textContent = `Low accuracy (${Math.round(accuracy)} m) — waiting`;
+        }
+        if (gpsPoints.length === 0 && accuracy <= HARD_ACCURACY_LIMIT) {
+        } else {
+          return;
+        }
+      } else if (accuracy <= MAX_ACCEPTABLE_ACCURACY) {
+        poorFixCount = 0;
+        gpsStatusEl.textContent = `OK (accuracy ${Math.round(accuracy)} m)`;
+      } else {
+        poorFixCount++;
+        if (poorFixCount < POOR_FIX_LIMIT) {
+          gpsStatusEl.textContent = `OK (accuracy ${Math.round(accuracy)} m)`;
+        } else {
+          gpsStatusEl.textContent = `Low accuracy (${Math.round(accuracy)} m) — waiting`;
+        }
       }
 
-      // If first accepted point, push but do not add distance
+      const current = { lat: latitude, lon: longitude, timestamp: ts };
+
       if (gpsPoints.length === 0) {
         gpsPoints.push(current);
-        stationaryStartTs = ts;
-        windowFixes = [{ lat: current.lat, lon: current.lon, ts: current.timestamp }];
-        gpsStatusEl.textContent = `Fix OK (${Math.round(current.accuracy)} m)`;
         updateDisplays();
-        if (DEBUG) console.debug('first fix', { acc: current.accuracy });
         return;
       }
 
       const last = gpsPoints[gpsPoints.length - 1];
       const d = haversineDistance(last.lat, last.lon, current.lat, current.lon);
-      const dtSec = Math.max(1, (current.timestamp - last.timestamp) / 1000);
-      const speedKmh = (d / dtSec) * 3.6;
-
-      // Ignore implausible spikes (teleportation)
-      if (speedKmh > MAX_PLAUSIBLE_SPEED_KMH) {
-        if (DEBUG) console.debug('Ignored spike', { d: Math.round(d), speedKmh: Math.round(speedKmh), acc: Math.round(current.accuracy) });
-        // soft-decrement instead of hard reset
-        consecutiveValidMoves = Math.max(0, consecutiveValidMoves - 1);
-        gpsStatusEl.textContent = `Spike ignored (speed ${Math.round(speedKmh)} km/h)`;
-        return;
+      if (d >= MIN_MOVE_METERS) {
+        gpsPoints.push(current);
+        totalDistanceMeters += d;
+        rideSummary = computeRideBreakdown(gpsPoints);
+        updateDisplays();
       }
-
-      // Maintain a time-window of raw fixes for stationary detection
-      windowFixes.push({ lat: current.lat, lon: current.lon, ts: current.timestamp });
-      const windowStart = current.timestamp - STATIONARY_WINDOW_MS;
-      while (windowFixes.length && windowFixes[0].ts < windowStart) windowFixes.shift();
-
-      // compute total displacement across window (sum of pairwise distances)
-      let windowDistance = 0;
-      for (let i = 0; i < windowFixes.length - 1; i++) {
-        windowDistance += haversineDistance(
-          windowFixes[i].lat, windowFixes[i].lon,
-          windowFixes[i+1].lat, windowFixes[i+1].lon
-        );
-      }
-
-      // If windowDistance is small, treat as stationary
-      if (windowDistance < STATIONARY_THRESHOLD_METERS) {
-        consecutiveValidMoves = 0;
-        gpsStatusEl.textContent = `Stationary (${Math.round(STATIONARY_WINDOW_MS/1000)}s window)`;
-        if (DEBUG) console.debug('stationary', { windowDistance: Math.round(windowDistance), windowCount: windowFixes.length });
-        return;
-      }
-
-      // If displacement is below MIN_MOVE_METERS or speed is very low, treat as drift
-      if (d < MIN_MOVE_METERS || speedKmh < MIN_SPEED_KMH) {
-        // soft-decrement to allow occasional small spikes to accumulate
-        consecutiveValidMoves = Math.max(0, consecutiveValidMoves - 1);
-        gpsStatusEl.textContent = `Waiting for sustained movement`;
-        if (DEBUG) console.debug('drift', { d: Math.round(d), speedKmh: Math.round(speedKmh), windowDistance: Math.round(windowDistance), consecutiveValidMoves });
-        return;
-      }
-
-      // movement looks meaningful: increment consecutive counter
-      consecutiveValidMoves++;
-      if (consecutiveValidMoves < CONSECUTIVE_VALID) {
-        gpsStatusEl.textContent = `Validating movement (${consecutiveValidMoves}/${CONSECUTIVE_VALID})`;
-        if (DEBUG) console.debug('validating', { d: Math.round(d), speedKmh: Math.round(speedKmh), consecutiveValidMoves });
-        return;
-      }
-
-      // accept movement
-      gpsPoints.push(current);
-      totalDistanceMeters += d;
-      rideSummary = computeRideBreakdown(gpsPoints);
-      consecutiveValidMoves = 0;
-      // reset window buffer after confirmed movement to avoid immediate re-stationary detection
-      windowFixes = [];
-      gpsStatusEl.textContent = `Moving (speed ${Math.round(speedKmh)} km/h, acc ${Math.round(current.accuracy)} m)`;
-      updateDisplays();
-
-      if (DEBUG) console.debug('accepted movement', { d: Math.round(d), speedKmh: Math.round(speedKmh), totalDistance: Math.round(totalDistanceMeters) });
     }
 
     function onError(err) {
@@ -741,7 +563,13 @@
     }
 
     meterFareInput.addEventListener('input', (e) => {
-      // sanitize input but do not mark fareChecked true until user clicks Check Fare
+      if (meterFareInput.disabled) {
+        meterFareInput.value = '';
+        fareStatusEl.textContent = 'Please start and end your ride to use this service.';
+        fareStatusEl.style.color = '#ffd966';
+        fareStatusBox.style.borderColor = 'rgba(255,204,0,0.06)';
+        return;
+      }
       let v = meterFareInput.value || '';
       v = v.replace(/[^\d.]/g, '');
       const parts = v.split('.');
@@ -754,36 +582,10 @@
         v = String(Number(v));
       }
       meterFareInput.value = v;
-
-      // When user edits after checking, reset fareChecked to require re-check
-      if (fareChecked) {
-        fareChecked = false;
-      }
-      updateDisplays();
-    });
-
-    // Pause/Resume button behavior
-    pauseBtn.addEventListener('click', () => {
-      paused = !paused;
-      pauseBtn.textContent = paused ? 'Resume' : 'Pause';
-      pauseBtn.classList.toggle('active', paused);
-      if (paused) {
-        gpsStatusEl.textContent = 'Paused';
-      } else {
-        gpsStatusEl.textContent = 'Resumed';
-      }
-    });
-
-    // Check Fare button behavior
-    checkFareBtn.addEventListener('click', () => {
-      // Only accept check when meter input is enabled
-      if (meterFareInput.disabled) return;
-      fareChecked = true;
       updateDisplays();
     });
 
     meterFareInput.disabled = true;
-    checkFareBtn.disabled = true;
     updateDisplays();
 
     startBtn.addEventListener('click', startRide);

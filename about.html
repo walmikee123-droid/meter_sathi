@@ -10,15 +10,18 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
       background: linear-gradient(135deg, #000000, #1c1c1c);
       color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
-    /* Navbar */
+    /* --- Navbar --- */
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -33,98 +36,141 @@
       font-size: 24px;
     }
 
+    .nav-links {
+      display: flex;
+      gap: 10px;
+    }
+
     .nav-links a {
       text-decoration: none;
       color: #ffcc00;
-      margin: 0 10px;
+      margin: 0 5px;
       padding: 8px 15px;
       border-radius: 20px;
       transition: 0.3s;
       font-weight: 500;
     }
 
-    .nav-links a:hover {
+    .nav-links a:hover, .nav-links a.active {
       background-color: #ffcc00;
       color: #000000;
     }
 
-    /* Main Container */
+    /* --- Main Container --- */
     .container {
+      flex: 1;
       padding: 60px 20px;
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .about-card {
       background: #111111;
-      max-width: 900px;
-      margin: auto;
-      padding: 40px;
+      max-width: 950px; /* Thoda aur bada kiya taaki 6 items aaram se aa jayein */
+      width: 100%;
+      padding: 50px;
       border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(255, 204, 0, 0.3);
-      border: 2px solid #ffcc00;
+      box-shadow: 0 10px 40px rgba(255, 204, 0, 0.15);
+      border: 1px solid #333;
+      border-top: 4px solid #ffcc00;
+      text-align: center;
     }
 
-    .about-card h2 {
-      margin-bottom: 20px;
-      font-size: 32px;
+    .about-header {
+      margin-bottom: 35px;
+    }
+
+    .about-header h2 {
+      font-size: 38px;
       color: #ffcc00;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
     }
 
-    .about-card p {
-      line-height: 1.7;
+    .about-header h3 {
       font-size: 18px;
-      margin-bottom: 20px;
+      color: #aaaaaa;
+      font-weight: 400;
+    }
+
+    .about-content {
+      line-height: 1.8;
+      font-size: 17px;
       color: #dddddd;
+      margin-bottom: 40px;
+      text-align: left;
     }
 
-    /* Team Section */
-    .team {
-      margin-top: 40px;
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      flex-wrap: wrap;
+    .about-content p {
+      margin-bottom: 20px;
     }
 
-    .member {
-      background: #000000;
-      padding: 20px;
-      border-radius: 15px;
-      width: 200px;
-      transition: 0.3s;
-      border: 2px solid #ffcc00;
+    /* --- Core Values Grid (Now properly handles 6 items) --- */
+    .values-grid {
+      display: grid;
+      /* Changed minmax to 220px taaki desktop par 3 columns ban jayein */
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
     }
 
-    .member:hover {
-      transform: translateY(-10px);
-      background: #ffcc00;
-      color: #000000;
+    .value-box {
+      background: #1a1a1a;
+      padding: 25px;
+      border-radius: 12px;
+      border: 1px solid #222;
+      text-align: center;
+      transition: transform 0.3s, border-color 0.3s;
     }
 
-    /* Button */
+    .value-box:hover {
+      transform: translateY(-5px);
+      border-color: #ffcc00;
+    }
+
+    .value-icon {
+      font-size: 32px;
+      margin-bottom: 15px;
+    }
+
+    .value-box h4 {
+      color: #ffcc00;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .value-box p {
+      color: #bbbbbb;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* --- Button --- */
     .btn {
       display: inline-block;
-      margin-top: 20px;
-      padding: 10px 25px;
+      padding: 12px 35px;
       background: #ffcc00;
       color: #000000;
       border-radius: 25px;
       text-decoration: none;
+      font-size: 16px;
       font-weight: bold;
-      transition: 0.3s;
+      transition: all 0.3s;
+      border: 2px solid #ffcc00;
     }
 
     .btn:hover {
-      background: #e6b800;
+      background: transparent;
+      color: #ffcc00;
     }
 
-    /* Footer */
+    /* --- Footer --- */
     footer {
       background: #000000;
       color: #ffcc00;
       text-align: center;
       padding: 20px;
-      margin-top: 60px;
       border-top: 4px solid #ffcc00;
     }
 
@@ -132,17 +178,26 @@
       color: #ffcc00;
       text-decoration: none;
       margin: 0 10px;
+      transition: opacity 0.3s;
     }
 
     footer a:hover {
       text-decoration: underline;
+      opacity: 0.8;
     }
 
-    /* Responsive */
+    /* --- Responsive --- */
     @media (max-width: 768px) {
-      .team {
+      .navbar {
         flex-direction: column;
-        align-items: center;
+        gap: 15px;
+        padding: 15px 20px;
+      }
+      .about-card {
+        padding: 30px 20px;
+      }
+      .about-header h2 {
+        font-size: 28px;
       }
     }
   </style>
@@ -153,9 +208,8 @@
   <div class="navbar">
     <h1>🚕 Meter-Sathi</h1>
     <div class="nav-links">
-      <!-- Home now points to welcome.html -->
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
+      <a href="welcome.html">Home</a>
+      <a href="about.html" class="active">About</a>
       <a href="services.html">Services</a>
       <a href="faq.html">FAQ</a>
       <a href="contact.html">Contact</a>
@@ -164,34 +218,56 @@
 
   <div class="container">
     <div class="about-card">
-      <h2>About Meter-Sathi</h2>
-      <p>
-        Meter-Sathi is a smart fare-checking platform designed to help users 
-        verify auto and taxi meter fares quickly and accurately.
-      </p>
+      
+      <div class="about-header">
+        <h2>About Meter-Sathi</h2>
+        <h3>Empowering commuters with transparent, real-time fare tracking.</h3>
+      </div>
 
-      <p>
-        Our goal is to promote fair pricing, transparency, and convenience 
-        for daily commuters. With Meter-Sathi, you can check estimated fare 
-        before or after your ride and avoid overcharging.
-      </p>
+      <div class="about-content">
+        <p>
+          Navigating bustling streets in and around Mumbai shouldn't come with the stress of fare disputes. <strong>Meter-Sathi</strong> was born out of a simple idea: every commuter deserves to pay exactly what is fair, without second-guessing the meter.
+        </p>
+        <p>
+          We bridge the gap between official regional transport tariffs and daily travel. By utilizing real-time GPS tracking and up-to-date government fare charts, our platform instantly calculates your journey's true cost—accounting for base fares, per-kilometer rates, and even night surcharges. 
+        </p>
+      </div>
 
-      <a href="welcome.html" class="btn">Back to home</a>
-
-      <div class="team">
-        <div class="member">
-          <h3>Founder</h3>
-          <p>Project Lead</p>
+      <div class="values-grid">
+        <div class="value-box">
+          <div class="value-icon">⚖️</div>
+          <h4>Fair Pricing</h4>
+          <p>We eliminate the guesswork. Compare your driver's meter against official tariffs instantly.</p>
         </div>
-        <div class="member">
-          <h3>Developer</h3>
-          <p>Frontend & Backend</p>
+        <div class="value-box">
+          <div class="value-icon">📍</div>
+          <h4>Live Accuracy</h4>
+          <p>Powered by precise location tracking to ensure your distance and fares are calculated flawlessly.</p>
         </div>
-        <div class="member">
-          <h3>Designer</h3>
-          <p>UI/UX Specialist</p>
+        <div class="value-box">
+          <div class="value-icon">🛡️</div>
+          <h4>Commuter Trust</h4>
+          <p>Designed to build trust and transparency between transport providers and daily passengers.</p>
+        </div>
+        
+        <div class="value-box">
+          <div class="value-icon">🌙</div>
+          <h4>Day & Night Fares</h4>
+          <p>Seamlessly adapts to official night surcharges, so you are never caught off guard.</p>
+        </div>
+        <div class="value-box">
+          <div class="value-icon">🔒</div>
+          <h4>Privacy First</h4>
+          <p>Your location data is processed locally just for the ride. We never save your travel history.</p>
+        </div>
+        <div class="value-box">
+          <div class="value-icon">📱</div>
+          <h4>Commuter Friendly</h4>
+          <p>A clean, intuitive app design built specifically for passengers on the go. No complex setups.</p>
         </div>
       </div>
+
+      <a href="welcome.html" class="btn">Start Your Ride</a>
 
     </div>
   </div>
@@ -199,9 +275,21 @@
   <footer>
     <p>© 2026 Meter-Sathi | 
       <a href="privacy.html">Privacy Policy</a> | 
-      <a href="terms.html">Terms of Service</a>
+      <a href="terms.html">Terms and Conditions</a>
     </p>
   </footer>
+
+  <script>
+    (function () {
+      const links = document.querySelectorAll('.nav-links a');
+      const current = location.pathname.split('/').pop() || 'welcome.html';
+      links.forEach(a => {
+        if (a.getAttribute('href') === current) {
+          a.classList.add('active');
+        }
+      });
+    })();
+  </script>
 
 </body>
 </html>

@@ -6,7 +6,6 @@
     <title>Privacy Policy | Meter-Sathi</title>
     
     <style>
-        /* --- Core Theme Colors --- */
         :root {
             --bg-color: #000000;
             --primary-yellow: #FFD700; 
@@ -28,7 +27,6 @@
             box-sizing: border-box;
         }
 
-        /* --- Header Styles --- */
         header {
             background-color: #000;
             display: flex;
@@ -69,7 +67,6 @@
             opacity: 0.8;
         }
 
-        /* --- Main Content Styles --- */
         main {
             flex-grow: 1;
             padding: 60px 50px;
@@ -105,7 +102,6 @@
             margin-right: auto;
         }
 
-        /* --- Privacy Cards Styles --- */
         .privacy-cards-container {
             display: flex;
             flex-wrap: wrap;
@@ -145,7 +141,6 @@
             margin: 0;
         }
 
-        /* --- Action Button Section --- */
         .action-section {
             margin-top: 20px;
             margin-bottom: 20px;
@@ -168,7 +163,6 @@
             opacity: 0.9;
         }
 
-        /* --- Footer Styles --- */
         footer {
             text-align: center;
             padding: 20px;
@@ -177,20 +171,32 @@
             font-size: 0.85em;
             border-top: 1px solid #222;
         }
+        
+        footer a {
+            color: var(--primary-yellow);
+            text-decoration: none;
+            margin: 0 10px;
+            transition: opacity 0.3s;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="#" class="logo-container">
+        <a href="welcome.html" class="logo-container">
             <span class="logo-icon">🚕</span> Meter-Sathi
         </a>
         <nav>
-            <a href="#">Home</a>
-            <a href="#">About</a>
-            <a href="#">Services</a> 
-            <a href="#">FAQ</a>
-            <a href="#">Contact</a>
+            <a href="welcome.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a> 
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Contact</a>
         </nav>
     </header>
 
@@ -227,21 +233,23 @@
         </div>
 
         <div class="action-section">
-            <button id="return-btn">Return to App</button>
+            <button id="return-btn">Return to Welcome Page</button>
         </div>
     </main>
 
     <footer>
-        <p>&copy; 2026 Meter-Sathi. All Rights Reserved. Commute with Confidence.</p>
+        <p>© 2026 Meter-Sathi | 
+            <a href="privacy.html">Privacy Policy</a> | 
+            <a href="terms.html">Terms and Conditions</a>
+        </p>
     </footer>
 
     <script>
         const returnBtn = document.getElementById('return-btn');
 
-        // Event listener for button click
         returnBtn.addEventListener('click', function() {
-            // Change "index.html" to your main dashboard or home page
-            window.location.href = "index.html"; 
+            // Redirects to welcome.html
+            window.location.href = "welcome.html"; 
         });
     </script>
 </body>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms and Conditions | Meter-Sathi</title>
+    
+    <style>
+        /* CSS Styles */
+        /* --- Core Theme Colors --- */
+        :root {
+            --bg-color: #000000;
+            --primary-yellow: #FFD700; 
+            --active-item-color: #FFC400; 
+            --body-text-white: #FFFFFF;
+            --card-bg-color: #1A1A1A; 
+            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --border-color: #333;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--body-text-white);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        /* --- Header Styles --- */
+        header {
+            background-color: #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 50px;
+            border-bottom: 1px solid var(--primary-yellow);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.5em;
+            color: var(--primary-yellow);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        nav {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--primary-yellow);
+            font-size: 1em;
+            transition: opacity 0.3s;
+        }
+
+        nav a:hover {
+            opacity: 0.8;
+        }
+
+        /* --- Main Content Styles --- */
+        main {
+            flex-grow: 1;
+            padding: 60px 50px;
+            text-align: center;
+        }
+
+        .glow-title {
+            color: var(--primary-yellow);
+            font-size: 2.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); 
+        }
+
+        .main-subtitle {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            color: var(--body-text-white);
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .main-body-text {
+            font-size: 1em;
+            margin-bottom: 50px;
+            color: var(--body-text-white);
+            opacity: 0.8;
+            line-height: 1.6;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- Terms Cards Styles --- */
+        .terms-cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .terms-card {
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 300px;
+            padding: 30px;
+            text-align: left;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .terms-card:hover {
+            border-color: var(--primary-yellow);
+            transform: translateY(-5px);
+        }
+
+        .terms-card h3 {
+            color: var(--primary-yellow);
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .terms-card p {
+            color: var(--body-text-white);
+            font-size: 0.95em;
+            opacity: 0.9;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* --- Agreement Section Styles --- */
+        .agreement-section {
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .agreement-text {
+            color: var(--body-text-white);
+            font-size: 1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-container {
+            display: block;
+            position: relative;
+            padding-left: 35px;
+            margin-bottom: 25px;
+            cursor: pointer;
+            font-size: 0.95em;
+            user-select: none;
+            color: var(--body-text-white);
+        }
+
+        .checkbox-container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: #2a2a2a;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        .checkbox-container:hover input ~ .checkmark {
+            background-color: #333;
+        }
+
+        .checkbox-container input:checked ~ .checkmark {
+            background-color: var(--active-item-color);
+            border-color: var(--active-item-color);
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        .checkbox-container input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        .checkbox-container .checkmark:after {
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid #000;
+            border-width: 0 3px 3px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Updated ID to return-btn */
+        #return-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 20px;
+            background-color: var(--active-item-color);
+            color: #000;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, opacity 0.3s;
+        }
+
+        #return-btn:hover {
+            opacity: 0.9;
+        }
+
+        #return-btn:disabled {
+            background-color: #555;
+            color: #888;
+            cursor: not-allowed;
+            opacity: 1;
+        }
+
+        /* --- Footer Styles --- */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--body-text-white);
+            opacity: 0.6;
+            font-size: 0.85em;
+            border-top: 1px solid #222;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo-container">
+            <span class="logo-icon">🚕</span> Meter-Sathi
+        </a>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Services</a> 
+            <a href="#">FAQ</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1 class="glow-title">Terms and Conditions</h1>
+        <p class="main-subtitle">Please review our rules and guidelines for a transparent commuting experience.</p>
+        <p class="main-body-text">By accessing or using the Meter-Sathi web application, you agree to be bound by these terms. This platform serves as an informational tool to help you promote fair pricing and understanding in your daily commutes.</p>
+
+        <div class="terms-cards-container">
+            <div class="terms-card">
+                <h3>1. Fare Estimates</h3>
+                <p>Calculated fares are <strong>estimates only</strong>, based on official government tariffs and mapping services. Actual fares may vary due to traffic, waiting time, or sudden regulatory changes. Meter-Sathi is a reference, not a legal mandate.</p>
+            </div>
+            
+            <div class="terms-card">
+                <h3>2. No Liability</h3>
+                <p>Meter-Sathi, its creators, and affiliates are not party to any disputes, arguments, or financial disagreements between a commuter and a driver. Use of the estimates is at your own risk and for fair negotiation.</p>
+            </div>
+            
+            <div class="terms-card">
+                <h3>3. Location Access</h3>
+                <p>The application requires temporary GPS and location services access to calculate distances and provide accurate fare estimates. This data is processed locally and used solely for this purpose.</p>
+            </div>
+            
+            <div class="terms-card">
+                <h3>4. User Conduct</h3>
+                <p>Users agree to use the platform for its intended purpose and will not misuse, scrape, or reverse-engineer its data or fare calculation algorithms for unauthorized commercial purposes.</p>
+            </div>
+            
+            <div class="terms-card">
+                <h3>5. Dispute Resolution</h3>
+                <p>Meter-Sathi does not act as a mediator or legal authority. Any dispute arising during your ride is between you and the transport provider and should be resolved through official transport authority channels.</p>
+            </div>
+        </div>
+
+        <div class="agreement-section">
+            <p class="agreement-text">By checking the box below, you acknowledge that you have read, understood, and agree to the above Terms and Conditions in their entirety.</p>
+            <label class="checkbox-container">
+                <input type="checkbox" id="agree-checkbox">
+                <span class="checkmark"></span>
+                I have read and agree to the Terms and Conditions
+            </label>
+            
+            <button id="return-btn" disabled>Return to App</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Meter-Sathi. All Rights Reserved. Commute with Confidence.</p>
+    </footer>
+
+    <script>
+        const checkbox = document.getElementById('agree-checkbox');
+        const btn = document.getElementById('return-btn');
+
+        // Enable or disable the button based on checkbox state
+        checkbox.addEventListener('change', function() {
+            btn.disabled = !this.checked;
+        });
+
+        // Event listener for button click
+        btn.addEventListener('click', function() {
+            if (!this.disabled) {
+                // Link updated to point to index.html (or your main app page)
+                window.location.href = "index.html"; 
+            }
+        });
+    </script>
+</body>
+</html>

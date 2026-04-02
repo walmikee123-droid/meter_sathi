@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | Meter-Sathi</title>
+    
+    <style>
+        /* --- Core Theme Colors --- */
+        :root {
+            --bg-color: #000000;
+            --primary-yellow: #FFD700; 
+            --active-item-color: #FFC400; 
+            --body-text-white: #FFFFFF;
+            --card-bg-color: #1A1A1A; 
+            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --border-color: #333;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--body-text-white);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        /* --- Header Styles --- */
+        header {
+            background-color: #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 50px;
+            border-bottom: 1px solid var(--primary-yellow);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.5em;
+            color: var(--primary-yellow);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        nav {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--primary-yellow);
+            font-size: 1em;
+            transition: opacity 0.3s;
+        }
+
+        nav a:hover {
+            opacity: 0.8;
+        }
+
+        /* --- Main Content Styles --- */
+        main {
+            flex-grow: 1;
+            padding: 60px 50px;
+            text-align: center;
+        }
+
+        .glow-title {
+            color: var(--primary-yellow);
+            font-size: 2.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); 
+        }
+
+        .main-subtitle {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            color: var(--body-text-white);
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .main-body-text {
+            font-size: 1em;
+            margin-bottom: 50px;
+            color: var(--body-text-white);
+            opacity: 0.8;
+            line-height: 1.6;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- Privacy Cards Styles --- */
+        .privacy-cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .privacy-card {
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 300px;
+            padding: 30px;
+            text-align: left;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .privacy-card:hover {
+            border-color: var(--primary-yellow);
+            transform: translateY(-5px);
+        }
+
+        .privacy-card h3 {
+            color: var(--primary-yellow);
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .privacy-card p {
+            color: var(--body-text-white);
+            font-size: 0.95em;
+            opacity: 0.9;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* --- Action Button Section --- */
+        .action-section {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #return-btn {
+            padding: 12px 40px;
+            border: none;
+            border-radius: 20px;
+            background-color: var(--active-item-color);
+            color: #000;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, opacity 0.3s;
+        }
+
+        #return-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* --- Footer Styles --- */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--body-text-white);
+            opacity: 0.6;
+            font-size: 0.85em;
+            border-top: 1px solid #222;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo-container">
+            <span class="logo-icon">🚕</span> Meter-Sathi
+        </a>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Services</a> 
+            <a href="#">FAQ</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1 class="glow-title">Privacy Policy</h1>
+        <p class="main-subtitle">How we collect, use, and protect your data.</p>
+        <p class="main-body-text">At Meter-Sathi, your privacy is our priority. We believe in complete transparency about how your data is handled while you use our platform to check fares and track rides.</p>
+
+        <div class="privacy-cards-container">
+            <div class="privacy-card">
+                <h3>1. Information We Collect</h3>
+                <p>To provide accurate fare estimates, we request access to your device's GPS/Location services. We also collect basic, non-personally identifiable usage data (like device type or browser) to ensure the app runs smoothly.</p>
+            </div>
+            
+            <div class="privacy-card">
+                <h3>2. How We Use Your Data</h3>
+                <p>Your location data is used strictly in real-time to calculate the distance between your starting point and destination. This allows us to apply the correct local tariffs and night surcharges for your journey.</p>
+            </div>
+            
+            <div class="privacy-card">
+                <h3>3. Third-Party Services</h3>
+                <p>We do not sell your personal data. We may use third-party APIs (such as mapping or routing services) to calculate distances. These services only receive the geographic coordinates necessary to draw the route.</p>
+            </div>
+            
+            <div class="privacy-card">
+                <h3>4. Data Security</h3>
+                <p>We implement standard security measures to protect against unauthorized access. Location calculations are primarily handled dynamically, meaning we do not store your permanent travel history on our public servers.</p>
+            </div>
+            
+            <div class="privacy-card">
+                <h3>5. Your Choices</h3>
+                <p>You have full control over your data. You can deny or revoke location permissions at any time through your device settings, though this will limit the app's ability to automatically calculate live fares.</p>
+            </div>
+        </div>
+
+        <div class="action-section">
+            <button id="return-btn">Return to App</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Meter-Sathi. All Rights Reserved. Commute with Confidence.</p>
+    </footer>
+
+    <script>
+        const returnBtn = document.getElementById('return-btn');
+
+        // Event listener for button click
+        returnBtn.addEventListener('click', function() {
+            // Change "index.html" to your main dashboard or home page
+            window.location.href = "index.html"; 
+        });
+    </script>
+</body>
+</html>

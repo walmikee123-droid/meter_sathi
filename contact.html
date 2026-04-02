@@ -43,7 +43,7 @@
       font-weight: 500;
     }
 
-    .nav-links a:hover {
+    .nav-links a:hover, .nav-links a.active {
       background-color: #ffcc00;
       color: #000000;
     }
@@ -60,7 +60,8 @@
 
     .message-card {
       background: #111111;
-      max-width: 600px;
+      max-width: 850px; 
+      width: 100%;
       margin: auto;
       padding: 40px;
       border-radius: 20px;
@@ -69,9 +70,93 @@
     }
 
     .message-card h2 {
-      font-size: 28px;
+      font-size: 32px;
       color: #ffcc00;
       text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #bbbbbb;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    /* Contact Layout */
+    .contact-wrapper {
+      display: flex;
+      gap: 30px;
+      text-align: left;
+    }
+
+    .contact-info, .contact-form {
+      flex: 1;
+    }
+
+    /* Info Cards */
+    .info-item {
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #333;
+    }
+
+    .info-item h3 {
+      color: #ffcc00;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .info-item p {
+      color: #eeeeee;
+      font-size: 15px;
+    }
+
+    /* Form Styles */
+    .contact-form form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .contact-form input, 
+    .contact-form textarea {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: #000000;
+      color: #ffffff;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .contact-form input:focus, 
+    .contact-form textarea:focus {
+      border-color: #ffcc00;
+    }
+
+    .contact-form textarea {
+      resize: vertical;
+      min-height: 130px;
+    }
+
+    .submit-btn {
+      padding: 14px;
+      background: #ffcc00;
+      color: #000000;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .submit-btn:hover {
+      background: #e6b800;
     }
 
     /* Footer */
@@ -97,6 +182,7 @@
     /* Responsive */
     @media (max-width: 768px) {
       .message-card { padding: 28px; }
+      .contact-wrapper { flex-direction: column; }
     }
   </style>
 </head>
@@ -116,18 +202,49 @@
 
   <div class="container">
     <div class="message-card">
-      <h2>This page will be edited soon.</h2>
+      <h2>Get In Touch</h2>
+      <p class="subtitle">Have questions about fares or need to report an issue? The Meter-Sathi team is here to help.</p>
+      
+      <div class="contact-wrapper">
+        
+        <div class="contact-info">
+          <div class="info-item">
+            <h3>📍 Our Location</h3>
+            <p>Meter-Sathi HQ<br>Mumbai, Maharashtra, India</p>
+          </div>
+          <div class="info-item">
+            <h3>✉️ Email Us</h3>
+            <p>support@meter-sathi.in<br>feedback@meter-sathi.in</p>
+          </div>
+          <div class="info-item">
+            <h3>🕒 Support Hours</h3>
+            <p>24 Hours / 7 Days a week<br>Always available for your commute.</p>
+          </div>
+        </div>
+
+        <div class="contact-form">
+          <form id="contactForm">
+            <input type="text" placeholder="Your Full Name" required>
+            <input type="email" placeholder="Your Email Address" required>
+            <input type="text" placeholder="Subject" required>
+            <textarea placeholder="Type your message here..." required></textarea>
+            <button type="submit" class="submit-btn">Send Message</button>
+          </form>
+        </div>
+
+      </div>
     </div>
   </div>
 
   <footer>
     <p>© 2026 Meter-Sathi | 
-      <a href="#">Privacy Policy</a> | 
-      <a href="#">Terms of Service</a>
+      <a href="privacy.html">Privacy Policy</a> | 
+      <a href="terms.html">Terms and Conditions</a>
     </p>
   </footer>
 
   <script>
+    // Highlight Active Link
     (function () {
       const links = document.querySelectorAll('.nav-links a');
       const current = location.pathname.split('/').pop() || 'welcome.html';
@@ -135,6 +252,13 @@
         if (a.getAttribute('href') === current) a.classList.add('active');
       });
     })();
+
+    // Simple Form Submission Alert
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Thank you! Your message has been sent to the Meter-Sathi team.');
+      this.reset();
+    });
   </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Kaali Peeli Taxi Tracker — Non AC</title>
+  <title>Kaali Peeli Taxi Tracker — AC</title>
   <style>
     * { box-sizing: border-box; margin:0; padding:0; font-family: 'Segoe UI', sans-serif; }
     body { background: linear-gradient(135deg,#000,#1b1b1b); color:#fff; min-height:100vh; display:flex; flex-direction:column; }
@@ -149,7 +149,7 @@
         <div class="summary-box" id="fareStatusBox" aria-live="polite"><h4 style="color:#ffd966">Fare Status</h4><p id="fareStatus" style="color:#ffd966">Please start and end your ride to use this service.</p></div>
       </div>
 
-      <p class="note">Note: <strong>Base fare ₹31</strong> for first <strong>1.49 km</strong>. Per km after base: <strong>₹20.66</strong>. Night surcharge: <strong>25% (00:00–05:00)</strong>.</p>
+      <p class="note">Note: <strong>Base fare ₹31</strong> for first <strong>1.50 km</strong>. Per km after base: <strong>₹22.76</strong>. Night surcharge: <strong>25% (00:00–05:00)</strong>.</p>
     </div>
 
     <!-- Extra content so page doesn't feel empty above footer -->
@@ -184,10 +184,10 @@
   <footer>© 2026 Kaali Peeli Taxi Tracker</footer>
 
   <script>
-    /* Fare configuration for Non-AC Kaali Peeli */
+    /* Fare configuration for AC Kaali Peeli */
     const BASE_FARE = 31.0;
-    const BASE_DISTANCE_M = 1490;        // 1.49 km in meters
-    const PER_KM_RATE = 20.66;           // per km after base
+    const BASE_DISTANCE_M = 1500;        // 1.50 km in meters
+    const PER_KM_RATE = 22.76;           // per km after base
     const NIGHT_SURCHARGE = 0.25;        // 25% extra between 00:00-05:00
 
     /* GPS / detection tuning (robust) */

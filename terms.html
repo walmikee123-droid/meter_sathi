@@ -7,6 +7,7 @@
     
     <style>
         /* CSS Styles */
+        /* --- Core Theme Colors --- */
         :root {
             --bg-color: #000000;
             --primary-yellow: #FFD700; 
@@ -28,6 +29,7 @@
             box-sizing: border-box;
         }
 
+        /* --- Header Styles --- */
         header {
             background-color: #000;
             display: flex;
@@ -68,6 +70,7 @@
             opacity: 0.8;
         }
 
+        /* --- Main Content Styles --- */
         main {
             flex-grow: 1;
             padding: 60px 50px;
@@ -103,6 +106,7 @@
             margin-right: auto;
         }
 
+        /* --- Terms Cards Styles --- */
         .terms-cards-container {
             display: flex;
             flex-wrap: wrap;
@@ -142,6 +146,7 @@
             margin: 0;
         }
 
+        /* --- Agreement Section Styles --- */
         .agreement-section {
             background-color: var(--card-bg-color);
             border: 1px solid var(--border-color);
@@ -221,6 +226,7 @@
             transform: rotate(45deg);
         }
 
+        /* Updated ID to return-btn */
         #return-btn {
             width: 100%;
             padding: 12px;
@@ -245,6 +251,7 @@
             opacity: 1;
         }
 
+        /* --- Footer Styles --- */
         footer {
             text-align: center;
             padding: 20px;
@@ -253,32 +260,20 @@
             font-size: 0.85em;
             border-top: 1px solid #222;
         }
-        
-        footer a {
-            color: var(--primary-yellow);
-            text-decoration: none;
-            margin: 0 10px;
-            transition: opacity 0.3s;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-            opacity: 0.8;
-        }
     </style>
 </head>
 <body>
 
     <header>
         <a href="welcome.html" class="logo-container">
-            <span class="logo-icon">🚕</span> Meter-Sathi
+            <span class="logo-icon"></span> Meter-Sathi
         </a>
         <nav>
             <a href="welcome.html">Home</a>
             <a href="about.html">About</a>
             <a href="services.html">Services</a> 
             <a href="faq.html">FAQ</a>
-            <a href="contact.html">Contact</a>
+            <a href="contact.html">Contact Us</a>
         </nav>
     </header>
 
@@ -322,28 +317,27 @@
                 I have read and agree to the Terms and Conditions
             </label>
             
-            <button id="return-btn" disabled>Return to Welcome Page</button>
+            <button id="return-btn" disabled>Return to Home Page</button>
         </div>
     </main>
 
     <footer>
-        <p>© 2026 Meter-Sathi | 
-            <a href="privacy.html">Privacy Policy</a> | 
-            <a href="terms.html">Terms and Conditions</a>
-        </p>
+        <p>&copy; 2026 Meter-Sathi. All Rights Reserved. Commute with Confidence.</p>
     </footer>
 
     <script>
         const checkbox = document.getElementById('agree-checkbox');
         const btn = document.getElementById('return-btn');
 
+        // Enable or disable the button based on checkbox state
         checkbox.addEventListener('change', function() {
             btn.disabled = !this.checked;
         });
 
+        // Event listener for button click
         btn.addEventListener('click', function() {
             if (!this.disabled) {
-                // Redirects to welcome.html
+                // Link updated to point to index.html (or your main app page)
                 window.location.href = "welcome.html"; 
             }
         });

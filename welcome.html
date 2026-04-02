@@ -141,6 +141,20 @@ footer {
   border-top: 4px solid #FFD700;
   letter-spacing: 1px;
 }
+
+/* Footer links styling */
+footer a {
+  color: #FFD700;
+  text-decoration: none;
+  margin: 0 10px;
+  transition: opacity 0.3s;
+}
+
+footer a:hover {
+  text-decoration: underline;
+  opacity: 0.8;
+}
+
 @media (max-width: 768px) {
   .brand-title {
     font-size: 36px;
@@ -174,7 +188,6 @@ footer {
 .overlay[aria-hidden="false"] { display: flex; }
 .modal {
   width: 100%;
-  /* increased modal width to avoid horizontal scrollbar for the three buttons */
   max-width: 760px;
   background: #111;
   border-radius: 12px;
@@ -186,14 +199,12 @@ footer {
 }
 .modal p { color: #ccc; margin: 6px 0 12px; font-weight:700; }
 
-/* Make all vehicle buttons appear in one line on wider screens */
 .vehicle-grid {
   display: flex;
   gap: 16px;
   justify-content: center;
   margin-top: 18px;
   flex-wrap: nowrap;
-  /* remove horizontal scroll by allowing modal to be wide enough */
   overflow: visible;
 }
 .vehicle {
@@ -212,7 +223,6 @@ footer {
 .vehicle:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.5); border-color: #FFD700; }
 .close-x { position:absolute; right:12px; top:10px; background:transparent; border:0; font-size:20px; color:#ccc; cursor:pointer; }
 
-/* On very small screens allow wrapping so buttons remain accessible without overflow */
 @media (max-width: 520px) {
   .modal { padding: 18px; max-width: 92%; }
   .vehicle-grid { flex-wrap: wrap; gap: 12px; }
@@ -261,10 +271,10 @@ footer {
   </div>
 
   <footer>
-    <a href="privacy.html">Privacy Policy</a>
-    <span style="opacity:0.5">|</span>
-    <a href="terms.html">Terms of Service</a>
-    <div style="margin-top:8px; font-weight:700">© 2026 Meter-Sathi</div>
+    <p>© 2026 Meter-Sathi | 
+      <a href="privacy.html">Privacy Policy</a> | 
+      <a href="terms.html">Terms and Conditions</a>
+    </p>
   </footer>
 
   <script>

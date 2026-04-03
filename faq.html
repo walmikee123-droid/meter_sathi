@@ -1,283 +1,330 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-IN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQ - Meter-Sathi</title>
-    <style>
-        /* General Reset & Theme */
-        body {
-            background-color: #121212;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FAQ - Meter-Sathi</title>
+  <style>
+    /* --- EXACT NAVBAR CSS FROM SERVICES.HTML --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
 
-        /* Navigation Bar (updated to match index.html pill hover style) */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 40px;
-            background: #000000;
-            border-bottom: 4px solid #ffcc00;
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #ffcc00;
-            text-decoration: none;
-        }
-        nav {
-            display: flex;
-            gap: 10px;
-        }
-        nav a {
-            text-decoration: none;
-            color: #ffcc00;
-            margin: 0 10px;
-            padding: 8px 15px;
-            border-radius: 20px; /* pill shape */
-            transition: 0.3s;
-            font-weight: 500;
-        }
-        nav a:hover {
-            background-color: #ffcc00;
-            color: #000000;
-        }
+    body {
+      background: linear-gradient(135deg, #000000, #111111);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-        /* Divider Lines */
-        .divider {
-            border: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #ffcc00, transparent);
-            margin: 0;
-        }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: #000000;
+      border-bottom: 4px solid #ffcc00;
+      z-index: 50;
+    }
 
-        /* Main FAQ Container */
-        .faq-container {
-            max-width: 800px;
-            margin: 60px auto;
-            padding: 0 20px;
-            min-height: 60vh;
-        }
-        .faq-container h1 {
-            text-align: center;
-            margin-bottom: 50px;
-            font-size: 36px;
-            /* Fancy Gradient Text */
-            background: linear-gradient(45deg, #ffcc00, #fffaaa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+    .brand {
+      color: #ffcc00;
+      font-weight: 900;
+      font-size: 20px;
+      letter-spacing: 0.4px;
+    }
 
-        /* Fancy Accordion Styling */
-        .faq-item {
-            background-color: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-        }
+    .nav-links {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
 
-        /* Hover and Active states for the "Out of the box" feel */
-        .faq-item:hover {
-            border-color: #555;
-            transform: translateY(-2px);
-        }
-        .faq-item.active {
-            border-color: #ffcc00;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.15); /* Yellow Glow */
-            transform: translateY(0);
-        }
+    .nav-links .nav-link {
+      text-decoration: none;
+      color: #ffcc00;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-weight: 600;
+      transition: background-color .18s ease, color .18s ease, transform .12s ease;
+    }
 
-        /* The Question Button */
-        .faq-question {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: #fff;
-            padding: 20px 25px;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: left;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: color 0.3s;
-        }
-        .faq-item.active .faq-question {
-            color: #ffcc00;
-        }
+    .nav-links .nav-link:hover {
+      background-color: #ffcc00;
+      color: #000000;
+      transform: translateY(-2px);
+    }
 
-        /* Animated Plus/Cross Icon */
-        .icon {
-            font-size: 28px;
-            font-weight: 300;
-            line-height: 1;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .faq-item.active .icon {
-            transform: rotate(45deg); /* Turns the + into an x */
-            color: #ffcc00;
-        }
+    .nav-links .nav-link.active {
+      background: #ffcc00;
+      color: #000;
+      box-shadow: 0 8px 20px rgba(255,204,0,0.12);
+    }
+    /* --- END NAVBAR CSS --- */
 
-        /* The Answer (Using modern CSS Grid for smooth height animation) */
-        .faq-answer-wrapper {
-            display: grid;
-            grid-template-rows: 0fr;
-            transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .faq-item.active .faq-answer-wrapper {
-            grid-template-rows: 1fr;
-        }
-        
-        .faq-answer {
-            overflow: hidden;
-        }
-        
-        .faq-answer p {
-            padding: 0 25px 25px 25px;
-            margin: 0;
-            color: #cccccc;
-            font-size: 16px;
-            line-height: 1.7;
-            opacity: 0;
-            transform: translateY(-10px); /* Slight slide-down inside the container */
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-        .faq-item.active .faq-answer p {
-            opacity: 1;
-            transform: translateY(0);
-            transition-delay: 0.1s; /* Delays text appearance until box opens */
-        }
+    .faq-container {
+      max-width: 900px;
+      margin: 50px auto;
+      padding: 0 20px;
+      flex: 1;
+    }
 
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #ffcc00;
-            font-size: 14px;
-        }
-        footer a {
-            color: #ffcc00;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-        footer a:hover {
-            color: #fff;
-        }
-    </style>
+    .faq-header {
+      text-align: center;
+      margin-bottom: 45px;
+    }
+
+    .faq-title {
+      font-size: 42px;
+      font-weight: 800;
+      color: #FFD700;
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+
+    .faq-sub {
+      color: #888;
+      font-size: 16px;
+    }
+
+    /* --- ANIMATED ACCORDION --- */
+    .faq-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 215, 0, 0.08);
+      border-radius: 14px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .faq-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 215, 0, 0.2);
+    }
+
+    .faq-item.active {
+      background: rgba(255, 204, 0, 0.03);
+      border-color: #ffcc00;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    }
+
+    .faq-question {
+      width: 100%;
+      padding: 22px 26px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .q-icon {
+      width: 30px;
+      height: 30px;
+      background: rgba(255, 204, 0, 0.1);
+      color: #ffcc00;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+
+    .faq-item.active .q-icon {
+      background: #ffcc00;
+      color: #000;
+      transform: rotate(135deg);
+    }
+
+    /* Transitioning Wrapper */
+    .faq-answer-wrapper {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .faq-item.active .faq-answer-wrapper {
+      grid-template-rows: 1fr;
+    }
+
+    /* Content Stagger Animation */
+    .faq-answer {
+      overflow: hidden;
+      padding: 0 26px 22px 26px;
+      color: #b0b0b0;
+      font-size: 15px;
+      line-height: 1.6;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .faq-item.active .faq-answer {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.1s;
+    }
+
+    /* --- ONE-LINE FOOTER --- */
+    footer {
+      background-color: #000000;
+      padding: 24px;
+      border-top: 4px solid #FFD700;
+      text-align: center;
+      white-space: nowrap;
+      font-size: 14px;
+      color: #FFD700;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+    }
+
+    footer a {
+      color: #FFD700;
+      text-decoration: none;
+      font-weight: 700;
+      transition: color 0.2s;
+    }
+
+    footer a:hover { color: #fff; }
+
+    footer .sep { opacity: 0.3; font-weight: 300; }
+
+    @media (max-width: 768px) {
+      .navbar { padding: 15px 20px; }
+      .nav-links { display: none; }
+      .faq-title { font-size: 32px; }
+      footer { font-size: 12px; flex-wrap: wrap; white-space: normal; }
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <a href="#" class="logo">🚕 Meter-Sathi</a>
-        <nav>
-            <a href="welcome.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="services.html">Services</a>
-            <a href="faq.html">FAQ</a>
-            <a href="contact.html">Contact Us</a>
-        </nav>
-    </header>
-    <hr class="divider">
+  <nav class="navbar">
+    <div class="brand">Meter-Sathi</div>
+    <div class="nav-links">
+      <a href="welcome.html" class="nav-link">Home</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="services.html" class="nav-link">Services</a>
+      <a href="faq.html" class="nav-link active">FAQ</a>
+      <a href="contact.html" class="nav-link">Contact Us</a>
+    </div>
+  </nav>
 
-    <div class="faq-container">
-        <h1>Frequently Asked Questions</h1>
-
-        <div class="faq-item">
-            <button class="faq-question">
-                What is Meter-Sathi?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer-wrapper">
-                <div class="faq-answer">
-                    <p>Meter-Sathi is a web platform designed to help Mumbai commuters, newcomers, and students verify auto and taxi fares in real time. It aims to protect passengers from unfair practices like fast meters and random fare demands.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <button class="faq-question">
-                How does the fare calculation work?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer-wrapper">
-                <div class="faq-answer">
-                    <p>When you click "Start Ride", our system uses your device's GPS to track the route and calculate the exact distance. It then automatically applies the official Maharashtra Transport Department rules, including accurate day and night charges, to calculate the correct fare.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <button class="faq-question">
-                How do I know if I am being overcharged?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer-wrapper">
-                <div class="faq-answer">
-                    <p>At the end of your trip, simply enter the meter reading into the site. Meter-Sathi will compare the official GPS-calculated fare with the meter reading you entered and instantly notify you if it is a "Fair Fare" or if you are being "Overcharged".</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <button class="faq-question">
-                Do I need to download or install an app?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer-wrapper">
-                <div class="faq-answer">
-                    <p>No installation is required! Meter-Sathi is a web application, meaning it works seamlessly on any browser on your smartphone. Just open the site and ride.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <button class="faq-question">
-                What features are planned for the future?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer-wrapper">
-                <div class="faq-answer">
-                    <p>We are continuously working to improve the platform. Our future scope includes downloadable trip reports, multilingual support, a toggle for taxi/auto modes, integration with official complaint portals, and data analytics to highlight overcharging hotspots in the city.</p>
-                </div>
-            </div>
-        </div>
-
+  <main class="faq-container">
+    <div class="faq-header">
+      <h1 class="faq-title">Frequently Asked Questions</h1>
+      <p class="faq-sub">Answers to common questions about your journey with Meter-Sathi</p>
     </div>
 
-    <hr class="divider">
-    
-    <footer>
-        &copy; 2026 Meter-Sathi | <a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a>
-    </footer>
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>What is Meter-Sathi?</span>
+        <span class="q-icon">+</span>
+      </button>
+      <div class="faq-answer-wrapper">
+        <div class="faq-answer">
+          Meter-Sathi is a web platform designed to help Mumbai commuters, newcomers, and students verify auto and taxi fares in real time. It aims to protect passengers from unfair practices like fast meters and random fare demands.
+        </div>
+      </div>
+    </div>
 
-    <script>
-        const faqItems = document.querySelectorAll('.faq-item');
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>How does the fare calculation work?</span>
+        <span class="q-icon">+</span>
+      </button>
+      <div class="faq-answer-wrapper">
+        <div class="faq-answer">
+          When you click "Start Ride", our system uses your device's GPS to track the route and calculate the exact distance. It then applies official tariff rules, including day/night rules, to estimate the correct fare for your journey.
+        </div>
+      </div>
+    </div>
 
-        faqItems.forEach(item => {
-            const questionBtn = item.querySelector('.faq-question');
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>How do I know if I am being overcharged?</span>
+        <span class="q-icon">+</span>
+      </button>
+      <div class="faq-answer-wrapper">
+        <div class="faq-answer">
+          At the end of your trip, enter the meter reading into the site. Meter-Sathi compares the GPS-calculated official fare with the meter reading you entered and notifies you if the meter appears fair or if you are being overcharged.
+        </div>
+      </div>
+    </div>
 
-            questionBtn.addEventListener('click', () => {
-                // Optional: This part closes other open FAQs when you click a new one.
-                // If you want multiple to stay open at once, delete the next 5 lines.
-                const isActive = item.classList.contains('active');
-                faqItems.forEach(otherItem => {
-                    otherItem.classList.remove('active');
-                });
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>Do I need to download an app?</span>
+        <span class="q-icon">+</span>
+      </button>
+      <div class="faq-answer-wrapper">
+        <div class="faq-answer">
+          No installation is required. Meter-Sathi is a web application that runs in your mobile browser — open the site and start tracking your ride immediately.
+        </div>
+      </div>
+    </div>
 
-                // Toggle the clicked item
-                if (!isActive) {
-                    item.classList.add('active');
-                }
-            });
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>What features are planned for the future?</span>
+        <span class="q-icon">+</span>
+      </button>
+      <div class="faq-answer-wrapper">
+        <div class="faq-answer">
+          Planned features include downloadable trip reports, multilingual support, a toggle for taxi/auto modes, integration with complaint portals, and analytics to highlight overcharging hotspots.
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <span>© 2026 Meter-Sathi</span>
+    <span class="sep">|</span>
+    <a href="privacy.html">Privacy Policy</a>
+    <span class="sep">|</span>
+    <a href="terms.html">Terms of Service</a>
+  </footer>
+
+  <script>
+    // Accordion interaction
+    document.querySelectorAll('.faq-question').forEach(button => {
+      button.addEventListener('click', () => {
+        const currentItem = button.parentElement;
+        const isOpen = currentItem.classList.contains('active');
+
+        // Close others
+        document.querySelectorAll('.faq-item').forEach(item => {
+          item.classList.remove('active');
         });
-    </script>
 
+        // Toggle clicked
+        if (!isOpen) {
+          currentItem.classList.add('active');
+        }
+      });
+    });
+
+    // Nav active state
+    (function () {
+      const links = document.querySelectorAll('.nav-links .nav-link');
+      const current = location.pathname.split('/').pop() || 'welcome.html';
+      links.forEach(a => {
+        if (a.getAttribute('href') === current) a.classList.add('active');
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -1,346 +1,379 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms and Conditions | Meter-Sathi</title>
-    
-    <style>
-        /* CSS Styles */
-        /* --- Core Theme Colors --- */
-        :root {
-            --bg-color: #000000;
-            --primary-yellow: #FFD700; 
-            --active-item-color: #FFC400; 
-            --body-text-white: #FFFFFF;
-            --card-bg-color: #1A1A1A; 
-            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            --border-color: #333;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Terms and Conditions | Meter-Sathi</title>
+  <style>
+    :root{
+      --bg:#000;
+      --gold:#FFD700;
+      --gold-strong:#ffcc00;
+      --card:#1A1A1A;
+      --muted:#dddddd;
+      --font: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --border:#333;
+      --active-item-color:#FFC400;
+      --body-text-white:#FFFFFF;
+    }
 
-        body {
-            font-family: var(--font-family);
-            background-color: var(--bg-color);
-            color: var(--body-text-white);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-            box-sizing: border-box;
-        }
+    *{box-sizing:border-box;margin:0;padding:0}
 
-        /* --- Header Styles --- */
-        header {
-            background-color: #000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 50px;
-            border-bottom: 1px solid var(--primary-yellow);
-        }
+    body{
+      font-family:var(--font);
+      background:var(--bg);
+      color:var(--body-text-white);
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-            font-size: 1.5em;
-            color: var(--primary-yellow);
-            text-decoration: none;
-        }
+    /* --- Navbar (exact copy from services.html) --- */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: #000000;
+      border-bottom: 4px solid var(--gold-strong);
+      z-index: 50;
+    }
+    .brand {
+      color: var(--gold-strong);
+      font-weight: 900;
+      font-size: 20px;
+      letter-spacing: 0.4px;
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .nav-links .nav-link {
+      text-decoration: none;
+      color: var(--gold-strong);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-weight: 600;
+      transition: background-color .18s ease, color .18s ease, transform .12s ease;
+    }
+    .nav-links .nav-link:hover {
+      background-color: var(--gold-strong);
+      color: #000000;
+      transform: translateY(-2px);
+    }
+    .nav-links .nav-link:focus {
+      outline: 3px solid rgba(255,204,0,0.28);
+      outline-offset: 3px;
+      border-radius: 18px;
+    }
+    .nav-links .nav-link.active {
+      background: var(--gold-strong);
+      color: #000;
+      box-shadow: 0 8px 20px rgba(255,204,0,0.12);
+    }
+    /* --- End navbar --- */
 
-        .logo-icon {
-            margin-right: 10px;
-            font-size: 1.2em;
-        }
+    main{
+      max-width:1100px;
+      margin: 36px auto;
+      padding: 0 20px 60px;
+      flex:1;
+    }
 
-        nav {
-            display: flex;
-            gap: 25px;
-            align-items: center;
-        }
+    .title {
+      color: var(--gold);
+      font-size: 2.4rem;
+      font-weight:700;
+      margin-bottom:8px;
+      text-shadow: 0 0 10px rgba(255,215,0,0.18);
+    }
+    .subtitle{
+      color:var(--muted);
+      margin-bottom:20px;
+      max-width:820px;
+    }
 
-        nav a {
-            text-decoration: none;
-            color: var(--primary-yellow);
-            font-size: 1em;
-            transition: opacity 0.3s;
-        }
+    .terms-grid{
+      display:flex;
+      gap:20px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
 
-        nav a:hover {
-            opacity: 0.8;
-        }
+    .terms-card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:22px;
+      width:320px;
+      transition:transform .18s, border-color .18s;
+      text-align:left;
+    }
+    .terms-card:hover{ transform:translateY(-6px); border-color:var(--gold); }
+    .terms-card h3{ color:var(--gold); margin-bottom:10px; font-size:1.1rem; }
+    .terms-card p{ color:#eaeaea; line-height:1.6; font-size:0.95rem; margin:0; }
 
-        /* --- Main Content Styles --- */
-        main {
-            flex-grow: 1;
-            padding: 60px 50px;
-            text-align: center;
-        }
+    .full-terms{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:22px;
+      margin-top:22px;
+      color:#eaeaea;
+      line-height:1.7;
+    }
 
-        .glow-title {
-            color: var(--primary-yellow);
-            font-size: 2.8em;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); 
-        }
+    /* Agreement box styles (added) */
+    .agreement-box {
+      background-color: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
 
-        .main-subtitle {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-            color: var(--body-text-white);
-            opacity: 0.9;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+    .agreement-text {
+      color: var(--body-text-white);
+      font-size: 1em;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
 
-        .main-body-text {
-            font-size: 1em;
-            margin-bottom: 50px;
-            color: var(--body-text-white);
-            opacity: 0.8;
-            line-height: 1.6;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+    .checkbox-container {
+      display: block;
+      position: relative;
+      padding-left: 35px;
+      margin-bottom: 25px;
+      cursor: pointer;
+      font-size: 0.95em;
+      user-select: none;
+      color: var(--body-text-white);
+    }
 
-        /* --- Terms Cards Styles --- */
-        .terms-cards-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 50px;
-        }
+    .checkbox-container input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
 
-        .terms-card {
-            background-color: var(--card-bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            width: 300px;
-            padding: 30px;
-            text-align: left;
-            transition: border-color 0.3s, transform 0.3s;
-        }
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 20px;
+      width: 20px;
+      background-color: #2a2a2a;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
 
-        .terms-card:hover {
-            border-color: var(--primary-yellow);
-            transform: translateY(-5px);
-        }
+    .checkbox-container:hover input ~ .checkmark {
+      background-color: #333;
+    }
 
-        .terms-card h3 {
-            color: var(--primary-yellow);
-            font-size: 1.4em;
-            font-weight: bold;
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
+    .checkbox-container input:checked ~ .checkmark {
+      background-color: var(--active-item-color);
+      border-color: var(--active-item-color);
+    }
 
-        .terms-card p {
-            color: var(--body-text-white);
-            font-size: 0.95em;
-            opacity: 0.9;
-            line-height: 1.6;
-            margin: 0;
-        }
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
 
-        /* --- Agreement Section Styles --- */
-        .agreement-section {
-            background-color: var(--card-bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: left;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
+    .checkbox-container input:checked ~ .checkmark:after {
+      display: block;
+    }
 
-        .agreement-text {
-            color: var(--body-text-white);
-            font-size: 1em;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
+    .checkbox-container .checkmark:after {
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid #000;
+      border-width: 0 3px 3px 0;
+      transform: rotate(45deg);
+    }
 
-        .checkbox-container {
-            display: block;
-            position: relative;
-            padding-left: 35px;
-            margin-bottom: 25px;
-            cursor: pointer;
-            font-size: 0.95em;
-            user-select: none;
-            color: var(--body-text-white);
-        }
+    /* Updated ID to return-btn */
+    #return-btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 20px;
+      background-color: var(--active-item-color);
+      color: #000;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s, opacity 0.3s;
+    }
 
-        .checkbox-container input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-            height: 0;
-            width: 0;
-        }
+    #return-btn:hover {
+      opacity: 0.9;
+    }
 
-        .checkmark {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 20px;
-            width: 20px;
-            background-color: #2a2a2a;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-        }
+    #return-btn:disabled {
+      background-color: #555;
+      color: #888;
+      cursor: not-allowed;
+      opacity: 1;
+    }
 
-        .checkbox-container:hover input ~ .checkmark {
-            background-color: #333;
-        }
+    .action {
+      margin-top:18px;
+      text-align:center;
+    }
+    .btn {
+      display:inline-block;
+      padding:10px 26px;
+      background:var(--gold-strong);
+      color:#000;
+      border-radius:20px;
+      text-decoration:none;
+      font-weight:700;
+      border:2px solid var(--gold-strong);
+    }
+    .btn:hover{ opacity:0.95; }
 
-        .checkbox-container input:checked ~ .checkmark {
-            background-color: var(--active-item-color);
-            border-color: var(--active-item-color);
-        }
+    footer{
+      background:#000;
+      color:var(--gold-strong);
+      text-align:center;
+      padding:18px;
+      border-top:4px solid var(--gold-strong);
+      margin-top:auto;
+    }
+    footer a{ color:var(--gold-strong); text-decoration:none; margin:0 8px; }
+    footer a:hover{ text-decoration:underline; }
 
-        .checkmark:after {
-            content: "";
-            position: absolute;
-            display: none;
-        }
-
-        .checkbox-container input:checked ~ .checkmark:after {
-            display: block;
-        }
-
-        .checkbox-container .checkmark:after {
-            left: 6px;
-            top: 2px;
-            width: 5px;
-            height: 10px;
-            border: solid #000;
-            border-width: 0 3px 3px 0;
-            transform: rotate(45deg);
-        }
-
-        /* Updated ID to return-btn */
-        #return-btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 20px;
-            background-color: var(--active-item-color);
-            color: #000;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s, opacity 0.3s;
-        }
-
-        #return-btn:hover {
-            opacity: 0.9;
-        }
-
-        #return-btn:disabled {
-            background-color: #555;
-            color: #888;
-            cursor: not-allowed;
-            opacity: 1;
-        }
-
-        /* --- Footer Styles --- */
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: var(--body-text-white);
-            opacity: 0.6;
-            font-size: 0.85em;
-            border-top: 1px solid #222;
-        }
-    </style>
+    @media (max-width:900px){
+      .terms-card{ width:100%; max-width:520px; }
+      .terms-grid{ flex-direction:column; }
+      .navbar{ padding:12px 20px; }
+      .agreement-box { padding: 20px; }
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+      <a href="welcome.html" class="brand">Meter-Sathi</a>
+      <div class="nav-links" role="menubar" aria-label="Primary">
+        <a href="welcome.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="services.html" class="nav-link">Services</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+        <a href="contact.html" class="nav-link">Contact Us</a>
+      </div>
+    </nav>
+  </header>
 
-    <header>
-        <a href="welcome.html" class="logo-container">
-            <span class="logo-icon"></span> Meter-Sathi
-        </a>
-        <nav>
-            <a href="welcome.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="services.html">Services</a> 
-            <a href="faq.html">FAQ</a>
-            <a href="contact.html">Contact Us</a>
-        </nav>
-    </header>
+  <main>
+    <h1 class="title">Terms and Conditions</h1>
+    <p class="subtitle">Please read these terms carefully before using Meter-Sathi. They explain your rights and responsibilities when using our service.</p>
 
-    <main>
-        <h1 class="glow-title">Terms and Conditions</h1>
-        <p class="main-subtitle">Please review our rules and guidelines for a transparent commuting experience.</p>
-        <p class="main-body-text">By accessing or using the Meter-Sathi web application, you agree to be bound by these terms. This platform serves as an informational tool to help you promote fair pricing and understanding in your daily commutes.</p>
+    <div class="terms-grid" role="list" aria-label="Terms overview">
+      <div class="terms-card" role="listitem">
+        <h3>1. Acceptance</h3>
+        <p>By using Meter-Sathi you agree to these terms. If you do not agree, please do not use the service.</p>
+      </div>
 
-        <div class="terms-cards-container">
-            <div class="terms-card">
-                <h3>1. Fare Estimates</h3>
-                <p>Calculated fares are <strong>estimates only</strong>, based on official government tariffs and mapping services. Actual fares may vary due to traffic, waiting time, or sudden regulatory changes. Meter-Sathi is a reference, not a legal mandate.</p>
-            </div>
-            
-            <div class="terms-card">
-                <h3>2. No Liability</h3>
-                <p>Meter-Sathi, its creators, and affiliates are not party to any disputes, arguments, or financial disagreements between a commuter and a driver. Use of the estimates is at your own risk and for fair negotiation.</p>
-            </div>
-            
-            <div class="terms-card">
-                <h3>3. Location Access</h3>
-                <p>The application requires temporary GPS and location services access to calculate distances and provide accurate fare estimates. This data is processed locally and used solely for this purpose.</p>
-            </div>
-            
-            <div class="terms-card">
-                <h3>4. User Conduct</h3>
-                <p>Users agree to use the platform for its intended purpose and will not misuse, scrape, or reverse-engineer its data or fare calculation algorithms for unauthorized commercial purposes.</p>
-            </div>
-            
-            <div class="terms-card">
-                <h3>5. Dispute Resolution</h3>
-                <p>Meter-Sathi does not act as a mediator or legal authority. Any dispute arising during your ride is between you and the transport provider and should be resolved through official transport authority channels.</p>
-            </div>
-        </div>
+      <div class="terms-card" role="listitem">
+        <h3>2. Service Description</h3>
+        <p>Meter-Sathi provides fare estimation and ride tracking using device location. We do not operate taxis or accept payments on behalf of drivers.</p>
+      </div>
 
-        <div class="agreement-section">
-            <p class="agreement-text">By checking the box below, you acknowledge that you have read, understood, and agree to the above Terms and Conditions in their entirety.</p>
-            <label class="checkbox-container">
-                <input type="checkbox" id="agree-checkbox">
-                <span class="checkmark"></span>
-                I have read and agree to the Terms and Conditions
-            </label>
-            
-            <button id="return-btn" disabled>Return to Home Page</button>
-        </div>
-    </main>
+      <div class="terms-card" role="listitem">
+        <h3>3. User Responsibilities</h3>
+        <p>Users must provide accurate information and ensure location permissions are granted for live fare calculations.</p>
+      </div>
 
-    <footer>
-        <p>&copy; 2026 Meter-Sathi. All Rights Reserved. Commute with Confidence.</p>
-    </footer>
+      <div class="terms-card" role="listitem">
+        <h3>4. Limitations</h3>
+        <p>Estimates are based on GPS and official tariffs; actual meter readings may differ due to local rules or waiting charges (if applicable).</p>
+      </div>
 
-    <script>
-        const checkbox = document.getElementById('agree-checkbox');
-        const btn = document.getElementById('return-btn');
+      <div class="terms-card" role="listitem">
+        <h3>5. Liability</h3>
+        <p>Meter-Sathi is a tool for guidance only. We are not liable for disputes between passengers and drivers or for inaccuracies caused by device/GPS errors.</p>
+      </div>
+    </div>
 
-        // Enable or disable the button based on checkbox state
-        checkbox.addEventListener('change', function() {
-            btn.disabled = !this.checked;
-        });
+    <section class="full-terms" aria-labelledby="full-terms-heading">
+      <h2 id="full-terms-heading" style="color:var(--gold); margin-top:0; margin-bottom:12px;">Full Terms</h2>
 
-        // Event listener for button click
-        btn.addEventListener('click', function() {
-            if (!this.disabled) {
-                // Link updated to point to index.html (or your main app page)
-                window.location.href = "welcome.html"; 
-            }
-        });
-    </script>
+      <p><strong>Overview.</strong> Meter-Sathi is provided "as is" to help commuters estimate fares and track rides. We strive for accuracy but cannot guarantee exact parity with every taxi meter in all circumstances.</p>
+
+      <p><strong>Location and Data.</strong> To function, the app requires access to your device's location. Location processing is performed locally; we do not retain travel histories on public servers unless explicitly stated in our privacy policy.</p>
+
+      <p><strong>Tariffs and Charges.</strong> Fare calculations use official published tariffs (base fare, per-km rates, night surcharges). Local variations, temporary rules, or driver-applied waiting charges may cause differences between our estimate and the meter. You should use the app as a reference and raise disputes with the driver or local authorities when necessary.</p>
+
+      <p><strong>Intellectual Property.</strong> All content, design, and code of Meter-Sathi are the property of the project owners. You may not reproduce or redistribute without permission.</p>
+
+      <p><strong>Changes to Terms.</strong> We may update these terms from time to time. Continued use after changes constitutes acceptance of the updated terms.</p>
+
+      <p><strong>Contact.</strong> For questions about these terms, please contact support@meter-sathi.in.</p>
+    </section>
+
+    <div class="agreement-box" role="region" aria-label="Agreement">
+      <p class="agreement-text">By checking the box below, you acknowledge that you have read, understood, and agree to the above Terms and Conditions in their entirety.</p>
+
+      <label class="checkbox-container">
+        <input type="checkbox" id="agree-checkbox" aria-describedby="agree-desc">
+        <span class="checkmark" aria-hidden="true"></span>
+        I have read and agree to the Terms and Conditions
+      </label>
+
+      <button id="return-btn" disabled aria-disabled="true">Return to Home Page</button>
+    </div>
+
+    <div class="action" style="max-width:800px;margin:0 auto;">
+      <a class="btn" href="welcome.html">Return to Home (without agreeing)</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2026 Meter-Sathi |
+      <a href="privacy.html">Privacy Policy</a> |
+      <a href="terms.html">Terms and Conditions</a>
+    </p>
+  </footer>
+
+  <script>
+    // Make nav-links behave exactly like services.html (active class detection)
+    (function () {
+      const links = document.querySelectorAll('.nav-links .nav-link');
+      const current = location.pathname.split('/').pop() || 'welcome.html';
+      links.forEach(a => {
+        if (a.getAttribute('href') === current) a.classList.add('active');
+      });
+    })();
+
+    // Agreement checkbox logic
+    const checkbox = document.getElementById('agree-checkbox');
+    const btn = document.getElementById('return-btn');
+
+    checkbox.addEventListener('change', function() {
+      btn.disabled = !this.checked;
+      btn.setAttribute('aria-disabled', String(!this.checked));
+    });
+
+    btn.addEventListener('click', function() {
+      if (!this.disabled) {
+        window.location.href = "welcome.html";
+      }
+    });
+  </script>
 </body>
 </html>

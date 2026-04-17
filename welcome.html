@@ -340,6 +340,33 @@ footer a:hover {
       // Ensure overlay hidden on load
       overlay.setAttribute('aria-hidden', 'true');
       overlay.style.display = 'none';
+
+      // --- Auto-open logic: check query param or sessionStorage flag and open overlay immediately ---
+      // This is the only addition: it does not change any existing behavior.
+      function shouldAutoOpen() {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          if (params.get('open') === 'vehicle') return true;
+        } catch (e) { /* ignore */ }
+
+        try {
+          if (sessionStorage.getItem('meterSathi_openVehicleOverlay') === '1') {
+            // remove the flag so it doesn't reopen on subsequent navigations
+            sessionStorage.removeItem('meterSathi_openVehicleOverlay');
+            return true;
+          }
+        } catch (e) { /* ignore */ }
+
+        return false;
+      }
+
+      // Run on DOMContentLoaded to ensure elements exist and focus behavior is stable
+      window.addEventListener('DOMContentLoaded', function () {
+        if (shouldAutoOpen()) {
+          // small timeout to ensure any focus/scroll behavior settles
+          setTimeout(showOverlay, 50);
+        }
+      });
     })();
   </script>
 </body>

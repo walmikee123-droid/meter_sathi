@@ -15,6 +15,7 @@
       padding: 18px 0;
       border-bottom: 4px solid #FFD700;
       box-shadow: 0 4px 10px rgba(255, 215, 0, 0.2);
+      position: relative; /* added so left back button can be positioned without changing layout */
     }
     .nav-links { display:flex; gap:30px; }
     .nav-links a {
@@ -30,6 +31,28 @@
       background-color: #FFD700;
       color: #000000;
       transform: scale(1.05);
+    }
+
+    /* Back button placed at far left corner of navbar */
+    .nav-back {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: 2px solid transparent;
+      color: #FFD700;
+      font-weight: 800;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      font-size: 14px;
+    }
+    .nav-back:hover {
+      background: #FFD700;
+      color: #000;
+      transform: translateY(-50%) scale(1.03);
     }
 
     .container { max-width:980px; margin:28px auto; padding:36px 18px; width:100%; flex:1; }
@@ -109,6 +132,9 @@
 </head>
 <body>
   <header class="navbar" role="navigation" aria-label="Main navigation">
+    <!-- Back button added at far left corner of navbar -->
+    <button id="backBtn" class="nav-back" aria-label="Back to vehicle selection">← Back</button>
+
     <div class="nav-links" role="menubar" aria-label="Primary">
       <a href="welcome.html" role="menuitem">Home</a>
       <a href="about.html" role="menuitem">About</a>
@@ -168,7 +194,7 @@
     </section>
   </main>
 
-  <!-- Vehicle selection overlay (same behavior as welcome) -->
+  <!-- Vehicle selection overlay (same as welcome) -->
   <div class="overlay" id="vehicleOverlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="vehicleTitle">
     <div class="modal" role="document">
       <button class="close-x" id="closeOverlay" aria-label="Close dialog">✕</button>
@@ -238,6 +264,7 @@
     function fmtKm(m){ return toKm(m).toFixed(2); }
     function fmtCurrency(x){ return '₹' + Number(x).toFixed(2); }
     function toRad(d){ return d * Math.PI / 180; }
+
     function haversineDistance(lat1, lon1, lat2, lon2){
       const R = 6371000;
       const dLat = toRad(lat2 - lat1);
@@ -654,6 +681,28 @@
       // overlay hidden by default
       overlay && overlay.setAttribute('aria-hidden', 'true');
       overlay && (overlay.style.display = 'none');
+    })();
+
+    /* Back button behavior
+       Only added behavior: navigate back to welcome.html and request the overlay to open.
+       This is the only change in this file.
+       We set a short-lived sessionStorage flag and include a query param so welcome.html
+       can detect and open the vehicle selection overlay immediately.
+    */
+    (function () {
+      const backBtn = document.getElementById('backBtn');
+      if (!backBtn) return;
+      backBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        try {
+          // Set a sessionStorage flag that welcome.html can check on load to auto-open overlay.
+          sessionStorage.setItem('meterSathi_openVehicleOverlay', '1');
+        } catch (err) {
+          // ignore storage errors
+        }
+        // Redirect to welcome page with a query param hint as well.
+        window.location.href = 'welcome.html?open=vehicle';
+      });
     })();
   </script>
 </body>

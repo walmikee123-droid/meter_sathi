@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File a Complaint - Meter-Sathi</title>
+    <style>
+        /* --- User Provided Global Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #000000, #1c1c1c);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Navbar --- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background: #000000;
+            border-bottom: 4px solid #ffcc00;
+            z-index: 50;
+        }
+
+        .brand {
+            color: #ffcc00;
+            font-weight: 900;
+            font-size: 20px;
+            letter-spacing: 0.4px;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .nav-links .nav-link {
+            text-decoration: none;
+            color: #ffcc00;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: background-color .18s ease, color .18s ease, transform .12s ease;
+        }
+
+        .nav-links .nav-link:hover {
+            background-color: #ffcc00;
+            color: #000000;
+            transform: translateY(-2px);
+        }
+
+        .nav-links .nav-link:focus {
+            outline: 3px solid rgba(255,204,0,0.28);
+            outline-offset: 3px;
+            border-radius: 18px;
+        }
+
+        .nav-links .nav-link.active {
+            background: #ffcc00;
+            color: #000;
+            box-shadow: 0 8px 20px rgba(255,204,0,0.12);
+        }
+
+        /* --- Main Container --- */
+        .container {
+            flex: 1;
+            padding: 60px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .complaint-card {
+            background: #111111;
+            max-width: 950px;
+            width: 100%;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(255, 204, 0, 0.15);
+            border: 1px solid #333;
+            border-top: 4px solid #ffcc00;
+            text-align: center;
+        }
+
+        .complaint-header {
+            margin-bottom: 35px;
+        }
+
+        .complaint-header h2 {
+            font-size: 38px;
+            color: #ffcc00;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .complaint-header p {
+            font-size: 16px;
+            color: #aaaaaa;
+            font-weight: 400;
+        }
+
+        /* --- Form Specific Layout --- */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #cccccc;
+            font-weight: bold;
+        }
+        
+        input[type="text"],
+        input[type="time"],
+        select,
+        textarea {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+            font-family: inherit;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: #ffcc00;
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.2);
+            background-color: #222;
+        }
+
+        #vehicleNumber {
+            text-transform: uppercase;
+        }
+
+        ::-webkit-calendar-picker-indicator {
+            filter: invert(74%) sepia(85%) saturate(614%) hue-rotate(358deg) brightness(101%) contrast(104%);
+            cursor: pointer;
+        }
+
+        /* Custom File Upload */
+        input[type="file"] {
+            display: none;
+        }
+        .file-upload-btn {
+            background-color: #1a1a1a;
+            border: 1px dashed #ffcc00;
+            color: #ffcc00;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-upload-btn:hover {
+            background-color: rgba(255, 204, 0, 0.1);
+        }
+
+        .submit-btn {
+            display: inline-block;
+            padding: 15px 35px;
+            background: #ffcc00;
+            color: #000000;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: 2px solid #ffcc00;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .submit-btn:hover {
+            background: transparent;
+            color: #ffcc00;
+            transform: translateY(-2px);
+        }
+
+        /* Success Message Animation */
+        #successMessage {
+            display: none;
+            text-align: center;
+            padding: 40px 0;
+            animation: fadeIn 0.5s ease;
+        }
+        #successMessage h2 { color: #4CAF50; margin-bottom: 15px;}
+        #successMessage p { color: #ccc; line-height: 1.6; font-size: 16px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Footer */
+        footer {
+            background: #000000;
+            color: #ffcc00;
+            text-align: center;
+            padding: 20px;
+            border-top: 4px solid #ffcc00;
+            margin-top: auto; 
+        }
+        footer a {
+            color: #ffcc00;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: opacity 0.3s;
+        }
+        footer a:hover {
+            text-decoration: underline;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+            .complaint-card {
+                padding: 30px 20px;
+            }
+            .complaint-header h2 {
+                font-size: 28px;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="brand">Meter-Sathi</a>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Start Ride</a>
+            <a href="/about" class="nav-link">About</a>
+            <a href="/services" class="nav-link">Services</a>
+            <a href="/faq" class="nav-link">FAQ</a>
+            <a href="/complaint" class="nav-link active">Report Issue</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="complaint-card">
+            
+            <div id="formSection">
+                <div class="complaint-header">
+                    <h2>Report an Issue</h2>
+                    <p>Help us keep Mumbai's transport fair. File a report against rogue drivers.</p>
+                </div>
+
+                <form id="complaintForm">
+                    <div class="form-grid">
+                        
+                        <div class="input-group">
+                            <label for="vehicleType">Vehicle Type *</label>
+                            <select id="vehicleType" required>
+                                <option value="" disabled selected>Select Auto or Taxi</option>
+                                <option value="auto">Auto Rickshaw</option>
+                                <option value="ac_taxi">AC Taxi</option>
+                                <option value="non_ac_taxi">Non-AC Taxi</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="vehicleNumber">Vehicle Registration Number *</label>
+                            <input type="text" id="vehicleNumber" placeholder="MH 05 AB 1111" required maxlength="13">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="incidentDate">Date of Incident *</label>
+                            <input type="text" id="incidentDate" placeholder="DD/MM/YYYY" required maxlength="10">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="incidentTime">Time of Incident</label>
+                            <input type="time" id="incidentTime">
+                        </div>
+
+                        <div class="input-group full-width">
+                            <label for="issueType">Primary Issue *</label>
+                            <select id="issueType" required>
+                                <option value="" disabled selected>What went wrong?</option>
+                                <option value="tampered_meter">Tampered/Fast Meter (Moves too fast)</option>
+                                <option value="refusal_meter">Refusal to Charge by Meter (Fixed fare demand)</option>
+                                <option value="incorrect_night">Incorrect Night Charges (Applied outside 12AM-5AM)</option>
+                                <option value="long_route">Taking Long/Incorrect Routes: Intentionally taking a longer route to increase the meter reading.</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="pickupLocation">Pickup Location *</label>
+                            <input type="text" id="pickupLocation" placeholder="Where did your ride start?" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="dropoffLocation">Drop-off Location *</label>
+                            <input type="text" id="dropoffLocation" placeholder="Where did it end?" required>
+                        </div>
+
+                        <div class="input-group full-width">
+                            <label for="description">Detailed Description</label>
+                            <textarea id="description" rows="4" placeholder="Briefly describe what happened..."></textarea>
+                        </div>
+
+                        <div class="input-group full-width">
+                            <label>Upload Evidence (Optional)</label>
+                            <label for="evidenceUpload" class="file-upload-btn" id="fileLabel">
+                                📸 Click to upload photo of the meter or number plate
+                            </label>
+                            <input type="file" id="evidenceUpload" accept="image/*">
+                        </div>
+
+                        <div class="input-group full-width">
+                            <button type="submit" class="submit-btn">Submit Complaint</button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+            <div id="successMessage">
+                <h2>✅ Complaint Registered Successfully</h2>
+                <p>Thank you for reporting this to Meter-Sathi.<br>
+                Your complaint reference number is: <strong id="refNumber" style="color: #ffcc00;"></strong><br>
+                We will forward this data to the relevant authorities.</p>
+                <button class="submit-btn" style="width: auto; margin-top: 30px; padding: 12px 30px;" onclick="location.reload()">File Another Report</button>
+            </div>
+
+        </div>
+    </div>
+    
+    <footer>
+        &copy; 2026 Meter-Sathi | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
+    </footer>
+
+    <script>
+        // --- SMART DATE VALIDATOR (DD/MM/YYYY) ---
+        const dateInput = document.getElementById('incidentDate');
+        dateInput.addEventListener('input', function(e) {
+            // Allows the user to use backspace normally
+            if (e.inputType === 'deleteContentBackward') return;
+            
+            // Strip out non-numeric characters
+            let v = this.value.replace(/\D/g, ''); 
+            
+            // Validate Days (DD)
+            if (v.length >= 2) {
+                let dd = parseInt(v.substring(0, 2));
+                if (dd === 0) dd = 1;
+                if (dd > 31) dd = 31; // Initial cap at 31
+                v = dd.toString().padStart(2, '0') + v.substring(2);
+            }
+            
+            // Validate Months (MM) & Adjust Days based on Month
+            if (v.length >= 4) {
+                let mm = parseInt(v.substring(2, 4));
+                if (mm === 0) mm = 1;
+                if (mm > 12) mm = 12; // Cap month at 12
+                
+                let dd = parseInt(v.substring(0, 2));
+                
+                // Set max days for the month. Using a leap year (2024) as default to temporarily allow Feb 29
+                let maxDays = new Date(2024, mm, 0).getDate(); 
+                
+                // If year is fully typed out, calculate precise max days (handles Leap Years perfectly)
+                if (v.length === 8) { 
+                   let yyyy = parseInt(v.substring(4, 8));
+                   maxDays = new Date(yyyy, mm, 0).getDate();
+                }
+                
+                // Adjust the day if it exceeds the maximum allowed for that specific month
+                if (dd > maxDays) dd = maxDays;
+                
+                v = dd.toString().padStart(2, '0') + mm.toString().padStart(2, '0') + v.substring(4);
+            }
+            
+            // Format visually with slashes
+            if (v.length >= 5) {
+                this.value = v.substring(0, 2) + '/' + v.substring(2, 4) + '/' + v.substring(4, 8);
+            } else if (v.length >= 3) {
+                this.value = v.substring(0, 2) + '/' + v.substring(2, 4);
+            } else {
+                this.value = v;
+            }
+        });
+
+        // --- Strict Vehicle Number Formatter ---
+        const vehicleInput = document.getElementById('vehicleNumber');
+        vehicleInput.addEventListener('input', function() {
+            let rawValue = this.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+            rawValue = rawValue.substring(0, 10);
+            
+            let formattedValue = '';
+            for (let i = 0; i < rawValue.length; i++) {
+                if (i === 2 || i === 4 || i === 6) {
+                    formattedValue += ' '; 
+                }
+                formattedValue += rawValue[i];
+            }
+            this.value = formattedValue;
+        });
+
+        // --- File Upload UI ---
+        const fileInput = document.getElementById('evidenceUpload');
+        const fileLabel = document.getElementById('fileLabel');
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                fileLabel.innerHTML = `✔️ Selected: ${this.files[0].name}`;
+                fileLabel.style.borderColor = '#4CAF50';
+                fileLabel.style.color = '#4CAF50';
+            }
+        });
+
+        // --- Form Submission Logic ---
+        const form = document.getElementById('complaintForm');
+        const formSection = document.getElementById('formSection');
+        const successMessage = document.getElementById('successMessage');
+        const refNumberDisplay = document.getElementById('refNumber');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            
+            const plateValue = vehicleInput.value.replace(/\s/g, '');
+            if(plateValue.length < 8) {
+                alert("Please enter a complete Vehicle Registration Number.");
+                return;
+            }
+            
+            // Validate full 10-character date before submission
+            if(dateInput.value.length < 10) {
+                alert("Please enter a complete Date (DD/MM/YYYY).");
+                return;
+            }
+
+            const randomRef = 'MS-' + Math.floor(1000 + Math.random() * 9000);
+            refNumberDisplay.innerText = randomRef;
+
+            formSection.style.display = 'none';
+            successMessage.style.display = 'block';
+        });
+    </script>
+
+</body>
+</html>

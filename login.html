@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login - Meter-Sathi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#000;
+  --gold:#FFD700;
+  --gold-strong:#ffcc00;
+  --card:#1A1A1A;
+  --muted:#dddddd;
+  --font:'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --border:#333;
+  --active-item-color:#FFC400;
+  --body-text-white:#FFFFFF;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:var(--font);
+}
+
+body{
+  height:100vh;
+  background:var(--bg);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* Container */
+.login-container{
+  background:var(--card);
+  padding:30px;
+  border-radius:12px;
+  width:320px;
+  box-shadow:0 0 20px rgba(255, 215, 0, 0.2);
+  border:1px solid var(--border);
+  animation:fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(20px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+/* Heading */
+.login-container h2{
+  text-align:center;
+  color:var(--gold);
+  margin-bottom:20px;
+}
+
+/* Inputs */
+.input-box{
+  margin-bottom:15px;
+}
+
+.input-box label{
+  font-size:14px;
+  color:var(--muted);
+}
+
+.input-box input{
+  width:100%;
+  padding:10px;
+  margin-top:5px;
+  border:1px solid var(--border);
+  border-radius:6px;
+  background:#000;
+  color:var(--body-text-white);
+  outline:none;
+  transition:0.3s;
+}
+
+.input-box input:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 5px var(--gold);
+}
+
+/* Password wrapper */
+.password-wrapper{
+  position:relative;
+}
+
+.password-wrapper input{
+  padding-right:50px;
+}
+
+/* Toggle button (modern style) */
+.toggle-password{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  
+  background:#111;
+  border:1px solid #333;
+  border-radius:8px;
+  
+  width:34px;
+  height:28px;
+  
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.toggle-password:hover{
+  border-color:var(--gold);
+  box-shadow:0 0 6px rgba(255, 215, 0, 0.4);
+}
+
+/* Button */
+.login-btn{
+  width:100%;
+  padding:10px;
+  background:var(--gold);
+  border:none;
+  color:#000;
+  font-size:16px;
+  border-radius:6px;
+  cursor:pointer;
+  transition:0.3s;
+  font-weight:bold;
+}
+
+.login-btn:hover{
+  background:var(--gold-strong);
+  transform:scale(1.02);
+}
+
+/* Links */
+.extra-links{
+  margin-top:15px;
+  font-size:14px;
+  text-align:center;
+}
+
+.extra-links p{
+  color:var(--body-text-white);
+}
+
+.extra-links a{
+  color:var(--gold);
+  text-decoration:none;
+}
+
+.extra-links a:hover{
+  color:var(--active-item-color);
+  text-decoration:underline;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-container">
+  <h2>Login</h2>
+
+  <form action="/login" method="POST">
+    
+    <div class="input-box">
+      <label for="email">Email</label>
+      <input 
+        type="email" 
+        id="email"
+        name="email"
+        placeholder="Enter your email" 
+        autocomplete="email"
+        required>
+    </div>
+
+    <div class="input-box">
+      <label for="password">Password</label>
+
+      <div class="password-wrapper">
+        <input 
+          type="password" 
+          id="password"
+          name="password"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+          required>
+
+        <button type="button" class="toggle-password" onclick="togglePassword()">
+          <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M1 12C1 12 5 5 12 5C19 5 23 12 23 12C23 12 19 19 12 19C5 19 1 12 1 12Z" stroke="#FFC400" stroke-width="2"/>
+            <circle cx="12" cy="12" r="3" stroke="#FFC400" stroke-width="2"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <button type="submit" class="login-btn">Login</button>
+  </form>
+
+  <div class="extra-links">
+    <p><a href="#">Forgot Password?</a></p>
+    <p>Don't have an account? <a href="#">Register</a></p>
+  </div>
+</div>
+
+<script>
+function togglePassword() {
+  const passwordInput = document.getElementById("password");
+  const eyeIcon = document.getElementById("eyeIcon");
+
+  if (passwordInput.type === "password") {
+    passwordInput.type = "text";
+    eyeIcon.innerHTML = `
+      <path d="M17.94 17.94C16.12 19.24 14.13 20 12 20C5 20 1 12 1 12C2.24 9.77 3.82 7.82 5.7 6.34M9.9 4.24C10.6 4.08 11.3 4 12 4C19 4 23 12 23 12C22.1 13.7 20.9 15.2 19.5 16.5M1 1L23 23" stroke="#FFC400" stroke-width="2"/>
+    `;
+  } else {
+    passwordInput.type = "password";
+    eyeIcon.innerHTML = `
+      <path d="M1 12C1 12 5 5 12 5C19 5 23 12 23 12C23 12 19 19 12 19C5 19 1 12 1 12Z" stroke="#FFC400" stroke-width="2"/>
+      <circle cx="12" cy="12" r="3" stroke="#FFC400" stroke-width="2"/>
+    `;
+  }
+}
+</script>
+
+</body>
+</html>

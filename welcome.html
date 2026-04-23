@@ -6,227 +6,181 @@
   <title>Welcome - Meter-Sathi</title>
 
   <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
-}
+/* ---------- base ---------- */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, system-ui, -apple-system, "Helvetica Neue", Arial; }
+html,body { height: 100%; }
+body { background: linear-gradient(135deg,#000 0%, #0b0b0b 100%); color: #fff; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
 
-body {
-  background: linear-gradient(135deg, #000000, #111111);
-  color: #ffffff;
-  min-height: 100vh;
-}
+/* ---------- navbar ---------- */
 .navbar {
   display: flex;
   justify-content: center;
-  background-color: #000000;
-  padding: 18px 0;
-  border-bottom: 4px solid #FFD700;
-  box-shadow: 0 4px 10px rgba(255, 215, 0, 0.2);
-}
-
-.nav-links {
-  display: flex;
-  gap: 30px;
-}
-
-.nav-links a {
-  padding: 8px 18px;
-  border-radius: 25px;
-  text-decoration: none;
-  color: #FFD700;
-  font-weight: bold;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
-}
-
-.nav-links a:hover {
-  background-color: #FFD700;
-  color: #000000;
-  transform: scale(1.05);
-}
-.container {
-  text-align: center;
-  padding: 60px 20px;
-}
-
-.brand-title {
-  font-size: 52px;
-  font-weight: bold;
-  color: #FFD700;
-  text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-  margin-bottom: 10px;
-}
-
-.brand-subtitle {
-  font-size: 22px;
-  color: #dddddd;
-  margin-bottom: 35px;
-}
-button {
-  margin: 12px;
-  padding: 14px 25px;
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  transition: all 0.3s ease;
-}
-
-/* Start */
-button.start {
-  background-color: #2E7D32;
-  color: #ffffff;
-}
-
-/* End */
-button.end {
-  background-color: #C62828;
-  color: #ffffff;
-}
-
-/* Check */
-button.check {
-  background-color: #FFD700;
-  color: #000000;
-}
-
-/* Hover Effect */
-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
-}
-input {
-  padding: 12px;
-  margin: 15px;
-  border-radius: 25px;
-  border: 2px solid #FFD700;
-  width: 240px;
-  background: #1a1a1a;
-  color: #ffffff;
-  text-align: center;
-  font-size: 15px;
-  transition: 0.3s;
-}
-
-input:focus {
-  outline: none;
-  box-shadow: 0 0 10px #FFD700;
-}
-
-input::placeholder {
-  color: #aaaaaa;
-}
-.results {
-  margin-top: 25px;
-  font-weight: bold;
-  color: #FFD700;
-  font-size: 17px;
-}
-
-.message {
-  margin-top: 15px;
-  font-size: 18px;
-  height: 24px;
-}
-footer {
-  background-color: #000000;
-  color: #FFD700;
-  text-align: center;
-  padding: 18px;
-  margin-top: 50px;
-  border-top: 4px solid #FFD700;
-  letter-spacing: 1px;
-}
-
-/* Footer links styling */
-footer a {
-  color: #FFD700;
-  text-decoration: none;
-  margin: 0 10px;
-  transition: opacity 0.3s;
-}
-
-footer a:hover {
-  text-decoration: underline;
-  opacity: 0.8;
-}
-
-@media (max-width: 768px) {
-  .brand-title {
-    font-size: 36px;
-  }
-
-  .nav-links {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  button {
-    width: 80%;
-  }
-
-  input {
-    width: 80%;
-  }
-}
-
-/* Overlay / modal styles */
-.overlay {
-  position: fixed;
-  inset: 0;
-  display: none;
   align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.6);
-  z-index: 9999;
-  padding: 20px;
-}
-.overlay[aria-hidden="false"] { display: flex; }
-.modal {
-  width: 100%;
-  max-width: 760px;
-  background: #111;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-  text-align: center;
-  color: #fff;
+  background-color: #000;
+  padding: 18px 16px;
+  border-bottom: 4px solid #FFD700;
+  box-shadow: 0 4px 10px rgba(255,215,0,0.12);
   position: relative;
+  z-index: 20;
 }
-.modal p { color: #ccc; margin: 6px 0 12px; font-weight:700; }
+.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-links a {
+  padding: 8px 18px; border-radius: 22px; text-decoration: none; color: #FFD700;
+  font-weight: 700; letter-spacing: .6px; transition: all .22s ease;
+}
+.nav-links a:hover { background:#FFD700; color:#000; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(255,215,0,0.12); }
 
-.vehicle-grid {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  margin-top: 18px;
-  flex-wrap: nowrap;
-  overflow: visible;
-}
-.vehicle {
-  min-width: 180px;
-  padding: 16px 20px;
-  border-radius: 10px;
+/* Greeting (right corner) */
+.nav-greeting {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #FFD700;
+  font-weight: 700;
+  font-size: 15px;
   cursor: pointer;
-  border: 2px solid transparent;
-  transition: transform .12s, box-shadow .12s, border-color .12s;
-  background: linear-gradient(180deg,#1a1a1a,#0f0f0f);
-  color: #fff;
-  font-weight: 800;
-  text-align: center;
-  white-space: nowrap;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+  will-change: transform;
 }
-.vehicle:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.5); border-color: #FFD700; }
-.close-x { position:absolute; right:12px; top:10px; background:transparent; border:0; font-size:20px; color:#ccc; cursor:pointer; }
+.nav-greeting:focus { outline: 2px solid rgba(255,215,0,0.12); outline-offset: 4px; border-radius: 10px; }
 
+/* subtle hover "about.html" style animation: glow + lift */
+.nav-greeting:hover,
+.nav-greeting:focus {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(255,215,0,0.08), inset 0 0 18px rgba(255,215,0,0.02);
+  background: linear-gradient(180deg, rgba(255,215,0,0.02), transparent);
+}
+
+/* caret */
+.nav-greeting .caret {
+  width: 0; height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #FFD700;
+  transition: transform .18s ease, opacity .18s ease;
+  opacity: .95;
+}
+
+/* animate caret on hover like about.html */
+.nav-greeting:hover .caret,
+.nav-greeting:focus .caret {
+  transform: translateY(-2px) rotate(180deg);
+}
+
+/* dropdown container - made larger and more spacious */
+.nav-greeting .dropdown {
+  position: absolute;
+  right: 6px;
+  top: calc(100% + 12px);
+  background: #111;
+  border: 1px solid rgba(255,215,0,0.18);
+  border-radius: 12px;
+  padding: 10px;
+  min-width: 220px;            /* increased width */
+  display: none;
+  z-index: 60;
+  box-shadow: 0 18px 48px rgba(0,0,0,0.6);
+  transform-origin: top right;
+  transition: transform .16s cubic-bezier(.2,.9,.2,1), opacity .14s ease;
+  opacity: 0;
+}
+
+/* show dropdown when aria-expanded true */
+.nav-greeting[aria-expanded="true"] .dropdown {
+  display: block;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* dropdown buttons: ensure full width and aligned yellow hover */
+.nav-greeting .dropdown button {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+  color: #FFD700;
+  padding: 12px 16px;         /* increased padding for spacing */
+  text-align: left;
+  cursor: pointer;
+  font-weight: 800;
+  border-radius: 10px;
+  transition: background .14s ease, color .14s ease, transform .12s ease, box-shadow .12s ease;
+  margin-bottom: 6px;         /* spacing between items */
+  line-height: 1.2;
+}
+
+/* last button margin fix */
+.nav-greeting .dropdown button:last-child { margin-bottom: 0; }
+
+/* yellow hover background aligned and consistent */
+.nav-greeting .dropdown button:hover,
+.nav-greeting .dropdown button:focus {
+  background: #FFD700;
+  color: #000;
+  transform: translateY(-1px);
+  outline: none;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+/* small focus ring for keyboard users */
+.nav-greeting .dropdown button:focus {
+  box-shadow: 0 0 0 4px rgba(255,215,0,0.06) inset;
+}
+
+/* ---------- main ---------- */
+.container { text-align: center; padding: 64px 20px 36px; max-width: 980px; margin: 0 auto; }
+.brand-title { font-size: 52px; font-weight: 900; color: #FFD700; text-shadow: 0 0 18px rgba(255,215,0,0.18); margin-bottom: 8px; }
+.brand-subtitle { font-size: 20px; color: #e6e6e6; margin-bottom: 22px; }
+
+/* top login button */
+.top-action { margin-top: 18px; }
+button.check { background: linear-gradient(90deg,#FFD700,#FFC700); color: #000; border: none; padding: 12px 26px; border-radius: 28px; font-weight: 800; letter-spacing: .6px; box-shadow: 0 8px 24px rgba(255,215,0,0.12); transition: transform .18s ease, box-shadow .18s ease, filter .18s ease; }
+button.check:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 18px 40px rgba(255,215,0,0.18); filter: saturate(1.05); }
+button.check:active { transform: translateY(-1px) scale(.995); }
+
+/* disabled style */
+button[disabled] { opacity: .48; cursor: not-allowed; transform: none; box-shadow: none; filter: none; }
+
+/* description */
+.results { margin-top: 36px; font-weight: 700; color: #FFD700; font-size: 16px; }
+.results p.lead { color: #f0f0f0; font-weight: 600; line-height: 1.6; margin-top: 10px; }
+
+/* bottom GET STARTED container */
+.bottom-cta { margin: 40px auto; text-align: center; }
+
+/* overlay/modal */
+.overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); z-index: 9999; padding: 20px; }
+.overlay[aria-hidden="false"] { display: flex; }
+.modal { width: 100%; max-width: 760px; background: #111; border-radius: 12px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); text-align: center; color: #fff; position: relative; }
+.vehicle-grid { display: flex; gap: 18px; justify-content: center; margin-top: 18px; flex-wrap: nowrap; }
+.vehicle { min-width: 180px; padding: 18px 22px; border-radius: 12px; cursor: pointer; border: 2px solid transparent; transition: transform .12s, box-shadow .12s, border-color .12s; background: linear-gradient(180deg,#1a1a1a,#0f0f0f); color: #fff; font-weight: 800; text-align: center; white-space: nowrap; }
+.vehicle:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.5); border-color: #FFD700; }
+
+/* footer */
+footer { background-color: #000; color: #FFD700; text-align: center; padding: 18px; margin-top: 36px; border-top: 4px solid #FFD700; letter-spacing: 1px; }
+footer a { color: #FFD700; text-decoration: none; margin: 0 10px; transition: opacity .18s ease; }
+footer a:hover { opacity: .85; text-decoration: underline; }
+
+/* responsive */
+@media (max-width: 820px) {
+  .brand-title { font-size: 40px; }
+  .nav-links { gap: 16px; }
+  .nav-greeting { right: 12px; font-size: 14px; }
+}
 @media (max-width: 520px) {
-  .modal { padding: 18px; max-width: 92%; }
-  .vehicle-grid { flex-wrap: wrap; gap: 12px; }
-  .vehicle { min-width: 140px; flex: 1 1 40%; }
+  .brand-title { font-size: 30px; }
+  .nav-links { display: none; }
+  .nav-greeting { position: static; transform: none; margin-top: 10px; justify-content: center; }
+  .nav-greeting .dropdown { left: 50%; right: auto; transform: translateX(-50%); top: calc(100% + 8px); min-width: 200px; }
 }
   </style>
 </head>
@@ -239,29 +193,47 @@ footer a:hover {
       <a href="faq.html" role="menuitem">FAQ</a>
       <a href="contact.html" role="menuitem">Contact Us</a>
     </div>
+
+    <!-- Greeting + dropdown (right corner) -->
+    <div class="nav-greeting" id="navGreeting" role="button" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-label="User menu">
+      <span id="navGreetingText">Hi, User</span>
+      <span class="caret" aria-hidden="true"></span>
+
+      <div class="dropdown" id="userDropdown" role="menu" aria-label="User menu options">
+        <button id="signOutBtn" role="menuitem">Sign Out</button>
+        <button id="switchAccountBtn" role="menuitem">Switch Account</button>
+      </div>
+    </div>
   </nav>
 
   <main class="container" role="main">
     <div class="brand-title">Welcome to Meter-Sathi</div>
     <div class="brand-subtitle">Your trusted companion for accurate auto and taxi fare calculations.</div>
 
-    <div style="margin-top:24px;">
-      <button id="getStartedBtn" class="check" aria-haspopup="dialog" aria-controls="vehicleOverlay">GET STARTED</button>
+    <div class="top-action">
+      <button id="loginBtn" class="check" aria-label="Login">Login</button>
     </div>
 
-    <div class="results" style="margin-top:36px; max-width:820px; margin-left:auto; margin-right:auto;">
+    <div class="results" aria-live="polite">
       <p style="color:#dddddd; font-weight:700; margin-bottom:8px;">What we do</p>
-      <p style="color:#f0f0f0; font-weight:600; line-height:1.6;">
+      <p class="lead">
         Meter-Sathi helps commuters verify fares, track rides, and understand official tariffs for auto rickshaws and taxis.
-        Click on GET STARTED to continue.
+        Login to your account to unlock ride tracking and fare verification. Once logged in, you can click <strong>GET STARTED</strong> below to continue.
       </p>
     </div>
   </main>
 
+  <!-- GET STARTED placed above footer; disabled until user logs in -->
+  <div class="bottom-cta">
+    <button id="getStartedBtn" class="check" aria-haspopup="dialog" aria-controls="vehicleOverlay" disabled>
+      GET STARTED
+    </button>
+  </div>
+
   <div class="overlay" id="vehicleOverlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="vehicleTitle">
     <div class="modal" role="document">
-      <button class="close-x" id="closeOverlay" aria-label="Close dialog">✕</button>
-      <p id="vehicleTitle">Select a vehicle to continue</p>
+      <button class="close-x" id="closeOverlay" aria-label="Close dialog" style="position:absolute;right:12px;top:10px;background:transparent;border:0;font-size:20px;color:#ccc;cursor:pointer;">✕</button>
+      <p id="vehicleTitle" style="color:#ccc;margin:6px 0 12px;font-weight:700;">Select a vehicle to continue</p>
       <div class="vehicle-grid" role="group" aria-label="Vehicle options">
         <div class="vehicle" id="autoOption" role="button" tabindex="0" aria-pressed="false" aria-label="Auto Rickshaw">Auto Rickshaw</div>
         <div class="vehicle" id="nonAcOption" role="button" tabindex="0" aria-pressed="false" aria-label="Non AC Taxi">Non AC Taxi</div>
@@ -271,62 +243,105 @@ footer a:hover {
   </div>
 
   <footer>
-    <p>© 2026 Meter-Sathi | 
-      <a href="privacy.html">Privacy Policy</a> | 
+    <p>© 2026 Meter-Sathi |
+      <a href="privacy.html">Privacy Policy</a> |
       <a href="terms.html">Terms and Conditions</a>
     </p>
   </footer>
 
-  <script>
-    (function () {
+  <!-- Firebase + App logic -->
+  <script type="module">
+    // --- Firebase SDK imports (modular v9+) ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    // --- TODO: Replace with your Firebase config ---
+    const firebaseConfig = {
+      // apiKey: "YOUR_API_KEY",
+      // authDomain: "YOUR_AUTH_DOMAIN",
+      // projectId: "YOUR_PROJECT_ID",
+      // storageBucket: "YOUR_STORAGE_BUCKET",
+      // messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      // appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase safely
+    let firebaseInitialized = false;
+    try {
+      if (firebaseConfig && (firebaseConfig.projectId || firebaseConfig.apiKey)) {
+        initializeApp(firebaseConfig);
+        firebaseInitialized = true;
+      }
+    } catch (e) {
+      console.warn('Firebase init warning:', e);
+    }
+
+    const auth = firebaseInitialized ? getAuth() : null;
+    const db = firebaseInitialized ? getFirestore() : null;
+
+    // DOM ready
+    window.addEventListener('DOMContentLoaded', () => {
+      // Elements
+      const navGreeting = document.getElementById('navGreeting');
+      const navGreetingText = document.getElementById('navGreetingText');
+      const userDropdown = document.getElementById('userDropdown');
+      const signOutBtn = document.getElementById('signOutBtn');
+      const switchAccountBtn = document.getElementById('switchAccountBtn');
+
       const overlay = document.getElementById('vehicleOverlay');
-      const openBtn = document.getElementById('getStartedBtn');
+      const openBtn = document.getElementById('getStartedBtn'); // bottom CTA
       const closeBtn = document.getElementById('closeOverlay');
       const autoOption = document.getElementById('autoOption');
       const nonAcOption = document.getElementById('nonAcOption');
       const acOption = document.getElementById('acOption');
 
+      const loginBtn = document.getElementById('loginBtn');
+      const getStartedBtn = document.getElementById('getStartedBtn');
+
+      /* ---------- Overlay logic ---------- */
       function showOverlay() {
         overlay.setAttribute('aria-hidden', 'false');
         overlay.style.display = 'flex';
-        autoOption.focus();
+        try { autoOption.focus(); } catch (e) {}
         document.body.style.overflow = 'hidden';
       }
-
       function hideOverlay() {
         overlay.setAttribute('aria-hidden', 'true');
         overlay.style.display = 'none';
-        openBtn.focus();
+        try { getStartedBtn.focus(); } catch (e) {}
         document.body.style.overflow = '';
       }
 
-      openBtn.addEventListener('click', function (e) {
+      // bottom GET STARTED click
+      openBtn.addEventListener('click', (e) => {
+        if (openBtn.disabled) return;
         e.preventDefault();
         showOverlay();
       });
 
-      closeBtn.addEventListener('click', function (e) {
+      closeBtn.addEventListener('click', (e) => {
         e.preventDefault();
         hideOverlay();
       });
 
-      overlay.addEventListener('click', function (e) {
+      overlay.addEventListener('click', (e) => {
         if (e.target === overlay) hideOverlay();
       });
 
-      document.addEventListener('keydown', function (e) {
+      document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && overlay.getAttribute('aria-hidden') === 'false') hideOverlay();
       });
 
-      autoOption.addEventListener('click', function () {
-        window.location.href = 'index.html';
-      });
-      nonAcOption.addEventListener('click', function () {
-        window.location.href = 'non_ac_taxi.html';
-      });
-      acOption.addEventListener('click', function () {
-        window.location.href = 'ac_taxi.html';
-      });
+      // navigation from overlay: set session flag so Back reopens overlay
+      function goTo(url) {
+        try { sessionStorage.setItem('meterSathi_openVehicleOverlay', '1'); } catch (e) {}
+        window.location.assign(url);
+      }
+
+      autoOption.addEventListener('click', () => goTo('index.html'));
+      nonAcOption.addEventListener('click', () => goTo('non_ac_taxi.html'));
+      acOption.addEventListener('click', () => goTo('ac_taxi.html'));
 
       [autoOption, nonAcOption, acOption].forEach(el => {
         el.addEventListener('keydown', function (e) {
@@ -337,37 +352,149 @@ footer a:hover {
         });
       });
 
-      // Ensure overlay hidden on load
+      // Ensure overlay hidden initially
       overlay.setAttribute('aria-hidden', 'true');
       overlay.style.display = 'none';
 
-      // --- Auto-open logic: check query param or sessionStorage flag and open overlay immediately ---
-      // This is the only addition: it does not change any existing behavior.
+      // Auto-open logic (query param or sessionStorage)
       function shouldAutoOpen() {
         try {
           const params = new URLSearchParams(window.location.search);
           if (params.get('open') === 'vehicle') return true;
-        } catch (e) { /* ignore */ }
-
+        } catch (e) {}
         try {
           if (sessionStorage.getItem('meterSathi_openVehicleOverlay') === '1') {
-            // remove the flag so it doesn't reopen on subsequent navigations
             sessionStorage.removeItem('meterSathi_openVehicleOverlay');
             return true;
           }
-        } catch (e) { /* ignore */ }
-
+        } catch (e) {}
         return false;
       }
 
-      // Run on DOMContentLoaded to ensure elements exist and focus behavior is stable
-      window.addEventListener('DOMContentLoaded', function () {
-        if (shouldAutoOpen()) {
-          // small timeout to ensure any focus/scroll behavior settles
-          setTimeout(showOverlay, 50);
+      if (shouldAutoOpen()) {
+        setTimeout(showOverlay, 50);
+      }
+
+      /* ---------- Greeting dropdown behavior ---------- */
+      function setDropdownExpanded(expanded) {
+        navGreeting.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        if (expanded) {
+          const first = userDropdown.querySelector('button');
+          if (first) first.focus();
+        } else {
+          navGreeting.focus();
+        }
+      }
+
+      // Toggle dropdown on click (but ignore clicks inside dropdown)
+      navGreeting.addEventListener('click', (e) => {
+        if (e.target.closest('#userDropdown')) return;
+        e.stopPropagation();
+        const isExpanded = navGreeting.getAttribute('aria-expanded') === 'true';
+        setDropdownExpanded(!isExpanded);
+      });
+
+      // keyboard support
+      navGreeting.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const isExpanded = navGreeting.getAttribute('aria-expanded') === 'true';
+          setDropdownExpanded(!isExpanded);
+        } else if (e.key === 'Escape') {
+          setDropdownExpanded(false);
         }
       });
-    })();
+
+      // Close when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!navGreeting.contains(e.target)) setDropdownExpanded(false);
+      });
+
+      // Close on Escape when focus inside dropdown
+      userDropdown.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') setDropdownExpanded(false);
+      });
+
+      // Ensure yellow hover background disappears when mouse leaves the dropdown
+      userDropdown.addEventListener('mouseleave', () => {
+        // remove focus from any button so :focus styles and hover-like state are cleared
+        const btns = userDropdown.querySelectorAll('button');
+        btns.forEach(b => {
+          try { b.blur(); } catch (e) {}
+        });
+      });
+
+      // Switch account -> redirect to register/login page
+      switchAccountBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        try { sessionStorage.removeItem('meterSathi_openVehicleOverlay'); } catch (err) {}
+        window.location.assign('login.html');
+      });
+
+      // Sign out -> call Firebase signOut if auth available; otherwise just reset UI
+      signOutBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        setDropdownExpanded(false);
+        if (!auth) {
+          navGreetingText.textContent = 'Hi, User';
+          try { getStartedBtn.disabled = true; } catch (e) {}
+          return;
+        }
+        try {
+          await signOut(auth);
+          // onAuthStateChanged will update UI
+        } catch (err) {
+          console.error('Sign out failed', err);
+          navGreetingText.textContent = 'Hi, User';
+          try { getStartedBtn.disabled = true; } catch (e) {}
+        }
+      });
+
+      /* ---------- Login button behavior ---------- */
+      loginBtn.addEventListener('click', () => {
+        window.location.assign('login.html');
+      });
+
+      /* ---------- Firebase auth listener (if configured) ---------- */
+      if (auth && db) {
+        onAuthStateChanged(auth, async (user) => {
+          if (user) {
+            // try Firestore firstName
+            try {
+              const userDocRef = doc(db, 'users', user.uid);
+              const userSnap = await getDoc(userDocRef);
+              if (userSnap.exists()) {
+                const data = userSnap.data();
+                const firstName = data && data.firstName ? String(data.firstName).trim() : '';
+                if (firstName) {
+                  navGreetingText.textContent = `Hi, ${firstName}`;
+                } else {
+                  const fallback = user.displayName || (user.email ? user.email.split('@')[0] : 'User');
+                  navGreetingText.textContent = `Hi, ${fallback}`;
+                }
+              } else {
+                const fallback = user.displayName || (user.email ? user.email.split('@')[0] : 'User');
+                navGreetingText.textContent = `Hi, ${fallback}`;
+              }
+            } catch (err) {
+              console.warn('Failed to fetch user doc', err);
+              const fallback = user.displayName || (user.email ? user.email.split('@')[0] : 'User');
+              navGreetingText.textContent = `Hi, ${fallback}`;
+            }
+            // enable GET STARTED when logged in
+            try { getStartedBtn.disabled = false; } catch (e) {}
+          } else {
+            navGreetingText.textContent = 'Hi, User';
+            setDropdownExpanded(false);
+            try { getStartedBtn.disabled = true; } catch (e) {}
+          }
+        });
+      } else {
+        // Firebase not configured: default state (not logged in)
+        navGreetingText.textContent = 'Hi, User';
+        try { getStartedBtn.disabled = true; } catch (e) {}
+      }
+    }); // DOMContentLoaded end
   </script>
 </body>
 </html>

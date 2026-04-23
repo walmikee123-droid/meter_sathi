@@ -90,6 +90,24 @@ body{
   font-weight:bold;
 }
 
+/* ✅ Updated text color */
+.extra-links{
+  margin-top:15px;
+  font-size:14px;
+  text-align:center;
+  color:var(--gold);
+}
+
+.extra-links a{
+  color:var(--gold);
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.extra-links a:hover{
+  text-decoration:underline;
+}
+
 .login-btn{
   width:100%;
   padding:10px;
@@ -105,17 +123,6 @@ body{
 .login-btn:hover{
   background:var(--gold-strong);
 }
-
-.extra-links{
-  margin-top:15px;
-  font-size:14px;
-  text-align:center;
-}
-
-.extra-links a{
-  color:var(--gold);
-  text-decoration:none;
-}
 </style>
 </head>
 
@@ -128,15 +135,15 @@ body{
     
     <div class="input-box">
       <label for="email">Email</label>
-      <input type="email" id="email" required>
+      <input type="email" id="email" placeholder="Enter email" required>
     </div>
 
     <div class="input-box">
       <label for="password">Password</label>
 
       <div class="password-wrapper">
-        <input type="password" id="password" required>
-        <button type="button" class="toggle-password" onclick="togglePassword()">Show</button>
+        <input type="password" id="password" placeholder="Enter password" required>
+        <button type="button" class="toggle-password" onclick="togglePassword(this)">Show</button>
       </div>
     </div>
 
@@ -149,16 +156,16 @@ body{
 </div>
 
 <script>
-function togglePassword() {
-  const passwordInput = document.getElementById("password");
-  const toggleBtn = document.querySelector(".toggle-password");
+// Toggle password (fixed)
+function togglePassword(btn) {
+  const input = document.getElementById("password");
 
-  if (passwordInput.type === "password") {
-    passwordInput.type = "text";
-    toggleBtn.textContent = "Hide";
+  if (input.type === "password") {
+    input.type = "text";
+    btn.innerText = "Hide";
   } else {
-    passwordInput.type = "password";
-    toggleBtn.textContent = "Show";
+    input.type = "password";
+    btn.innerText = "Show";
   }
 }
 </script>

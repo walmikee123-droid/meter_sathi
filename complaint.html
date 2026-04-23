@@ -81,10 +81,8 @@
             font-weight: bold;
         }
         
-        /* Restored input[type="date"] styling */
         input[type="text"],
         input[type="time"],
-        input[type="date"],
         input[type="number"],
         select,
         textarea {
@@ -109,7 +107,6 @@
             text-transform: uppercase;
         }
 
-        /* Turns native calendar and clock icons to Meter-Sathi yellow */
         ::-webkit-calendar-picker-indicator {
             filter: invert(74%) sepia(85%) saturate(614%) hue-rotate(358deg) brightness(101%) contrast(104%);
             cursor: pointer;
@@ -232,7 +229,7 @@
 
                         <div class="input-group">
                             <label for="incidentDate">Date of Incident *</label>
-                            <input type="date" id="incidentDate" required>
+                            <input type="text" id="incidentDate" placeholder="DD/MM/YYYY" required maxlength="10">
                         </div>
 
                         <div class="input-group">
@@ -308,12 +305,10 @@
     </footer>
 
     <script type="module">
-        // --- 1. FIREBASE IMPORTS ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
-        // --- 2. YOUR FIREBASE CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyArV1sP0G8-6NwRUclY3uChof3b9TfmGB0",
             authDomain: "meter-sathi.firebaseapp.com",
@@ -327,46 +322,96 @@
         const db = getFirestore(app);
         const storage = getStorage(app);
 
-        // --- 3. UI HELPERS ---
+        // --- SMART DATE AUTO-CORRECTOR ---
+        const dateInput = document.getElementById('incidentDate');
+        dateInput.addEventListener('input', function(e) {
+            if (e.inputType === 'deleteContentBackward') return;
+            
+            let v = this.value.replace(/\D/g, ''); 
+            
+            if (v.length >= 2) {
+                let dd = parseInt(v.substring(0, 2));
+                if (dd === 0) dd = 1;
+                if (dd > 31) dd = 31;
+                v = dd.toString().padStart(2, '0') + v.substring(2);
+            }
+            
+            if (v.length >= 4) {
+                let mm = parseInt(v.substring(2, 4));
+                if (mm === 0) mm = 1;
+                if (mm > 12) mm = 12; 
+                
+                let dd = parseInt(v.substring(0, 2));
+                
+                // Temporarily use leap year so it doesn't block 29/02 while typing
+                let yyyy = 2024; 
+                
+                // If the user has typed the full 4 digit year
+                if (v.length === 8) {
+                    yyyy = parseInt(v.substring(4, 8));
+                    
+                    // PREVENT FUTURE DATES: Snap back to current year if they type 2027
+                    const currentYear = new Date().getFullYear();
+                    if (yyyy > currentYear) {
+                        yyyy = currentYear;
+                    }
+                }
+                
+                // Calculate max days dynamically based on entered month and year
+                let maxDays = new Date(yyyy, mm, 0).getDate(); 
+                
+                // AUTO-CORRECT: If day exceeds max days (e.g. 31/02), snap it down (to 28/02)
+                if (dd > maxDays) {
+                    dd = maxDays;
+                }
+                
+                v = dd.toString().padStart(2, '0') + mm.toString().padStart(2, '0') + (v.length > 4 ? (v.length === 8 ? yyyy.toString() : v.substring(4)) : '');
+            }
+            
+            // Re-apply the slashes
+            if (v.length >= 5) {
+                this.value = v.substring(0, 2) + '/' + v.substring(2, 4) + '/' + v.substring(4, 8);
+            } else if (v.length >= 3) {
+                this.value = v.substring(0, 2) + '/' + v.substring(2, 4);
+            } else {
+                this.value = v;
+            }
+        });
 
-        // NEW: STRICT VEHICLE NUMBER VALIDATOR
+        // --- STRICT VEHICLE NUMBER FORMATTER ---
         const vehicleInput = document.getElementById('vehicleNumber');
         vehicleInput.addEventListener('input', function(e) {
-            // Allows the user to use backspace normally
             if (e.inputType === 'deleteContentBackward') return;
 
             let raw = this.value.toUpperCase();
             let formatted = '';
-            let cleanIdx = 0; // Tracks the count of valid alphanumeric characters
+            let cleanIdx = 0; 
 
             for (let i = 0; i < raw.length; i++) {
                 let char = raw[i];
                 if (char === ' ') continue; 
 
-                // Slot 1 & 2: Letters Only (e.g. MH)
+                // Slot 1 & 2: Letters Only
                 if (cleanIdx === 0 || cleanIdx === 1) {
                     if (/[A-Z]/.test(char)) formatted += char;
                 } 
-                // Slot 3 & 4: Numbers Only (e.g. 05)
+                // Slot 3 & 4: Numbers Only
                 else if (cleanIdx === 2 || cleanIdx === 3) {
                     if (cleanIdx === 2 && formatted.length === 2) formatted += ' ';
                     if (/[0-9]/.test(char)) formatted += char;
                 } 
-                // Slot 5 & 6: Letters Only (e.g. AB)
+                // Slot 5 & 6: Letters Only
                 else if (cleanIdx === 4 || cleanIdx === 5) {
                     if (cleanIdx === 4 && formatted.length === 5) formatted += ' ';
                     if (/[A-Z]/.test(char)) formatted += char;
                 } 
-                // Slot 7 to 10: Numbers Only (e.g. 1111)
+                // Slot 7 to 10: Numbers Only
                 else if (cleanIdx >= 6 && cleanIdx <= 9) {
                     if (cleanIdx === 6 && formatted.length === 8) formatted += ' ';
                     if (/[0-9]/.test(char)) formatted += char;
                 }
 
-                // Increment index only if a valid character was added
                 if (/[A-Z0-9]/.test(char)) cleanIdx++;
-                
-                // Cap at 10 total alphanumeric characters
                 if (cleanIdx >= 10) break;
             }
             this.value = formatted;
@@ -383,21 +428,24 @@
             }
         });
 
-        // --- 4. FIREBASE FORM SUBMISSION ---
+        // --- FIREBASE FORM SUBMISSION ---
         const form = document.getElementById('complaintForm');
         const formSection = document.getElementById('formSection');
         const successMessage = document.getElementById('successMessage');
         const refNumberDisplay = document.getElementById('refNumber');
         const submitBtn = document.querySelector('.submit-btn');
-        const dateInput = document.getElementById('incidentDate');
 
         form.addEventListener('submit', async function(e) {
             e.preventDefault(); 
             
-            // Final check to ensure plate length is fully typed
             const plateValue = vehicleInput.value.replace(/\s/g, '');
             if(plateValue.length < 8) {
                 alert("Please enter a complete Vehicle Registration Number (e.g., MH 05 AB 1111).");
+                return;
+            }
+            
+            if(dateInput.value.length < 10) {
+                alert("Please enter a complete Date (DD/MM/YYYY).");
                 return;
             }
 
@@ -405,10 +453,14 @@
             submitBtn.disabled = true;
 
             try {
+                // Convert DD/MM/YYYY back to YYYY-MM-DD for clean database storage
+                const parts = dateInput.value.split('/');
+                const isoDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+
                 const complaintData = {
                     vehicleType: document.getElementById('vehicleType').value,
                     vehicleNumber: vehicleInput.value, 
-                    incidentDate: dateInput.value, // Will save in standard YYYY-MM-DD format behind the scenes
+                    incidentDate: isoDate, // Stored safely in standard format
                     incidentTime: document.getElementById('incidentTime').value,
                     issueType: document.getElementById('issueType').value,
                     pickupLocation: document.getElementById('pickupLocation').value,

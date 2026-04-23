@@ -33,10 +33,19 @@ body{
   width:340px;
 }
 
-h2{text-align:center;color:var(--gold);}
+h2{
+  text-align:center;
+  color:var(--gold);
+}
 
-.input-box{margin-bottom:15px;}
-.input-box label{color:var(--muted);font-size:14px;}
+.input-box{
+  margin-bottom:15px;
+}
+
+.input-box label{
+  color:var(--muted);
+  font-size:14px;
+}
 
 .input-box input{
   width:100%;
@@ -47,10 +56,18 @@ h2{text-align:center;color:var(--gold);}
   color:#fff;
 }
 
-.name-row{display:flex;gap:10px;}
-.name-row .input-box{flex:1;}
+.name-row{
+  display:flex;
+  gap:10px;
+}
 
-.password-box{position:relative;}
+.name-row .input-box{
+  flex:1;
+}
+
+.password-box{
+  position:relative;
+}
 
 .toggle-password{
   position:absolute;
@@ -60,6 +77,7 @@ h2{text-align:center;color:var(--gold);}
   border:none;
   color:var(--gold);
   cursor:pointer;
+  font-size:12px;
 }
 
 .error{
@@ -92,6 +110,7 @@ h2{text-align:center;color:var(--gold);}
         <label for="firstName">First Name</label>
         <input type="text" id="firstName" placeholder="Enter first name" required>
       </div>
+
       <div class="input-box">
         <label for="lastName">Last Name</label>
         <input type="text" id="lastName" placeholder="Enter last name" required>
@@ -119,16 +138,18 @@ h2{text-align:center;color:var(--gold);}
     <div class="input-box">
       <label for="phone">Phone Number</label>
       <input id="phone" type="tel" placeholder="Enter 10-digit number" required maxlength="10">
+      <div class="error" id="phoneError">Enter valid 10-digit number</div>
     </div>
 
     <button type="submit" class="register-btn">Register</button>
+
   </form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/intlTelInput.min.js"></script>
 
 <script>
-// Initialize phone input
+// Phone input setup
 const phoneInput = document.querySelector("#phone");
 
 window.intlTelInput(phoneInput, {
@@ -142,19 +163,48 @@ phoneInput.addEventListener("input", function () {
   this.value = this.value.replace(/[^0-9]/g, "");
 });
 
-// Toggle password
-function togglePassword() {
-  const pass = document.getElementById("password");
-  const toggle = document.querySelector(".toggle-password");
+// Toggle password (fixed)
+function togglePassword(id, btn) {
+  const input = document.getElementById(id);
 
-  if (pass.type === "password") {
-    pass.type = "text";
-    toggle.innerText = "Hide";
+  if (input.type === "password") {
+    input.type = "text";
+    btn.innerText = "Hide";
   } else {
-    pass.type = "password";
-    toggle.innerText = "Show";
+    input.type = "password";
+    btn.innerText = "Show";
   }
 }
+
+// Validation
+const form = document.getElementById("registerForm");
+const password = document.getElementById("password");
+const confirmPassword = document.getElementById("confirmPassword");
+const passError = document.getElementById("passError");
+const phoneError = document.getElementById("phoneError");
+
+form.addEventListener("submit", function(e) {
+
+  let valid = true;
+
+  // Password match check
+  if (password.value !== confirmPassword.value) {
+    passError.style.display = "block";
+    valid = false;
+  } else {
+    passError.style.display = "none";
+  }
+
+  // Phone validation
+  if (phoneInput.value.length !== 10) {
+    phoneError.style.display = "block";
+    valid = false;
+  } else {
+    phoneError.style.display = "none";
+  }
+
+  if (!valid) e.preventDefault();
+});
 </script>
 
 </body>

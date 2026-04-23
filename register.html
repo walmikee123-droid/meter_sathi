@@ -5,35 +5,25 @@
 <title>Register - Meter-Sathi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- intl-tel-input CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/css/intlTelInput.css"/>
 
 <style>
 :root{
   --bg:#000;
   --gold:#FFD700;
-  --gold-strong:#ffcc00;
   --card:#1A1A1A;
-  --muted:#dddddd;
-  --font:'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --muted:#ddd;
   --border:#333;
-  --active-item-color:#FFC400;
-  --body-text-white:#FFFFFF;
-}
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:var(--font);
+  --error:#ff4d4d;
 }
 
 body{
-  height:100vh;
   background:var(--bg);
+  height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
+  font-family:'Segoe UI',sans-serif;
 }
 
 .register-container{
@@ -41,111 +31,51 @@ body{
   padding:30px;
   border-radius:12px;
   width:340px;
-  box-shadow:0 0 20px rgba(255,215,0,0.2);
-  border:1px solid var(--border);
 }
 
-.register-container h2{
-  text-align:center;
-  color:var(--gold);
-  margin-bottom:20px;
-}
+h2{text-align:center;color:var(--gold);}
 
-.input-box{
-  margin-bottom:15px;
-}
+.input-box{margin-bottom:15px;}
+.input-box label{color:var(--muted);font-size:14px;}
 
-.input-box label{
-  font-size:14px;
-  color:var(--muted);
-}
-
-/* Inputs */
 .input-box input{
   width:100%;
   padding:10px;
   margin-top:5px;
-  border:1px solid var(--border);
-  border-radius:6px;
   background:#000;
+  border:1px solid var(--border);
   color:#fff;
 }
 
-.input-box input:focus{
-  border-color:var(--gold);
-  box-shadow:0 0 5px var(--gold);
-  outline:none;
-}
+.name-row{display:flex;gap:10px;}
+.name-row .input-box{flex:1;}
 
-/* Password toggle */
-.password-box{
-  position:relative;
-}
+.password-box{position:relative;}
 
 .toggle-password{
   position:absolute;
   right:10px;
   top:38px;
-  cursor:pointer;
+  background:none;
+  border:none;
   color:var(--gold);
-  font-size:14px;
+  cursor:pointer;
 }
 
-/* ===== PHONE INPUT FIX ===== */
-.iti{
-  width:100%;
+.error{
+  color:var(--error);
+  font-size:12px;
+  margin-top:5px;
+  display:none;
 }
 
-.iti input{
-  width:100%;
-  padding-left:95px !important; /* space for flag + code */
-  background:#000;
-  color:#fff;
-  border:1px solid var(--border);
-  border-radius:6px;
-}
-
-/* Flag area */
-.iti__flag-container{
-  background:#000;
-  border-right:1px solid var(--border);
-}
-
-/* Button */
 .register-btn{
   width:100%;
   padding:10px;
   background:var(--gold);
   border:none;
-  color:#000;
-  font-size:16px;
-  border-radius:6px;
-  cursor:pointer;
   font-weight:bold;
-}
-
-.register-btn:hover{
-  background:var(--gold-strong);
-}
-
-/* Links */
-.extra-links{
-  margin-top:15px;
-  text-align:center;
-}
-
-.extra-links p{
-  color:#fff;
-}
-
-.extra-links a{
-  color:var(--gold);
-  text-decoration:none;
-}
-
-.extra-links a:hover{
-  color:var(--active-item-color);
-  text-decoration:underline;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -155,68 +85,97 @@ body{
 <div class="register-container">
   <h2>Register</h2>
 
-  <form>
-    <div class="input-box">
-      <label>Full Name</label>
-      <input type="text" required>
+  <form id="registerForm">
+
+    <div class="name-row">
+      <div class="input-box">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" placeholder="Enter first name" required>
+      </div>
+      <div class="input-box">
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" placeholder="Enter last name" required>
+      </div>
     </div>
 
     <div class="input-box">
-      <label>Email</label>
-      <input type="email" required>
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Enter email" required>
     </div>
 
     <div class="input-box password-box">
-      <label>Password</label>
-      <input type="password" id="password" required>
-      <span class="toggle-password" onclick="togglePassword()">Show</span>
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter password" required>
+      <button type="button" class="toggle-password" onclick="togglePassword('password', this)">Show</button>
+    </div>
+
+    <div class="input-box password-box">
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+      <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword', this)">Show</button>
+      <div class="error" id="passError">Passwords do not match</div>
     </div>
 
     <div class="input-box">
-      <label>Phone Number</label>
-      <input id="phone" type="tel" required>
+      <label for="phone">Phone Number</label>
+      <input id="phone" type="tel" placeholder="Enter 10-digit number" required maxlength="10">
     </div>
 
-    <button class="register-btn">Register</button>
+    <button type="submit" class="register-btn">Register</button>
   </form>
-
-  <div class="extra-links">
-    <p>Already have an account? <a href="login.html">Login</a></p>
-  </div>
 </div>
 
-<!-- intl-tel-input JS -->
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/intlTelInput.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js"></script>
 
 <script>
-// Initialize phone input
 const phoneInput = document.querySelector("#phone");
-
 window.intlTelInput(phoneInput, {
   initialCountry: "in",
-  separateDialCode: true,
-  preferredCountries: ["in", "us", "gb"]
+  separateDialCode: true
 });
 
-// Allow only numbers
 phoneInput.addEventListener("input", function () {
   this.value = this.value.replace(/[^0-9]/g, "");
 });
 
-// Toggle password
-function togglePassword() {
-  const pass = document.getElementById("password");
-  const toggle = document.querySelector(".toggle-password");
-
-  if (pass.type === "password") {
-    pass.type = "text";
-    toggle.innerText = "Hide";
-  } else {
-    pass.type = "password";
-    toggle.innerText = "Show";
-  }
+function togglePassword(id, btn) {
+  const input = document.getElementById(id);
+  input.type = input.type === "password" ? "text" : "password";
+  btn.textContent = input.type === "password" ? "Show" : "Hide";
 }
+
+document.getElementById("registerForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const pass = password.value;
+  const confirm = confirmPassword.value;
+  const error = document.getElementById("passError");
+
+  if (pass !== confirm) {
+    error.style.display = "block";
+    return;
+  } else {
+    error.style.display = "none";
+  }
+
+  if (phone.value.length !== 10) {
+    alert("Phone number must be 10 digits");
+    return;
+  }
+
+  const user = {
+    firstName: firstName.value,
+    lastName: lastName.value,
+    email: email.value,
+    password: pass,
+    phone: phone.value
+  };
+
+  localStorage.setItem("user", JSON.stringify(user));
+
+  alert("Registered Successfully!");
+  window.location.href = "login.html";
+});
 </script>
 
 </body>

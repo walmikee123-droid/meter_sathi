@@ -91,7 +91,7 @@
       font-size: 16px;
     }
 
-    /* --- ANIMATED ACCORDION --- */
+    /* --- ANIMATED ACCORDION (YOUR THEME) --- */
     .faq-item {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid rgba(255, 215, 0, 0.08);
@@ -127,24 +127,56 @@
       text-align: left;
     }
 
+    /* --- THE PERFECT CENTERED ICON FIX (USING GEOMETRY INSTEAD OF TEXT) --- */
     .q-icon {
       width: 30px;
       height: 30px;
       background: rgba(255, 204, 0, 0.1);
-      color: #ffcc00;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      position: relative;
+      /* Your exact transition logic applied to the container */
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s;
     }
 
-    .faq-item.active .q-icon {
-      background: #ffcc00;
-      color: #000;
-      transform: rotate(135deg);
+    /* Drawing the Horizontal Line */
+    .q-icon::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 14px;
+      height: 2px;
+      background-color: #ffcc00;
+      transform: translate(-50%, -50%);
+      transition: background-color 0.4s;
     }
+
+    /* Drawing the Vertical Line */
+    .q-icon::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 2px;
+      height: 14px;
+      background-color: #ffcc00;
+      transform: translate(-50%, -50%);
+      transition: background-color 0.4s;
+    }
+
+    /* Purane transform: rotate(45deg) ki jagah ye dal do */
+.faq-item.active .q-icon {
+  background: #ffcc00;
+  /* 405 degrees = 360 (one full circle) + 45 (to make the X) */
+  transform: rotate(405deg); 
+}
+
+    /* Change the + lines to black when active */
+    .faq-item.active .q-icon::before,
+    .faq-item.active .q-icon::after {
+      background-color: #000000;
+    }
+    /* --- END PERFECT ICON --- */
 
     /* Transitioning Wrapper */
     .faq-answer-wrapper {
@@ -160,16 +192,20 @@
     /* Content Stagger Animation */
     .faq-answer {
       overflow: hidden;
-      padding: 0 26px 22px 26px;
+    }
+
+    .faq-answer p {
+      padding: 0 26px 22px 26px; 
+      margin: 0;
       color: #b0b0b0;
       font-size: 15px;
       line-height: 1.6;
       opacity: 0;
-      transform: translateY(15px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateY(-10px); 
+      transition: opacity 0.4s ease, transform 0.4s ease;
     }
 
-    .faq-item.active .faq-answer {
+    .faq-item.active .faq-answer p {
       opacity: 1;
       transform: translateY(0);
       transition-delay: 0.1s;
@@ -231,11 +267,11 @@
     <div class="faq-item">
       <button class="faq-question">
         <span>What is Meter-Sathi?</span>
-        <span class="q-icon">+</span>
+        <span class="q-icon"></span>
       </button>
       <div class="faq-answer-wrapper">
         <div class="faq-answer">
-          Meter-Sathi is a web platform designed to help Mumbai commuters, newcomers, and students verify auto and taxi fares in real time. It aims to protect passengers from unfair practices like fast meters and random fare demands.
+          <p>Meter-Sathi is a web platform designed to help Mumbai commuters, newcomers, and students verify auto and taxi fares in real time. It aims to protect passengers from unfair practices like fast meters and random fare demands.</p>
         </div>
       </div>
     </div>
@@ -243,11 +279,11 @@
     <div class="faq-item">
       <button class="faq-question">
         <span>How does the fare calculation work?</span>
-        <span class="q-icon">+</span>
+        <span class="q-icon"></span>
       </button>
       <div class="faq-answer-wrapper">
         <div class="faq-answer">
-          When you click "Start Ride", our system uses your device's GPS to track the route and calculate the exact distance. It then applies official tariff rules, including day/night rules, to estimate the correct fare for your journey.
+          <p>When you click "Start Ride", our system uses your device's GPS to track the route and calculate the exact distance. It then applies official tariff rules, including day/night rules, to estimate the correct fare for your journey.</p>
         </div>
       </div>
     </div>
@@ -255,11 +291,11 @@
     <div class="faq-item">
       <button class="faq-question">
         <span>How do I know if I am being overcharged?</span>
-        <span class="q-icon">+</span>
+        <span class="q-icon"></span>
       </button>
       <div class="faq-answer-wrapper">
         <div class="faq-answer">
-          At the end of your trip, enter the meter reading into the site. Meter-Sathi compares the GPS-calculated official fare with the meter reading you entered and notifies you if the meter appears fair or if you are being overcharged.
+          <p>At the end of your trip, enter the meter reading into the site. Meter-Sathi compares the GPS-calculated official fare with the meter reading you entered and notifies you if the meter appears fair or if you are being overcharged.</p>
         </div>
       </div>
     </div>
@@ -267,11 +303,11 @@
     <div class="faq-item">
       <button class="faq-question">
         <span>Do I need to download an app?</span>
-        <span class="q-icon">+</span>
+        <span class="q-icon"></span>
       </button>
       <div class="faq-answer-wrapper">
         <div class="faq-answer">
-          No installation is required. Meter-Sathi is a web application that runs in your mobile browser — open the site and start tracking your ride immediately.
+          <p>No installation is required. Meter-Sathi is a web application that runs in your mobile browser — open the site and start tracking your ride immediately.</p>
         </div>
       </div>
     </div>
@@ -279,11 +315,11 @@
     <div class="faq-item">
       <button class="faq-question">
         <span>What features are planned for the future?</span>
-        <span class="q-icon">+</span>
+        <span class="q-icon"></span>
       </button>
       <div class="faq-answer-wrapper">
         <div class="faq-answer">
-          Planned features include downloadable trip reports, multilingual support, a toggle for taxi/auto modes, integration with complaint portals, and analytics to highlight overcharging hotspots.
+          <p>Planned features include downloadable trip reports, multilingual support, a toggle for taxi/auto modes, integration with complaint portals, and analytics to highlight overcharging hotspots.</p>
         </div>
       </div>
     </div>

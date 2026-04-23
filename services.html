@@ -18,7 +18,6 @@
       min-height: 100vh;
     }
 
-
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -122,6 +121,7 @@
       line-height: 1.5;
       margin: 0;
     }
+    
     footer {
       background-color: #000000;
       color: #FFD700;
@@ -138,6 +138,7 @@
       margin: 0 8px;
       font-weight: bold;
     }
+    
     @media (max-width: 768px) {
       .brand-title {
         font-size: 36px;
@@ -198,14 +199,12 @@
   </main>
 
   <footer role="contentinfo">
-    <a href="privacy.html">Privacy Policy</a>
-    <span style="opacity:0.5">|</span>
-    <a href="terms.html">Terms of Service</a>
-    <div style="margin-top:8px; font-weight:700">© 2026 Meter-Sathi</div>
+    &copy; 2026 Meter-Sathi | 
+    <a href="privacy.html">Privacy Policy</a> | 
+    <a href="terms.html">Terms and Conditions</a>
   </footer>
 
   <script>
-
     (function () {
       const links = document.querySelectorAll('.nav-links .nav-link');
       const current = location.pathname.split('/').pop() || 'welcome.html';

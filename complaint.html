@@ -135,6 +135,7 @@
         
         input[type="text"],
         input[type="time"],
+        input[type="number"],
         select,
         textarea {
             background-color: #1a1a1a;
@@ -325,6 +326,15 @@
                             <input type="text" id="dropoffLocation" placeholder="Where did it end?" required>
                         </div>
 
+                        <div class="input-group">
+                            <label for="driverFare">Fare Demanded by Driver (₹) *</label>
+                            <input type="number" id="driverFare" placeholder="e.g. 150" required min="0" step="0.01">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="calculatedFare">Calculated Official Fare (₹) *</label>
+                            <input type="number" id="calculatedFare" placeholder="e.g. 120" required min="0" step="0.01">
+                        </div>
                         <div class="input-group full-width">
                             <label for="description">Detailed Description</label>
                             <textarea id="description" rows="4" placeholder="Briefly describe what happened..."></textarea>
@@ -361,48 +371,53 @@
         &copy; 2026 Meter-Sathi | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
     </footer>
 
-    <script>
-        // --- SMART DATE VALIDATOR (DD/MM/YYYY) ---
+    <script type="module">
+        // --- 1. FIREBASE IMPORTS ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
+
+        // --- 2. YOUR FIREBASE CONFIG ---
+        const firebaseConfig = {
+        apiKey: "AIzaSyArV1sP0G8-6NwRUclY3uChof3b9TfmGB0",
+        authDomain: "meter-sathi.firebaseapp.com",
+        projectId: "meter-sathi",
+        storageBucket: "meter-sathi.firebasestorage.app",
+        messagingSenderId: "762038628393",
+        appId: "1:762038628393:web:6a03c56a9b945fe36aac38"
+        };
+
+        // Initialize Firebase Services
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // --- 3. YOUR EXISTING UI HELPERS ---
+        
+        // SMART DATE VALIDATOR
         const dateInput = document.getElementById('incidentDate');
         dateInput.addEventListener('input', function(e) {
-            // Allows the user to use backspace normally
             if (e.inputType === 'deleteContentBackward') return;
-            
-            // Strip out non-numeric characters
             let v = this.value.replace(/\D/g, ''); 
-            
-            // Validate Days (DD)
             if (v.length >= 2) {
                 let dd = parseInt(v.substring(0, 2));
                 if (dd === 0) dd = 1;
-                if (dd > 31) dd = 31; // Initial cap at 31
+                if (dd > 31) dd = 31;
                 v = dd.toString().padStart(2, '0') + v.substring(2);
             }
-            
-            // Validate Months (MM) & Adjust Days based on Month
             if (v.length >= 4) {
                 let mm = parseInt(v.substring(2, 4));
                 if (mm === 0) mm = 1;
-                if (mm > 12) mm = 12; // Cap month at 12
-                
+                if (mm > 12) mm = 12; 
                 let dd = parseInt(v.substring(0, 2));
-                
-                // Set max days for the month. Using a leap year (2024) as default to temporarily allow Feb 29
                 let maxDays = new Date(2024, mm, 0).getDate(); 
-                
-                // If year is fully typed out, calculate precise max days (handles Leap Years perfectly)
                 if (v.length === 8) { 
                    let yyyy = parseInt(v.substring(4, 8));
                    maxDays = new Date(yyyy, mm, 0).getDate();
                 }
-                
-                // Adjust the day if it exceeds the maximum allowed for that specific month
                 if (dd > maxDays) dd = maxDays;
-                
                 v = dd.toString().padStart(2, '0') + mm.toString().padStart(2, '0') + v.substring(4);
             }
-            
-            // Format visually with slashes
             if (v.length >= 5) {
                 this.value = v.substring(0, 2) + '/' + v.substring(2, 4) + '/' + v.substring(4, 8);
             } else if (v.length >= 3) {
@@ -412,26 +427,22 @@
             }
         });
 
-        // --- Strict Vehicle Number Formatter ---
+        // STRICT VEHICLE NUMBER FORMATTER
         const vehicleInput = document.getElementById('vehicleNumber');
         vehicleInput.addEventListener('input', function() {
             let rawValue = this.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
             rawValue = rawValue.substring(0, 10);
-            
             let formattedValue = '';
             for (let i = 0; i < rawValue.length; i++) {
-                if (i === 2 || i === 4 || i === 6) {
-                    formattedValue += ' '; 
-                }
+                if (i === 2 || i === 4 || i === 6) { formattedValue += ' '; }
                 formattedValue += rawValue[i];
             }
             this.value = formattedValue;
         });
 
-        // --- File Upload UI ---
+        // FILE UPLOAD UI
         const fileInput = document.getElementById('evidenceUpload');
         const fileLabel = document.getElementById('fileLabel');
-
         fileInput.addEventListener('change', function() {
             if (this.files && this.files.length > 0) {
                 fileLabel.innerHTML = `✔️ Selected: ${this.files[0].name}`;
@@ -440,34 +451,78 @@
             }
         });
 
-        // --- Form Submission Logic ---
+        // --- 4. REAL FIREBASE FORM SUBMISSION ---
         const form = document.getElementById('complaintForm');
         const formSection = document.getElementById('formSection');
         const successMessage = document.getElementById('successMessage');
         const refNumberDisplay = document.getElementById('refNumber');
+        const submitBtn = document.querySelector('.submit-btn');
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault(); 
             
+            // Your validations
             const plateValue = vehicleInput.value.replace(/\s/g, '');
             if(plateValue.length < 8) {
                 alert("Please enter a complete Vehicle Registration Number.");
                 return;
             }
-            
-            // Validate full 10-character date before submission
             if(dateInput.value.length < 10) {
                 alert("Please enter a complete Date (DD/MM/YYYY).");
                 return;
             }
 
-            const randomRef = 'MS-' + Math.floor(1000 + Math.random() * 9000);
-            refNumberDisplay.innerText = randomRef;
+            // Change button to show it's loading
+            submitBtn.innerText = "Submitting securely...";
+            submitBtn.disabled = true;
 
-            formSection.style.display = 'none';
-            successMessage.style.display = 'block';
+            try {
+                // Package all the text data, including the new Fare inputs!
+                const complaintData = {
+                    vehicleType: document.getElementById('vehicleType').value,
+                    vehicleNumber: vehicleInput.value, 
+                    incidentDate: dateInput.value,
+                    incidentTime: document.getElementById('incidentTime').value,
+                    issueType: document.getElementById('issueType').value,
+                    pickupLocation: document.getElementById('pickupLocation').value,
+                    dropoffLocation: document.getElementById('dropoffLocation').value,
+                    driverFare: document.getElementById('driverFare').value,        // <-- NEW FIELD
+                    calculatedFare: document.getElementById('calculatedFare').value, // <-- NEW FIELD
+                    description: document.getElementById('description').value,
+                    submittedAt: serverTimestamp() 
+                };
+
+                // Handle Image Upload if a file was selected
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    // Create a unique file name using the current timestamp
+                    const storageRef = ref(storage, 'evidence/' + Date.now() + '_' + file.name);
+                    
+                    // Upload to Firebase Storage
+                    const snapshot = await uploadBytes(storageRef, file);
+                    // Get the public viewing URL
+                    const downloadURL = await getDownloadURL(snapshot.ref);
+                    
+                    // Add the image URL to our database package
+                    complaintData.evidenceUrl = downloadURL;
+                }
+
+                // Send the whole package to Firestore Database
+                const docRef = await addDoc(collection(db, "complaints"), complaintData);
+
+                // Show Success Screen with the REAL Firebase ID
+                refNumberDisplay.innerText = docRef.id;
+                formSection.style.display = 'none';
+                successMessage.style.display = 'block';
+
+            } catch (error) {
+                console.error("Error saving complaint: ", error);
+                alert("An error occurred. Please try again.");
+                // Reset button if there's an error
+                submitBtn.innerText = "Submit Complaint";
+                submitBtn.disabled = false;
+            }
         });
     </script>
-
 </body>
 </html>

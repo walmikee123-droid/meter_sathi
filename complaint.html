@@ -21,58 +21,6 @@
             min-height: 100vh;
         }
 
-        /* --- Navbar --- */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 40px;
-            background: #000000;
-            border-bottom: 4px solid #ffcc00;
-            z-index: 50;
-        }
-
-        .brand {
-            color: #ffcc00;
-            font-weight: 900;
-            font-size: 20px;
-            letter-spacing: 0.4px;
-            text-decoration: none;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .nav-links .nav-link {
-            text-decoration: none;
-            color: #ffcc00;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-weight: 600;
-            transition: background-color .18s ease, color .18s ease, transform .12s ease;
-        }
-
-        .nav-links .nav-link:hover {
-            background-color: #ffcc00;
-            color: #000000;
-            transform: translateY(-2px);
-        }
-
-        .nav-links .nav-link:focus {
-            outline: 3px solid rgba(255,204,0,0.28);
-            outline-offset: 3px;
-            border-radius: 18px;
-        }
-
-        .nav-links .nav-link.active {
-            background: #ffcc00;
-            color: #000;
-            box-shadow: 0 8px 20px rgba(255,204,0,0.12);
-        }
-
         /* --- Main Container --- */
         .container {
             flex: 1;
@@ -133,8 +81,10 @@
             font-weight: bold;
         }
         
+        /* Restored input[type="date"] styling */
         input[type="text"],
         input[type="time"],
+        input[type="date"],
         input[type="number"],
         select,
         textarea {
@@ -159,6 +109,7 @@
             text-transform: uppercase;
         }
 
+        /* Turns native calendar and clock icons to Meter-Sathi yellow */
         ::-webkit-calendar-picker-indicator {
             filter: invert(74%) sepia(85%) saturate(614%) hue-rotate(358deg) brightness(101%) contrast(104%);
             cursor: pointer;
@@ -238,11 +189,6 @@
         }
 
         @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 15px;
-                padding: 15px 20px;
-            }
             .complaint-card {
                 padding: 30px 20px;
             }
@@ -257,23 +203,12 @@
 </head>
 <body>
 
-    <nav class="navbar">
-        <a href="/" class="brand">Meter-Sathi</a>
-        <div class="nav-links">
-            <a href="/" class="nav-link">Start Ride</a>
-            <a href="/about" class="nav-link">About</a>
-            <a href="/services" class="nav-link">Services</a>
-            <a href="/faq" class="nav-link">FAQ</a>
-            <a href="/complaint" class="nav-link active">Report Issue</a>
-        </div>
-    </nav>
-
     <div class="container">
         <div class="complaint-card">
             
             <div id="formSection">
                 <div class="complaint-header">
-                    <h2>Report an Issue</h2>
+                    <h2>File a Complaint</h2>
                     <p>Help us keep Mumbai's transport fair. File a report against rogue drivers.</p>
                 </div>
 
@@ -297,7 +232,7 @@
 
                         <div class="input-group">
                             <label for="incidentDate">Date of Incident *</label>
-                            <input type="text" id="incidentDate" placeholder="DD/MM/YYYY" required maxlength="10">
+                            <input type="date" id="incidentDate" required>
                         </div>
 
                         <div class="input-group">
@@ -335,6 +270,7 @@
                             <label for="calculatedFare">Calculated Official Fare (₹) *</label>
                             <input type="number" id="calculatedFare" placeholder="e.g. 120" required min="0" step="0.01">
                         </div>
+                        
                         <div class="input-group full-width">
                             <label for="description">Detailed Description</label>
                             <textarea id="description" rows="4" placeholder="Briefly describe what happened..."></textarea>
@@ -379,65 +315,61 @@
 
         // --- 2. YOUR FIREBASE CONFIG ---
         const firebaseConfig = {
-        apiKey: "AIzaSyArV1sP0G8-6NwRUclY3uChof3b9TfmGB0",
-        authDomain: "meter-sathi.firebaseapp.com",
-        projectId: "meter-sathi",
-        storageBucket: "meter-sathi.firebasestorage.app",
-        messagingSenderId: "762038628393",
-        appId: "1:762038628393:web:6a03c56a9b945fe36aac38"
+            apiKey: "AIzaSyArV1sP0G8-6NwRUclY3uChof3b9TfmGB0",
+            authDomain: "meter-sathi.firebaseapp.com",
+            projectId: "meter-sathi",
+            storageBucket: "meter-sathi.firebasestorage.app",
+            messagingSenderId: "762038628393",
+            appId: "1:762038628393:web:6a03c56a9b945fe36aac38"
         };
 
-        // Initialize Firebase Services
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const storage = getStorage(app);
 
-        // --- 3. YOUR EXISTING UI HELPERS ---
-        
-        // SMART DATE VALIDATOR
-        const dateInput = document.getElementById('incidentDate');
-        dateInput.addEventListener('input', function(e) {
-            if (e.inputType === 'deleteContentBackward') return;
-            let v = this.value.replace(/\D/g, ''); 
-            if (v.length >= 2) {
-                let dd = parseInt(v.substring(0, 2));
-                if (dd === 0) dd = 1;
-                if (dd > 31) dd = 31;
-                v = dd.toString().padStart(2, '0') + v.substring(2);
-            }
-            if (v.length >= 4) {
-                let mm = parseInt(v.substring(2, 4));
-                if (mm === 0) mm = 1;
-                if (mm > 12) mm = 12; 
-                let dd = parseInt(v.substring(0, 2));
-                let maxDays = new Date(2024, mm, 0).getDate(); 
-                if (v.length === 8) { 
-                   let yyyy = parseInt(v.substring(4, 8));
-                   maxDays = new Date(yyyy, mm, 0).getDate();
-                }
-                if (dd > maxDays) dd = maxDays;
-                v = dd.toString().padStart(2, '0') + mm.toString().padStart(2, '0') + v.substring(4);
-            }
-            if (v.length >= 5) {
-                this.value = v.substring(0, 2) + '/' + v.substring(2, 4) + '/' + v.substring(4, 8);
-            } else if (v.length >= 3) {
-                this.value = v.substring(0, 2) + '/' + v.substring(2, 4);
-            } else {
-                this.value = v;
-            }
-        });
+        // --- 3. UI HELPERS ---
 
-        // STRICT VEHICLE NUMBER FORMATTER
+        // NEW: STRICT VEHICLE NUMBER VALIDATOR
         const vehicleInput = document.getElementById('vehicleNumber');
-        vehicleInput.addEventListener('input', function() {
-            let rawValue = this.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
-            rawValue = rawValue.substring(0, 10);
-            let formattedValue = '';
-            for (let i = 0; i < rawValue.length; i++) {
-                if (i === 2 || i === 4 || i === 6) { formattedValue += ' '; }
-                formattedValue += rawValue[i];
+        vehicleInput.addEventListener('input', function(e) {
+            // Allows the user to use backspace normally
+            if (e.inputType === 'deleteContentBackward') return;
+
+            let raw = this.value.toUpperCase();
+            let formatted = '';
+            let cleanIdx = 0; // Tracks the count of valid alphanumeric characters
+
+            for (let i = 0; i < raw.length; i++) {
+                let char = raw[i];
+                if (char === ' ') continue; 
+
+                // Slot 1 & 2: Letters Only (e.g. MH)
+                if (cleanIdx === 0 || cleanIdx === 1) {
+                    if (/[A-Z]/.test(char)) formatted += char;
+                } 
+                // Slot 3 & 4: Numbers Only (e.g. 05)
+                else if (cleanIdx === 2 || cleanIdx === 3) {
+                    if (cleanIdx === 2 && formatted.length === 2) formatted += ' ';
+                    if (/[0-9]/.test(char)) formatted += char;
+                } 
+                // Slot 5 & 6: Letters Only (e.g. AB)
+                else if (cleanIdx === 4 || cleanIdx === 5) {
+                    if (cleanIdx === 4 && formatted.length === 5) formatted += ' ';
+                    if (/[A-Z]/.test(char)) formatted += char;
+                } 
+                // Slot 7 to 10: Numbers Only (e.g. 1111)
+                else if (cleanIdx >= 6 && cleanIdx <= 9) {
+                    if (cleanIdx === 6 && formatted.length === 8) formatted += ' ';
+                    if (/[0-9]/.test(char)) formatted += char;
+                }
+
+                // Increment index only if a valid character was added
+                if (/[A-Z0-9]/.test(char)) cleanIdx++;
+                
+                // Cap at 10 total alphanumeric characters
+                if (cleanIdx >= 10) break;
             }
-            this.value = formattedValue;
+            this.value = formatted;
         });
 
         // FILE UPLOAD UI
@@ -451,66 +383,52 @@
             }
         });
 
-        // --- 4. REAL FIREBASE FORM SUBMISSION ---
+        // --- 4. FIREBASE FORM SUBMISSION ---
         const form = document.getElementById('complaintForm');
         const formSection = document.getElementById('formSection');
         const successMessage = document.getElementById('successMessage');
         const refNumberDisplay = document.getElementById('refNumber');
         const submitBtn = document.querySelector('.submit-btn');
+        const dateInput = document.getElementById('incidentDate');
 
         form.addEventListener('submit', async function(e) {
             e.preventDefault(); 
             
-            // Your validations
+            // Final check to ensure plate length is fully typed
             const plateValue = vehicleInput.value.replace(/\s/g, '');
             if(plateValue.length < 8) {
-                alert("Please enter a complete Vehicle Registration Number.");
-                return;
-            }
-            if(dateInput.value.length < 10) {
-                alert("Please enter a complete Date (DD/MM/YYYY).");
+                alert("Please enter a complete Vehicle Registration Number (e.g., MH 05 AB 1111).");
                 return;
             }
 
-            // Change button to show it's loading
             submitBtn.innerText = "Submitting securely...";
             submitBtn.disabled = true;
 
             try {
-                // Package all the text data, including the new Fare inputs!
                 const complaintData = {
                     vehicleType: document.getElementById('vehicleType').value,
                     vehicleNumber: vehicleInput.value, 
-                    incidentDate: dateInput.value,
+                    incidentDate: dateInput.value, // Will save in standard YYYY-MM-DD format behind the scenes
                     incidentTime: document.getElementById('incidentTime').value,
                     issueType: document.getElementById('issueType').value,
                     pickupLocation: document.getElementById('pickupLocation').value,
                     dropoffLocation: document.getElementById('dropoffLocation').value,
-                    driverFare: document.getElementById('driverFare').value,        // <-- NEW FIELD
-                    calculatedFare: document.getElementById('calculatedFare').value, // <-- NEW FIELD
+                    driverFare: document.getElementById('driverFare').value,        
+                    calculatedFare: document.getElementById('calculatedFare').value, 
                     description: document.getElementById('description').value,
                     submittedAt: serverTimestamp() 
                 };
 
-                // Handle Image Upload if a file was selected
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
-                    // Create a unique file name using the current timestamp
                     const storageRef = ref(storage, 'evidence/' + Date.now() + '_' + file.name);
-                    
-                    // Upload to Firebase Storage
                     const snapshot = await uploadBytes(storageRef, file);
-                    // Get the public viewing URL
                     const downloadURL = await getDownloadURL(snapshot.ref);
-                    
-                    // Add the image URL to our database package
                     complaintData.evidenceUrl = downloadURL;
                 }
 
-                // Send the whole package to Firestore Database
                 const docRef = await addDoc(collection(db, "complaints"), complaintData);
 
-                // Show Success Screen with the REAL Firebase ID
                 refNumberDisplay.innerText = docRef.id;
                 formSection.style.display = 'none';
                 successMessage.style.display = 'block';
@@ -518,7 +436,6 @@
             } catch (error) {
                 console.error("Error saving complaint: ", error);
                 alert("An error occurred. Please try again.");
-                // Reset button if there's an error
                 submitBtn.innerText = "Submit Complaint";
                 submitBtn.disabled = false;
             }

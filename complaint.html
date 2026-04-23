@@ -42,6 +42,30 @@
             text-align: center;
         }
 
+        /* --- NEW: Back Button Styles --- */
+        .back-btn-container {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            color: #aaaaaa;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: bold;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        .back-btn:hover {
+            color: #ffcc00;
+            transform: translateX(-4px); /* Slides slightly left on hover */
+        }
+        .back-btn span {
+            margin-right: 8px;
+            font-size: 18px;
+            line-height: 1;
+        }
+
         .complaint-header {
             margin-bottom: 35px;
         }
@@ -203,6 +227,10 @@
     <div class="container">
         <div class="complaint-card">
             
+            <div class="back-btn-container">
+                <a href="contact.html" class="back-btn"><span>&larr;</span> Back </a>
+            </div>
+
             <div id="formSection">
                 <div class="complaint-header">
                     <h2>File a Complaint</h2>
@@ -343,24 +371,18 @@
                 
                 let dd = parseInt(v.substring(0, 2));
                 
-                // Temporarily use leap year so it doesn't block 29/02 while typing
                 let yyyy = 2024; 
                 
-                // If the user has typed the full 4 digit year
                 if (v.length === 8) {
                     yyyy = parseInt(v.substring(4, 8));
-                    
-                    // PREVENT FUTURE DATES: Snap back to current year if they type 2027
                     const currentYear = new Date().getFullYear();
                     if (yyyy > currentYear) {
                         yyyy = currentYear;
                     }
                 }
                 
-                // Calculate max days dynamically based on entered month and year
                 let maxDays = new Date(yyyy, mm, 0).getDate(); 
                 
-                // AUTO-CORRECT: If day exceeds max days (e.g. 31/02), snap it down (to 28/02)
                 if (dd > maxDays) {
                     dd = maxDays;
                 }
@@ -368,7 +390,6 @@
                 v = dd.toString().padStart(2, '0') + mm.toString().padStart(2, '0') + (v.length > 4 ? (v.length === 8 ? yyyy.toString() : v.substring(4)) : '');
             }
             
-            // Re-apply the slashes
             if (v.length >= 5) {
                 this.value = v.substring(0, 2) + '/' + v.substring(2, 4) + '/' + v.substring(4, 8);
             } else if (v.length >= 3) {

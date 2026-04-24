@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-IN">
 <head>
+<<<<<<< HEAD
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FAQ - Meter-Sathi</title>
@@ -103,8 +104,432 @@
   
   <footer style="text-align:center; padding:30px; color:var(--text-muted); font-size:15px; background:#000; margin-top:60px; border-top:1px solid var(--taxi-yellow);">
     <p>&copy; 2026 Meter-Sathi. <a href="terms.html" style="color:var(--taxi-yellow); text-decoration:none; margin: 0 10px;">Terms of Service</a> | <a href="privacy.html" style="color:var(--taxi-yellow); text-decoration:none; margin: 0 10px;">Privacy Policy</a></p>
-  </footer>
+=======
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>FAQ - Meter-Sathi</title>
+    
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+    <style>
+        /* ------------------------------------------------------------
+           PROJECT DESIGN TOKENS (BLACK & GOLD THEME)
+           ------------------------------------------------------------
+        */
+        :root {
+            --bg-dark: #000000;
+            --bg-gradient: linear-gradient(135deg, #000000, #111111);
+            --gold-primary: #ffcc00;
+            --gold-glow: rgba(255, 204, 0, 0.15);
+            --text-main: #ffffff;
+            --text-dim: #aaaaaa;
+            --border-std: rgba(255, 215, 0, 0.1);
+        }
+
+        /* ------------------------------------------------------------
+           GLOBAL RESET & LAYOUT
+           ------------------------------------------------------------
+        */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ------------------------------------------------------------
+           NAVBAR (SINGLE LINE SCROLLABLE FOR MOBILE)
+           ------------------------------------------------------------
+        */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: #000000;
+            border-bottom: 3px solid var(--gold-primary);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+        }
+
+        .brand {
+            color: var(--gold-primary);
+            font-weight: 900;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            margin-right: 15px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none; /* Firefox */
+            padding: 5px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .nav-links::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .nav-links .nav-link {
+            text-decoration: none;
+            color: var(--gold-primary);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .nav-links .nav-link:hover,
+        .nav-links .nav-link.active {
+            background: var(--gold-primary);
+            color: #000000;
+            box-shadow: 0 5px 12px var(--gold-glow);
+        }
+
+        /* ------------------------------------------------------------
+           FAQ MAIN CONTAINER
+           ------------------------------------------------------------
+        */
+        .faq-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .faq-title {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--gold-primary);
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+        }
+
+        .faq-sub {
+            color: #888;
+            font-size: 17px;
+        }
+
+        /* ------------------------------------------------------------
+           ANIMATED ACCORDION STYLES
+           ------------------------------------------------------------
+        */
+        .faq-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-std);
+            border-radius: 16px;
+            margin-bottom: 18px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .faq-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 204, 0, 0.2);
+        }
+
+        .faq-item.active {
+            background: rgba(255, 204, 0, 0.03);
+            border-color: var(--gold-primary);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: 24px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        /* --- THE ANIMATED ICON (PLUS TO CROSS) --- */
+        .q-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 204, 0, 0.1);
+            border-radius: 50%;
+            position: relative;
+            flex-shrink: 0;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s;
+            margin-left: 15px;
+        }
+
+        .q-icon::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 2px;
+            background-color: var(--gold-primary);
+            transform: translate(-50%, -50%);
+            transition: background-color 0.4s;
+        }
+
+        .q-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 16px;
+            background-color: var(--gold-primary);
+            transform: translate(-50%, -50%);
+            transition: background-color 0.4s;
+        }
+
+        /* Active State Icon Transformation */
+        .faq-item.active .q-icon {
+            background: var(--gold-primary);
+            transform: rotate(405deg); 
+        }
+
+        .faq-item.active .q-icon::before,
+        .faq-item.active .q-icon::after {
+            background-color: #000000;
+        }
+
+        /* ------------------------------------------------------------
+           ANSWER WRAPPER (DYNAMIC HEIGHT)
+           ------------------------------------------------------------
+        */
+        .faq-answer-wrapper {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .faq-item.active .faq-answer-wrapper {
+            grid-template-rows: 1fr;
+        }
+
+        .faq-answer {
+            overflow: hidden;
+        }
+
+        .faq-answer p {
+            padding: 0 28px 25px 28px; 
+            margin: 0;
+            color: #b0b0b0;
+            font-size: 16px;
+            line-height: 1.7;
+            opacity: 0;
+            transform: translateY(-10px); 
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .faq-item.active .faq-answer p {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.1s;
+        }
+
+        /* ------------------------------------------------------------
+           FOOTER (CONSISTENT SINGLE LINE)
+           ------------------------------------------------------------
+        */
+        footer {
+            background-color: #000000;
+            padding: 30px 20px;
+            border-top: 4px solid var(--gold-primary);
+            text-align: center;
+            font-size: 14px;
+            color: var(--gold-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        footer a {
+            color: var(--gold-primary);
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.2s;
+        }
+
+        footer a:hover { color: #fff; }
+
+        footer .sep { opacity: 0.3; }
+
+        /* ------------------------------------------------------------
+           MOBILE OVERRIDES
+           ------------------------------------------------------------
+        */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 12px 15px;
+            }
+
+            .brand {
+                font-size: 16px;
+            }
+
+            .faq-container {
+                margin: 25px auto;
+            }
+
+            .faq-title {
+                font-size: 32px;
+            }
+
+            .faq-sub {
+                font-size: 15px;
+            }
+
+            .faq-question {
+                padding: 20px;
+                font-size: 16px;
+            }
+
+            .faq-answer p {
+                padding: 0 20px 20px 20px;
+                font-size: 15px;
+            }
+
+            footer {
+                font-size: 12px;
+                flex-wrap: wrap;
+                white-space: normal;
+                padding: 25px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand">Meter-Sathi</div>
+        <div class="nav-links">
+            <a href="welcome.html" class="nav-link">Home</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="services.html" class="nav-link">Services</a>
+            <a href="faq.html" class="nav-link active">FAQ</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+    </nav>
+
+    <main class="faq-container">
+        <div class="faq-header">
+            <h1 class="faq-title">Frequently asked questions</h1>
+            <p class="faq-sub">Everything you need to know about Meter-Sathi</p>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                <span>What is Meter-Sathi?</span>
+                <span class="q-icon"></span>
+            </button>
+            <div class="faq-answer-wrapper">
+                <div class="faq-answer">
+                    <p>Meter-Sathi is a specialized web platform designed to help Mumbai commuters, students, and tourists verify auto-rickshaw and taxi fares in real-time. We help protect you from overcharging and fast meters.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                <span>How does the fare calculation work?</span>
+                <span class="q-icon"></span>
+            </button>
+            <div class="faq-answer-wrapper">
+                <div class="faq-answer">
+                    <p>When you start a ride, our system uses GPS tracking to measure the distance covered. It then applies official government tariffs, including base fares and night-time surcharges (12 AM - 5 AM), to calculate the exact legal fare.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                <span>How do I detect overcharging?</span>
+                <span class="q-icon"></span>
+            </button>
+            <div class="faq-answer-wrapper">
+                <div class="faq-answer">
+                    <p>Simply compare the meter reading shown by the driver with the fare displayed on Meter-Sathi. If our GPS-calculated fare is significantly lower than the physical meter, it indicates a fast or tampered meter.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                <span>Is this a mobile app?</span>
+                <span class="q-icon"></span>
+            </button>
+            <div class="faq-answer-wrapper">
+                <div class="faq-answer">
+                    <p>No download is required! Meter-Sathi is a lightweight web application that runs directly in your browser. You can "Add to Home Screen" for an app-like experience without using storage space.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                <span>What if I have a fare dispute?</span>
+                <span class="q-icon"></span>
+            </button>
+            <div class="faq-answer-wrapper">
+                <div class="faq-answer">
+                    <p>You can use our official fare calculation as evidence to talk to the driver. If the driver refuses to cooperate, you can use our "Complaint" feature to record the incident for reporting to the local RTO authorities.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+    <p>© 2026 Meter-Sathi | 
+      <a href="privacy.html">Privacy Policy</a> | 
+      <a href="terms.html">Terms and Conditions</a>
+    </p>
+>>>>>>> e465875da0c57ed909189764679df3b120019ba6
+  </footer>
+    <script>
+        // Accordion functionality
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const currentItem = button.parentElement;
+                const isOpen = currentItem.classList.contains('active');
+
+<<<<<<< HEAD
   <script>
     document.querySelectorAll('.faq-question').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -123,5 +548,28 @@
       });
     });
   </script>
+=======
+                // Close all other items for a cleaner accordion experience
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Toggle the selected item
+                if (!isOpen) {
+                    currentItem.classList.add('active');
+                }
+            });
+        });
+
+        // Dynamic Active Navigation Handler
+        (function () {
+            const links = document.querySelectorAll('.nav-links .nav-link');
+            const current = location.pathname.split('/').pop() || 'welcome.html';
+            links.forEach(a => {
+                if (a.getAttribute('href') === current) a.classList.add('active');
+            });
+        })();
+    </script>
+>>>>>>> e465875da0c57ed909189764679df3b120019ba6
 </body>
 </html>

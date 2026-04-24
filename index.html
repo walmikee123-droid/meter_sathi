@@ -2,227 +2,128 @@
 <html lang="en-IN">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Auto Rickshaw</title>
-  <style>
-    * { box-sizing: border-box; margin:0; padding:0; font-family: 'Segoe UI', sans-serif; }
-    body { background: linear-gradient(135deg,#000,#1b1b1b); color:#fff; min-height:100vh; display:flex; flex-direction:column; }
-    /* Navbar styled same as welcome.html */
-    .navbar {
-      display: flex;
-      justify-content: center;
-      background-color: #000000;
-      padding: 18px 0;
-      border-bottom: 4px solid #FFD700;
-      box-shadow: 0 4px 10px rgba(255, 215, 0, 0.2);
-      position: relative; /* added so left back button can be positioned without changing layout */
-    }
-    .nav-links { display:flex; gap:30px; }
-    .nav-links a {
-      padding: 8px 18px;
-      border-radius: 25px;
-      text-decoration: none;
-      color: #FFD700;
-      font-weight: bold;
-      letter-spacing: 1px;
-      transition: all 0.3s ease;
-    }
-    .nav-links a:hover {
-      background-color: #FFD700;
-      color: #000000;
-      transform: scale(1.05);
-    }
-
-    /* Back button placed at far left corner of navbar */
-    .nav-back {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: transparent;
-      border: 2px solid transparent;
-      color: #FFD700;
-      font-weight: 800;
-      padding: 8px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.18s ease;
-      font-size: 14px;
-    }
-    .nav-back:hover {
-      background: #FFD700;
-      color: #000;
-      transform: translateY(-50%) scale(1.03);
-    }
-
-    .container { max-width:980px; margin:28px auto; padding:36px 18px; width:100%; flex:1; }
-    .card { background:#111; border:2px solid #ffd700; border-radius:12px; padding:18px; }
-    .controls { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
-    .btn { padding:10px 14px; border-radius:8px; border:none; cursor:pointer; font-weight:700; }
-    .btn.start { background:#28a745; color:#fff; } .btn.end { background:#dc3545; color:#fff; } .btn.pause { background:#6c757d; color:#fff; } .btn.reset { background:#ffc107; color:#000; }
-    .status-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-top:12px; }
-    .status { background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:12px; border-radius:8px; text-align:center; border:1px solid rgba(255,215,0,0.06); }
-    .status h3 { color:#ffd966; font-size:13px; margin-bottom:6px; font-weight:700; }
-    .status p { font-size:18px; font-weight:800; color:#fff; margin:0; }
-    .input-row { margin-top:12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:center; }
-    input[type="text"] { padding:8px 10px; border-radius:8px; border:1px solid rgba(255,204,0,0.12); background:#0b0b0b; color:#fff; width:180px; }
-    .fare-summary { margin-top:14px; display:flex; gap:12px; flex-wrap:wrap; }
-    .summary-box { background:#0f0f0f; border-radius:8px; padding:12px; min-width:160px; flex:1; text-align:center; border:1px solid rgba(255,204,0,0.06); }
-    .note { margin-top:12px; color:#ddd; font-size:13px; }
-
-    /* Overlay / modal styles (same as welcome) */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.6);
-      z-index: 9999;
-      padding: 20px;
-    }
-    .overlay[aria-hidden="false"] { display: flex; }
-    .modal {
-      width: 100%;
-      max-width: 760px;
-      background: #111;
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-      text-align: center;
-      color: #fff;
-      position: relative;
-    }
-    .modal p { color: #ccc; margin: 6px 0 12px; font-weight:700; }
-    .vehicle-grid {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      margin-top: 18px;
-      flex-wrap: nowrap;
-      overflow: visible;
-    }
-    .vehicle {
-      min-width: 180px;
-      padding: 16px 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: transform .12s, box-shadow .12s, border-color .12s;
-      background: linear-gradient(180deg,#1a1a1a,#0f0f0f);
-      color: #fff;
-      font-weight: 800;
-      text-align: center;
-      white-space: nowrap;
-    }
-    .vehicle:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.5); border-color: #FFD700; }
-    .close-x { position:absolute; right:12px; top:10px; background:transparent; border:0; font-size:20px; color:#ccc; cursor:pointer; }
-
-    /* On very small screens allow wrapping so buttons remain accessible without overflow */
-    @media (max-width: 520px) {
-      .modal { padding: 18px; max-width: 92%; }
-      .vehicle-grid { flex-wrap: wrap; gap: 12px; }
-      .vehicle { min-width: 140px; flex: 1 1 40%; }
-    }
-
-    /* Ensure footer sticks to bottom when content is short */
-    footer { text-align:center; padding:12px; color:#ffd700; border-top:4px solid #ffd700; margin-top:18px; background:#000; }
-    @media (max-width:640px){ .status p{font-size:16px} input[type="text"]{width:140px} }
-  </style>
+  <meta name="viewport" content="width=1400" />
+  <title>Auto Rickshaw - Meter-Sathi</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <header class="navbar" role="navigation" aria-label="Main navigation">
-    <!-- Back button added at far left corner of navbar -->
-    <button id="backBtn" class="nav-back" aria-label="Back to vehicle selection">← Back</button>
+  <nav class="navbar">
+    <a href="welcome.html" class="nav-brand"><i class="fa-solid fa-taxi"></i> Meter-Sathi</a>
+    <button id="backBtn" class="nav-back"><i class="fa-solid fa-arrow-left"></i> Change Vehicle</button>
+  </nav>
 
-    <div class="nav-links" role="menubar" aria-label="Primary">
-      <a href="welcome.html" role="menuitem">Home</a>
-      <a href="about.html" role="menuitem">About</a>
-      <a href="services.html" role="menuitem">Services</a>
-      <a href="faq.html" role="menuitem">FAQ</a>
-      <a href="contact.html" role="menuitem">Contact Us</a>
-    </div>
-  </header>
-
-  <main class="container" role="main">
-    <div class="card" role="region" aria-label="Taxi tracker">
-      <div class="controls" role="group" aria-label="Ride controls">
-        <button id="startBtn" class="btn start">Start Ride</button>
-        <button id="endBtn" class="btn end" disabled>End Ride</button>
-        <button id="pauseBtn" class="btn pause" disabled>Pause</button>
-        <button id="resetBtn" class="btn reset" disabled>Reset</button>
-      </div>
-
-      <div class="status-grid" aria-live="polite">
-        <div class="status"><h3>Distance</h3><p id="distance">0.00 km</p></div>
-        <div class="status"><h3>Official Fare</h3><p id="officialFare">₹26.00</p></div>
-        <div class="status"><h3>GPS Status</h3><p id="gpsStatus">Idle</p></div>
-        <div class="status"><h3>Expected Fare</h3><p id="tariffFare">₹26.00</p></div>
-        <div class="status"><h3>Day Distance</h3><p id="dayDistance">0.00 km</p></div>
-        <div class="status"><h3>Night Distance</h3><p id="nightDistance">0.00 km</p></div>
-      </div>
-
-      <div class="input-row" aria-label="Meter fare input">
-        <label for="meterFare" style="color:#ffd966;font-weight:700">Meter Fare (₹):</label>
-        <input id="meterFare" type="text" inputmode="decimal" placeholder="Enter meter fare" />
-        <button id="checkFareBtn" class="btn reset" disabled>Check Fare</button>
-      </div>
-
-      <div class="fare-summary" aria-hidden="false">
-        <div class="summary-box"><h4 style="color:#ffd966">Official Fare</h4><p id="summaryOfficial">₹26.00</p></div>
-        <div class="summary-box"><h4 style="color:#ffd966">Meter Fare</h4><p id="summaryMeter">₹0.00</p></div>
-        <div class="summary-box"><h4 style="color:#ffd966">Difference</h4><p id="summaryDiff">₹0.00</p></div>
-        <div class="summary-box" id="fareStatusBox" aria-live="polite"><h4 style="color:#ffd966">Fare Status</h4><p id="fareStatus" style="color:#ffd966">Please start and end your ride to use this service.</p></div>
-      </div>
-
-      <p class="note">Note: <strong>Base fare ₹26</strong> for first <strong>1.50 kms </strong>. Per km after base: <strong>₹17.14</strong>. Night surcharge: <strong>25% (00:00–05:00)</strong>.</p>
-    </div>
-
-    <!-- Extra content so page doesn't feel empty above footer -->
-    <section style="margin-top:20px; max-width:980px; margin-left:auto; margin-right:auto; color:#ddd;">
-      <h2 style="color:#ffd966; font-size:18px; margin-bottom:8px;">How Meter-Sathi helps you</h2>
-      <div style="display:flex; gap:12px; flex-wrap:wrap;">
-        <div style="flex:1; min-width:220px; background:#0f0f0f; border:1px solid rgba(255,204,0,0.06); padding:12px; border-radius:8px;">
-          <strong style="color:#ffd966">Verify fares</strong>
-          <p style="margin-top:8px; color:#ccc; font-size:14px;">Compare the meter fare with the expected tariff and spot discrepancies quickly.</p>
+  <main class="container">
+    <div class="dashboard-grid">
+      <!-- Main Dashboard -->
+      <div class="glass-card">
+        <h2 style="font-size:24px; margin-bottom:20px; color:var(--taxi-yellow);"><i class="fa-solid fa-gauge-high"></i> Auto Rickshaw Ride</h2>
+        
+        <div class="controls">
+          <button id="startBtn" class="btn start"><i class="fa-solid fa-play"></i> Start Ride</button>
+          <button id="endBtn" class="btn end" disabled><i class="fa-solid fa-stop"></i> End Ride</button>
+          <button id="pauseBtn" class="btn pause" disabled><i class="fa-solid fa-pause"></i> Pause</button>
+          <button id="resetBtn" class="btn reset" disabled><i class="fa-solid fa-rotate-right"></i> Reset</button>
         </div>
-        <div style="flex:1; min-width:220px; background:#0f0f0f; border:1px solid rgba(255,204,0,0.06); padding:12px; border-radius:8px;">
-          <strong style="color:#ffd966">Track day/night split</strong>
-          <p style="margin-top:8px; color:#ccc; font-size:14px;">Automatically separates day and night distances to apply surcharges correctly.</p>
+
+        <div style="margin-bottom: 25px; display:flex; justify-content:space-between; align-items:center;">
+          <h3 style="color:var(--text-muted); font-size:14px; text-transform:uppercase; letter-spacing:1px;">Live Status</h3>
+          <div id="gpsBadge" class="gps-badge"><div class="dot"></div><span id="gpsStatus">Idle</span></div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-box">
+            <h3>Total Distance</h3>
+            <p id="distance">0.00 <span style="font-size:16px; color:var(--text-muted);">km</span></p>
+          </div>
+          <div class="metric-box" style="border-color: rgba(255,193,7,0.3);">
+            <h3 style="color:var(--taxi-yellow);">Expected Tariff</h3>
+            <p class="highlight" id="tariffFare">₹26.00</p>
+          </div>
+          <div class="metric-box">
+            <h3>Day Distance</h3>
+            <p id="dayDistance">0.00 <span style="font-size:16px; color:var(--text-muted);">km</span></p>
+          </div>
+          <div class="metric-box">
+            <h3>Night Distance</h3>
+            <p id="nightDistance">0.00 <span style="font-size:16px; color:var(--text-muted);">km</span></p>
+          </div>
+        </div>
+
+        <div class="verify-section">
+          <h3><i class="fa-solid fa-shield-check" style="color:var(--success);"></i> Verify Meter Fare</h3>
+          <div class="input-group">
+            <input id="meterFare" type="text" inputmode="decimal" placeholder="Enter meter fare (₹)" />
+            <button id="checkFareBtn" class="verify-btn" disabled>Verify</button>
+          </div>
+          
+          <div style="margin-top: 20px; display:flex; gap:15px; flex-wrap:wrap;">
+            <div style="flex:1; background:rgba(0,0,0,0.5); padding:15px; border-radius:10px; border:1px solid var(--glass-border);">
+              <div style="color:var(--text-muted); font-size:13px; margin-bottom:5px;">Meter</div>
+              <div id="summaryMeter" style="font-size:20px; font-weight:800; color:#fff;">₹0.00</div>
+            </div>
+            <div style="flex:1; background:rgba(0,0,0,0.5); padding:15px; border-radius:10px; border:1px solid var(--glass-border);">
+              <div style="color:var(--text-muted); font-size:13px; margin-bottom:5px;">Difference</div>
+              <div id="summaryDiff" style="font-size:20px; font-weight:800; color:#fff;">₹0.00</div>
+            </div>
+          </div>
+
+          <div id="fareStatusBox" style="margin-top:20px; padding:15px; border-radius:10px; border:1px solid var(--glass-border); text-align:center;">
+            <p id="fareStatus" style="color:#ffd966; font-weight:700;">Please start and end your ride to use this service.</p>
+          </div>
         </div>
       </div>
-    </section>
+
+      <!-- Sidebar -->
+      <div class="info-sidebar">
+        <h2><i class="fa-solid fa-circle-info"></i> Tariff Information</h2>
+        
+        <div class="fare-rule">
+          <span>Base Fare (First 1.50 km)</span>
+          <strong id="officialFare" style="color:var(--taxi-yellow);">₹26.00</strong>
+        </div>
+        
+        <div class="fare-rule">
+          <span>Subsequent Distance</span>
+          <strong>₹17.14 / km</strong>
+        </div>
+
+        <div class="fare-rule">
+          <span>Night Surcharge (00:00 - 05:00)</span>
+          <strong style="color:var(--danger);">25% Extra</strong>
+        </div>
+
+        <p style="color:var(--text-muted); font-size:13px; line-height:1.6; margin-top:20px;">
+          <i class="fa-solid fa-lightbulb" style="color:var(--taxi-yellow);"></i> Meter-Sathi continuously monitors your GPS to calculate exact distance segments during day and night hours for accurate tariff generation.
+        </p>
+      </div>
+    </div>
   </main>
 
-  <!-- Vehicle selection overlay (same as welcome) -->
-  <div class="overlay" id="vehicleOverlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="vehicleTitle">
-    <div class="modal" role="document">
-      <button class="close-x" id="closeOverlay" aria-label="Close dialog">✕</button>
-      <p id="vehicleTitle">Select a vehicle to continue</p>
-      <div class="vehicle-grid" role="group" aria-label="Vehicle options">
-        <div class="vehicle" id="autoOption" role="button" tabindex="0" aria-pressed="false" aria-label="Auto Rickshaw">Auto Rickshaw</div>
-        <div class="vehicle" id="nonAcOption" role="button" tabindex="0" aria-pressed="false" aria-label="Non AC Taxi">Non AC Taxi</div>
-        <div class="vehicle" id="acOption" role="button" tabindex="0" aria-pressed="false" aria-label="AC Taxi">AC Taxi</div>
-      </div>
-    </div>
+  <!-- Hidden elements needed for old overlay logic (kept to avoid JS errors) -->
+  <div style="display:none;">
+    <div id="vehicleOverlay"></div>
+    <button id="closeOverlay"></button>
+    <div id="autoOption"></div>
+    <div id="nonAcOption"></div>
+    <div id="acOption"></div>
+    <p id="summaryOfficial"></p>
   </div>
 
-  <footer>© 2026 Meter-Sathi</footer>
-
   <script>
-    /* Fare configuration for Non-AC Kaali Peeli */
+    /* Fare configuration for Auto Rickshaw */
     const BASE_FARE = 26.00;
-    const BASE_DISTANCE_M = 1500;        // 1.50 km in meters
-    const PER_KM_RATE = 17.14;           // per km after base
-    const NIGHT_SURCHARGE =0.25;        // 25% extra between 00:00-05:00
+    const BASE_DISTANCE_M = 1500;
+    const PER_KM_RATE = 17.14;
+    const NIGHT_SURCHARGE = 0.25;
 
-    /* GPS / detection tuning (robust) */
-    const MIN_MOVE_METERS = 10;
+    /* GPS / detection tuning (robust & fast) */
+    const MIN_MOVE_METERS = 2;
     const MIN_SPEED_KMH = 1;
-    const CONSECUTIVE_VALID = 2;
+    const CONSECUTIVE_VALID = 1;
     const MEDIAN_WINDOW = 3;
-    const STATIONARY_THRESHOLD_METERS = 5;
-    const STATIONARY_WINDOW_MS = 30 * 1000;
+    const STATIONARY_THRESHOLD_METERS = 2;
+    const STATIONARY_WINDOW_MS = 4 * 1000;
     const MAX_PLAUSIBLE_SPEED_KMH = 120;
     const DEBUG = false;
 
@@ -237,6 +138,7 @@
     const distanceEl = document.getElementById('distance');
     const officialFareEl = document.getElementById('officialFare');
     const gpsStatusEl = document.getElementById('gpsStatus');
+    const gpsBadge = document.getElementById('gpsBadge'); // NEW
     const tariffFareEl = document.getElementById('tariffFare');
     const dayDistanceEl = document.getElementById('dayDistance');
     const nightDistanceEl = document.getElementById('nightDistance');
@@ -248,7 +150,7 @@
 
     /* Runtime state */
     let watchId = null;
-    let gpsPoints = []; // {lat, lon, timestamp, accuracy}
+    let gpsPoints = [];
     let totalDistanceMeters = 0;
     let rideSummary = null;
     let rideActive = false;
@@ -264,6 +166,11 @@
     function fmtKm(m){ return toKm(m).toFixed(2); }
     function fmtCurrency(x){ return '₹' + Number(x).toFixed(2); }
     function toRad(d){ return d * Math.PI / 180; }
+
+    function updateGpsPulse(isActive) {
+      if(isActive) gpsBadge.classList.add('gps-active');
+      else gpsBadge.classList.remove('gps-active');
+    }
 
     function haversineDistance(lat1, lon1, lat2, lon2){
       const R = 6371000;
@@ -330,7 +237,6 @@
           segments: []
         };
       }
-
       let subsegments = [];
       let totalMeters = 0;
       for (let i=0;i<points.length-1;i++){
@@ -366,53 +272,32 @@
 
       const chargeableDayMeters = Math.max(0, dayMeters - baseAllocatedDay);
       const chargeableNightMeters = Math.max(0, nightMeters - baseAllocatedNight);
-
       const distanceFareDay = (chargeableDayMeters / 1000) * PER_KM_RATE;
       const distanceFareNight = (chargeableNightMeters / 1000) * PER_KM_RATE;
-
-      // Waiting logic removed: do not compute waiting times or waiting charges.
-
       const baseShareDay = BASE_FARE * (baseAllocatedDay / BASE_DISTANCE_M);
       const baseShareNight = BASE_FARE * (baseAllocatedNight / BASE_DISTANCE_M);
-
       const rawDayFare = baseShareDay + distanceFareDay;
       const rawNightFare = baseShareNight + distanceFareNight;
-
       const finalNightFare = rawNightFare * (1 + NIGHT_SURCHARGE);
       const finalDayFare = rawDayFare;
-
       const finalFare = finalDayFare + finalNightFare;
 
       return {
-        totalMeters,
-        dayMeters,
-        nightMeters,
-        baseAllocatedDay,
-        baseAllocatedNight,
-        chargeableDayMeters,
-        chargeableNightMeters,
-        distanceFareDay,
-        distanceFareNight,
-        finalDayFare,
-        finalNightFare,
-        finalFare,
-        segments: subsegments
+        totalMeters, dayMeters, nightMeters, baseAllocatedDay, baseAllocatedNight,
+        chargeableDayMeters, chargeableNightMeters, distanceFareDay, distanceFareNight,
+        finalDayFare, finalNightFare, finalFare, segments: subsegments
       };
     }
 
-    /* UI update */
     function updateDisplays(){
-      distanceEl.textContent = fmtKm(totalDistanceMeters) + ' km';
-      officialFareEl.textContent = fmtCurrency(BASE_FARE);
+      distanceEl.innerHTML = `${fmtKm(totalDistanceMeters)} <span style="font-size:16px; color:var(--text-muted);">km</span>`;
       const tariff = rideSummary ? rideSummary.finalFare : BASE_FARE;
       tariffFareEl.textContent = fmtCurrency(tariff);
 
       const dayMeters = rideSummary ? rideSummary.dayMeters : 0;
       const nightMeters = rideSummary ? rideSummary.nightMeters : 0;
-      dayDistanceEl.textContent = fmtKm(dayMeters) + ' km';
-      nightDistanceEl.textContent = fmtKm(nightMeters) + ' km';
-
-      summaryOfficial.textContent = fmtCurrency(BASE_FARE);
+      dayDistanceEl.innerHTML = `${fmtKm(dayMeters)} <span style="font-size:16px; color:var(--text-muted);">km</span>`;
+      nightDistanceEl.innerHTML = `${fmtKm(nightMeters)} <span style="font-size:16px; color:var(--text-muted);">km</span>`;
 
       const meterRaw = (meterFareInput.value || '').trim();
       const meterVal = meterRaw === '' ? 0 : parseFloat(meterRaw) || 0;
@@ -425,11 +310,10 @@
         fareStatusBox.style.borderColor = 'rgba(255,204,0,0.06)';
         return;
       }
-
       if (!fareChecked) {
         summaryMeter.textContent = fmtCurrency(0);
         summaryDiff.textContent = fmtCurrency(0);
-        fareStatusEl.textContent = 'Enter meter fare and click Check Fare';
+        fareStatusEl.textContent = 'Enter meter fare and click Verify';
         fareStatusEl.style.color = '#ffd966';
         fareStatusBox.style.borderColor = 'rgba(255,204,0,0.06)';
         return;
@@ -440,48 +324,44 @@
       summaryDiff.textContent = fmtCurrency(diff);
 
       if (Math.abs(diff) <= 0.01) {
-        fareStatusEl.textContent = 'Enjoy a fair and transparent fare.';
-        fareStatusEl.style.color = '#28a745';
+        fareStatusEl.textContent = 'Enjoy a fair and transparent fare. Safe travels!';
+        fareStatusEl.style.color = '#00E676';
+        fareStatusBox.style.borderColor = 'rgba(0, 230, 118, 0.3)';
       } else if (diff > 0.01) {
-        fareStatusEl.textContent = `It seems you are being overcharged by ₹${diff.toFixed(2)}.`;
-        fareStatusEl.style.color = '#dc3545';
+        fareStatusEl.textContent = `Warning: You are being overcharged by ₹${diff.toFixed(2)}.`;
+        fareStatusEl.style.color = '#FF1744';
+        fareStatusBox.style.borderColor = 'rgba(255, 23, 68, 0.3)';
       } else {
-        fareStatusEl.textContent = 'Enjoy a fair and transparent fare.';
-        fareStatusEl.style.color = '#28a745';
+        fareStatusEl.textContent = 'Enjoy a fair and transparent fare. Safe travels!';
+        fareStatusEl.style.color = '#00E676';
+        fareStatusBox.style.borderColor = 'rgba(0, 230, 118, 0.3)';
       }
     }
 
-    /* Start / End / Reset */
     function startRide(){
       if (!('geolocation' in navigator)) { gpsStatusEl.textContent = 'Geolocation not supported'; return; }
-      gpsPoints = [];
-      totalDistanceMeters = 0;
-      rideSummary = null;
-      rideActive = true;
-      meterFareInput.value = '';
-      meterFareInput.disabled = true;
-      fareChecked = false;
-      checkFareBtn.disabled = true;
+      gpsPoints = []; totalDistanceMeters = 0; rideSummary = null; rideActive = true;
+      meterFareInput.value = ''; meterFareInput.disabled = true; fareChecked = false; checkFareBtn.disabled = true;
       updateDisplays();
 
-      gpsStatusEl.textContent = 'Requesting permission...';
+      gpsStatusEl.textContent = 'Requesting signal...';
+      updateGpsPulse(false);
       startBtn.disabled = true; endBtn.disabled = false; resetBtn.disabled = true;
-      pauseBtn.disabled = false; pauseBtn.textContent = 'Pause'; paused = false;
+      pauseBtn.disabled = false; pauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Pause'; paused = false;
 
       recentFixes = []; consecutiveValidMoves = 0; windowFixes = [];
-
       watchId = navigator.geolocation.watchPosition(onPosition, onError, { enableHighAccuracy:true, maximumAge:1000, timeout:10000 });
     }
 
     function endRide(){
       if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
       gpsStatusEl.textContent = 'Stopped';
+      updateGpsPulse(false);
       startBtn.disabled = false; endBtn.disabled = true; resetBtn.disabled = false;
       pauseBtn.disabled = true; rideActive = false;
 
       rideSummary = computeRideBreakdown(gpsPoints);
       totalDistanceMeters = rideSummary.totalMeters;
-
       meterFareInput.disabled = false; fareChecked = false; checkFareBtn.disabled = false;
       updateDisplays();
     }
@@ -492,36 +372,31 @@
       meterFareInput.value = ''; meterFareInput.disabled = true; fareChecked = false; checkFareBtn.disabled = true;
       updateDisplays();
       gpsStatusEl.textContent = 'Idle';
+      updateGpsPulse(false);
       resetBtn.disabled = true;
-      pauseBtn.disabled = true; pauseBtn.textContent = 'Pause'; paused = false;
+      pauseBtn.disabled = true; pauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Pause'; paused = false;
       recentFixes = []; consecutiveValidMoves = 0; windowFixes = [];
     }
 
-    /* Position handler (robust) */
     function onPosition(pos){
       if (paused) return;
       const { latitude, longitude, accuracy } = pos.coords;
       const ts = pos.timestamp || Date.now();
-
       recentFixes.push({ lat: latitude, lon: longitude, ts, accuracy });
       if (recentFixes.length > MEDIAN_WINDOW) recentFixes.shift();
-
       const median = medianCoord(recentFixes);
       const current = { lat: median.lat, lon: median.lon, timestamp: ts, accuracy };
 
       if (current.accuracy > 200) {
-        gpsStatusEl.textContent = `Very poor accuracy (${Math.round(current.accuracy)} m) — waiting`;
-        if (DEBUG) console.debug('ignored poor accuracy', current.accuracy);
-        return;
+        gpsStatusEl.textContent = `Poor accuracy (${Math.round(current.accuracy)}m)`;
+        updateGpsPulse(false); return;
       }
 
       if (gpsPoints.length === 0) {
         gpsPoints.push(current);
         windowFixes = [{ lat: current.lat, lon: current.lon, ts: current.timestamp }];
-        gpsStatusEl.textContent = `Fix OK (${Math.round(current.accuracy)} m)`;
-        updateDisplays();
-        if (DEBUG) console.debug('first fix', current);
-        return;
+        gpsStatusEl.textContent = `Fix OK (${Math.round(current.accuracy)}m)`;
+        updateGpsPulse(false); updateDisplays(); return;
       }
 
       const last = gpsPoints[gpsPoints.length - 1];
@@ -531,9 +406,8 @@
 
       if (speedKmh > MAX_PLAUSIBLE_SPEED_KMH) {
         consecutiveValidMoves = Math.max(0, consecutiveValidMoves - 1);
-        gpsStatusEl.textContent = `Spike ignored (speed ${Math.round(speedKmh)} km/h)`;
-        if (DEBUG) console.debug('spike ignored', { d, speedKmh });
-        return;
+        gpsStatusEl.textContent = `Spike ignored`;
+        updateGpsPulse(false); return;
       }
 
       windowFixes.push({ lat: current.lat, lon: current.lon, ts: current.timestamp });
@@ -547,54 +421,46 @@
 
       if (windowDistance < STATIONARY_THRESHOLD_METERS) {
         consecutiveValidMoves = 0;
-        gpsStatusEl.textContent = `Stationary (${Math.round(STATIONARY_WINDOW_MS/1000)}s window)`;
-        if (DEBUG) console.debug('stationary', { windowDistance });
-        return;
+        gpsStatusEl.textContent = `Stationary`;
+        updateGpsPulse(false); return;
       }
 
       if (d < MIN_MOVE_METERS || speedKmh < MIN_SPEED_KMH) {
         consecutiveValidMoves = Math.max(0, consecutiveValidMoves - 1);
-        gpsStatusEl.textContent = `Waiting for sustained movement`;
-        if (DEBUG) console.debug('drift', { d, speedKmh, windowDistance });
-        return;
+        gpsStatusEl.textContent = `Waiting for movement`;
+        updateGpsPulse(false); return;
       }
 
       consecutiveValidMoves++;
       if (consecutiveValidMoves < CONSECUTIVE_VALID) {
-        gpsStatusEl.textContent = `Validating movement (${consecutiveValidMoves}/${CONSECUTIVE_VALID})`;
-        if (DEBUG) console.debug('validating', { d, speedKmh });
-        return;
+        gpsStatusEl.textContent = `Validating...`;
+        updateGpsPulse(false); return;
       }
 
       gpsPoints.push(current);
       totalDistanceMeters += d;
       rideSummary = computeRideBreakdown(gpsPoints);
-      consecutiveValidMoves = 0;
-      windowFixes = [];
-      gpsStatusEl.textContent = `Moving (speed ${Math.round(speedKmh)} km/h, acc ${Math.round(current.accuracy)} m)`;
+      consecutiveValidMoves = 0; windowFixes = [];
+      gpsStatusEl.textContent = `Moving (${Math.round(speedKmh)} km/h)`;
+      updateGpsPulse(true);
       updateDisplays();
-      if (DEBUG) console.debug('accepted movement', { d, speedKmh, totalDistanceMeters });
     }
 
     function onError(err){
       gpsStatusEl.textContent = `Error: ${err.message}`;
+      updateGpsPulse(false);
       if (err.code === 1 && watchId !== null) {
-        navigator.geolocation.clearWatch(watchId);
-        watchId = null;
+        navigator.geolocation.clearWatch(watchId); watchId = null;
         startBtn.disabled = false; endBtn.disabled = true; resetBtn.disabled = false;
       }
     }
 
-    /* Input handlers */
     meterFareInput.addEventListener('input', () => {
       let v = meterFareInput.value || '';
       v = v.replace(/[^\d.]/g,'');
       const parts = v.split('.');
       if (parts.length > 2) v = parts[0] + '.' + parts.slice(1).join('');
-      if (v.includes('.')) {
-        const [intPart, decPart] = v.split('.');
-        v = intPart + '.' + (decPart || '').slice(0,2);
-      }
+      if (v.includes('.')) { const [intPart, decPart] = v.split('.'); v = intPart + '.' + (decPart || '').slice(0,2); }
       if (v.length > 1 && v[0] === '0' && v[1] !== '.') v = String(Number(v));
       meterFareInput.value = v;
       if (fareChecked) fareChecked = false;
@@ -603,104 +469,28 @@
 
     pauseBtn.addEventListener('click', () => {
       paused = !paused;
-      pauseBtn.textContent = paused ? 'Resume' : 'Pause';
+      pauseBtn.innerHTML = paused ? '<i class="fa-solid fa-play"></i> Resume' : '<i class="fa-solid fa-pause"></i> Pause';
       gpsStatusEl.textContent = paused ? 'Paused' : 'Resumed';
+      if(paused) updateGpsPulse(false);
     });
 
     checkFareBtn.addEventListener('click', () => {
       if (meterFareInput.disabled) return;
-      fareChecked = true;
-      updateDisplays();
+      fareChecked = true; updateDisplays();
     });
 
-    /* Init */
-    meterFareInput.disabled = true;
-    checkFareBtn.disabled = true;
-    updateDisplays();
+    meterFareInput.disabled = true; checkFareBtn.disabled = true; updateDisplays();
 
     startBtn.addEventListener('click', startRide);
     endBtn.addEventListener('click', endRide);
     resetBtn.addEventListener('click', resetRide);
 
-    /* Overlay script (same behavior as welcome) */
-    (function () {
-      const overlay = document.getElementById('vehicleOverlay');
-      const openBtn = document.getElementById('getStartedBtn'); // may be absent on this page; safe to reference
-      const closeBtn = document.getElementById('closeOverlay');
-      const autoOption = document.getElementById('autoOption');
-      const nonAcOption = document.getElementById('nonAcOption');
-      const acOption = document.getElementById('acOption');
-
-      function showOverlay() {
-        overlay.setAttribute('aria-hidden', 'false');
-        overlay.style.display = 'flex';
-        autoOption && autoOption.focus();
-        document.body.style.overflow = 'hidden';
-      }
-
-      function hideOverlay() {
-        overlay.setAttribute('aria-hidden', 'true');
-        overlay.style.display = 'none';
-        document.body.style.overflow = '';
-      }
-
-      // close button
-      closeBtn && closeBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        hideOverlay();
-      });
-
-      overlay && overlay.addEventListener('click', function (e) {
-        if (e.target === overlay) hideOverlay();
-      });
-
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && overlay.getAttribute('aria-hidden') === 'false') hideOverlay();
-      });
-
-      autoOption && autoOption.addEventListener('click', function () {
-        window.location.href = 'index.html';
-      });
-      nonAcOption && nonAcOption.addEventListener('click', function () {
-        window.location.href = 'non_ac_taxi.html';
-      });
-      acOption && acOption.addEventListener('click', function () {
-        window.location.href = 'ac_taxi.html';
-      });
-
-      [autoOption, nonAcOption, acOption].forEach(el => {
-        if (!el) return;
-        el.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            el.click();
-          }
-        });
-      });
-
-      // overlay hidden by default
-      overlay && overlay.setAttribute('aria-hidden', 'true');
-      overlay && (overlay.style.display = 'none');
-    })();
-
-    /* Back button behavior
-       Only added behavior: navigate back to welcome.html and request the overlay to open.
-       This is the only change in this file.
-       We set a short-lived sessionStorage flag and include a query param so welcome.html
-       can detect and open the vehicle selection overlay immediately.
-    */
     (function () {
       const backBtn = document.getElementById('backBtn');
       if (!backBtn) return;
       backBtn.addEventListener('click', function (e) {
         e.preventDefault();
-        try {
-          // Set a sessionStorage flag that welcome.html can check on load to auto-open overlay.
-          sessionStorage.setItem('meterSathi_openVehicleOverlay', '1');
-        } catch (err) {
-          // ignore storage errors
-        }
-        // Redirect to welcome page with a query param hint as well.
+        try { sessionStorage.setItem('meterSathi_openVehicleOverlay', '1'); } catch (err) {}
         window.location.href = 'welcome.html?open=vehicle';
       });
     })();

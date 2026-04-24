@@ -1,217 +1,243 @@
 <!DOCTYPE html>
 <html lang="en-IN">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Services - Meter-Sathi</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    body {
-      background: linear-gradient(135deg, #000000, #111111);
-      color: #ffffff;
-      min-height: 100vh;
-    }
-
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 40px;
-      background: #000000;
-      border-bottom: 4px solid #ffcc00;
-      z-index: 50;
-    }
-    .brand {
-      color: #ffcc00;
-      font-weight: 900;
-      font-size: 20px;
-      letter-spacing: 0.4px;
-    }
-    .nav-links {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    .nav-links .nav-link {
-      text-decoration: none;
-      color: #ffcc00;
-      padding: 8px 14px;
-      border-radius: 20px;
-      font-weight: 600;
-      transition: background-color .18s ease, color .18s ease, transform .12s ease;
-    }
-    .nav-links .nav-link:hover {
-      background-color: #ffcc00;
-      color: #000000;
-      transform: translateY(-2px);
-    }
-    .nav-links .nav-link:focus {
-      outline: 3px solid rgba(255,204,0,0.28);
-      outline-offset: 3px;
-      border-radius: 18px;
-    }
-    .nav-links .nav-link.active {
-      background: #ffcc00;
-      color: #000;
-      box-shadow: 0 8px 20px rgba(255,204,0,0.12);
-    }
-    .container {
-      text-align: center;
-      padding: 60px 20px;
-      max-width: 980px;
-      margin: 28px auto;
-    }
-
-    .brand-title {
-      font-size: 42px;
-      font-weight: bold;
-      color: #FFD700;
-      text-shadow: 0 0 12px rgba(255, 215, 0, 0.45);
-      margin-bottom: 8px;
-    }
-
-    .brand-subtitle {
-      font-size: 18px;
-      color: #dddddd;
-      margin-bottom: 28px;
-    }
-
-    .lead {
-      color: #e6e6e6;
-      font-size: 16px;
-      margin-bottom: 22px;
-      line-height: 1.6;
-      max-width: 820px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* SERVICE CARDS */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 18px;
-      margin-top: 18px;
-    }
-
-    .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-      border-radius: 12px;
-      padding: 18px;
-      border: 1px solid rgba(255,215,0,0.06);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.45);
-      text-align: left;
-    }
-
-    .card h3 {
-      color: #FFD700;
-      font-size: 18px;
-      margin-bottom: 8px;
-    }
-
-    .card p {
-      color: #f0f0f0;
-      font-size: 14px;
-      line-height: 1.5;
-      margin: 0;
-    }
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Services - Meter-Sathi</title>
     
-    footer {
-      background-color: #000000;
-      color: #FFD700;
-      text-align: center;
-      padding: 18px;
-      margin-top: 50px;
-      border-top: 4px solid #FFD700;
-      letter-spacing: 1px;
-    }
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    footer a {
-      color: #FFD700;
-      text-decoration: none;
-      margin: 0 8px;
-      font-weight: bold;
-    }
-    
-    @media (max-width: 768px) {
-      .brand-title {
-        font-size: 36px;
-      }
+    <style>
+        :root {
+            --bg-dark: #000000;
+            --bg-gradient: linear-gradient(135deg, #000000, #111111);
+            --gold-primary: #ffcc00;
+            --gold-soft: #FFD700;
+            --gold-glow: rgba(255, 204, 0, 0.15);
+            --text-main: #ffffff;
+            --text-dim: #dddddd;
+            --border-glow: rgba(255, 215, 0, 0.1);
+        }
 
-      .nav-links {
-        flex-direction: column;
-        gap: 15px;
-      }
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-      .card { padding: 12px; }
-    }
-  </style>
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- Single Line Scrollable Navbar --- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: #000000;
+            border-bottom: 3px solid var(--gold-primary);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.7);
+        }
+
+        .brand {
+            color: var(--gold-primary);
+            font-weight: 900;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            margin-right: 15px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+            padding: 5px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .nav-links::-webkit-scrollbar { display: none; }
+
+        .nav-links .nav-link {
+            text-decoration: none;
+            color: var(--gold-primary);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .nav-links .nav-link:hover,
+        .nav-links .nav-link.active {
+            background: var(--gold-primary);
+            color: #000000;
+            box-shadow: 0 5px 12px var(--gold-glow);
+        }
+
+        /* --- Main Layout --- */
+        .container {
+            text-align: center;
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            flex: 1;
+        }
+
+        .brand-title {
+            font-size: 38px;
+            font-weight: 700;
+            color: var(--gold-soft);
+            margin-bottom: 12px;
+        }
+
+        .brand-subtitle {
+            font-size: 18px;
+            color: var(--text-dim);
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+
+        /* 2x2 GRID LOGIC HERE */
+        .grid {
+            display: grid;
+            /* Yahi wo magic line hai: 2 columns fixed */
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--border-glow);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: left;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold-primary);
+            background: rgba(255, 215, 0, 0.03);
+        }
+
+        .card h3 {
+            color: var(--gold-soft);
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .card p {
+            color: #f0f0f0;
+            font-size: 14.5px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        footer {
+            background-color: #000000;
+            color: var(--gold-soft);
+            text-align: center;
+            padding: 30px;
+            border-top: 4px solid var(--gold-soft);
+        }
+
+        footer a {
+            color: var(--gold-soft);
+            text-decoration: none;
+            margin: 0 12px;
+            font-weight: 700;
+        }
+
+        /* Responsive Fix for small phones */
+        @media (max-width: 600px) {
+            .grid {
+                /* Screen bahut choti ho toh 1 column hi sahi rahega 
+                   par agar user ko 2 hi chahiye toh repeat(2, 1fr) hi rehne dein */
+                grid-template-columns: 1fr; 
+            }
+            .brand-title { font-size: 30px; }
+            .card { padding: 20px; }
+        }
+    </style>
 </head>
 <body>
 
-  <nav class="navbar" role="navigation" aria-label="Main navigation">
-    <div class="brand">Meter-Sathi</div>
-    <div class="nav-links" role="menubar" aria-label="Primary">
-      <a href="welcome.html" role="menuitem" class="nav-link">Home</a>
-      <a href="about.html" role="menuitem" class="nav-link">About</a>
-      <a href="services.html" role="menuitem" class="nav-link" aria-current="page">Services</a>
-      <a href="faq.html" role="menuitem" class="nav-link">FAQ</a>
-      <a href="contact.html" role="menuitem" class="nav-link">Contact Us</a>
-    </div>
-  </nav>
+    <nav class="navbar">
+        <div class="brand">Meter-Sathi</div>
+        <div class="nav-links">
+            <a href="welcome.html" class="nav-link">Home</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="services.html" class="nav-link active">Services</a>
+            <a href="faq.html" class="nav-link">FAQ</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+    </nav>
 
-  <main class="container" role="main" aria-labelledby="services-title">
-    <h1 id="services-title" class="brand-title">Our Services</h1>
-    <p class="brand-subtitle">What Meter-Sathi offers to make your commute fair and transparent</p>
+    <main class="container">
+        <h1 class="brand-title">Our services</h1>
+        <p class="brand-subtitle">Everything you need for a fair commute</p>
 
-    <p class="lead">
-      Meter-Sathi helps commuters verify fares, track rides, and understand official tariffs for auto rickshaws and taxis.
-      Below are the core features we provide — each designed to make your journey fairer and more transparent.
+        <section class="grid">
+            <article class="card">
+                <h3>Fare auditing</h3>
+                <p>Compare the meter fare with the official tariff instantly. We calculate base fare, distance charges, and night surcharges.</p>
+            </article>
+
+            <article class="card">
+                <h3>Ride tracking</h3>
+                <p>Start and end ride tracking using your device's location. See distance covered and get a live official fare estimate.</p>
+            </article>
+
+            <article class="card">
+                <h3>Tariff reference</h3>
+                <p>Access up-to-date tariff rules for different vehicle types. We show base fares and per-kilometer rates for clarity.</p>
+            </article>
+
+            <article class="card">
+                <h3>Commuter support</h3>
+                <p>Guides on handling fare disputes, checking driver credentials, and reporting overcharging to the local authorities.</p>
+            </article>
+        </section>
+    </main>
+
+    <footer>
+    <p>© 2026 Meter-Sathi | 
+      <a href="privacy.html">Privacy Policy</a> | 
+      <a href="terms.html">Terms and Conditions</a>
     </p>
-
-    <section class="grid" role="list" aria-label="Service list">
-      <article class="card" role="listitem" aria-labelledby="fare-audit">
-        <h3 id="fare-audit">Fare Auditing</h3>
-        <p>Compare the meter fare with the official tariff instantly. We calculate base fare, distance charges, and night surcharges so you can spot overcharging quickly.</p>
-      </article>
-
-      <article class="card" role="listitem" aria-labelledby="ride-tracking">
-        <h3 id="ride-tracking">Ride Tracking</h3>
-        <p>Start and end ride tracking using your device's location (permission-based). See distance covered and get a live official fare estimate during your trip.</p>
-      </article>
-
-      <article class="card" role="listitem" aria-labelledby="tariff-ref">
-        <h3 id="tariff-ref">Tariff Reference</h3>
-        <p>Access up-to-date tariff rules for different vehicle types and cities. We show base fares, per-kilometer rates, and night-time multipliers for clarity.</p>
-      </article>
-
-      <article class="card" role="listitem" aria-labelledby="commuter-support">
-        <h3 id="commuter-support">Commuter Support</h3>
-        <p>Guides and tips on how to handle fare disputes, check driver credentials, and report repeated overcharging incidents to local authorities.</p>
-      </article>
-    </section>
-  </main>
-
-  <footer role="contentinfo">
-    &copy; 2026 Meter-Sathi | 
-    <a href="privacy.html">Privacy Policy</a> | 
-    <a href="terms.html">Terms and Conditions</a>
   </footer>
 
-  <script>
-    (function () {
-      const links = document.querySelectorAll('.nav-links .nav-link');
-      const current = location.pathname.split('/').pop() || 'welcome.html';
-      links.forEach(a => {
-        if (a.getAttribute('href') === current) a.classList.add('active');
-      });
-    })();
-  </script>
+    <script>
+        (function () {
+            const links = document.querySelectorAll('.nav-links .nav-link');
+            const current = location.pathname.split('/').pop() || 'welcome.html';
+            links.forEach(a => {
+                if (a.getAttribute('href') === current) a.classList.add('active');
+            });
+        })();
+    </script>
 </body>
 </html>

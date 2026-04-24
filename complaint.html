@@ -122,22 +122,6 @@
           <textarea id="details" rows="4" placeholder="Please explain exactly what happened in your own words..." required></textarea>
         </div>
 
-        <h3 class="section-title"><i class="fa-solid fa-paperclip"></i> Evidence (Optional but Recommended)</h3>
-        <div class="evidence-grid">
-          <div class="evidence-box" onclick="document.getElementById('photoUpload').click()">
-            <i class="fa-solid fa-camera"></i>
-            <span id="photoLabel" style="color:#fff; font-weight:bold;">10. Add Photo</span>
-            <p style="color:var(--text-muted); font-size:12px; margin-top:5px;">Driver's ID, License Plate, or Meter</p>
-            <input type="file" id="photoUpload" style="display:none;" accept="image/*" />
-          </div>
-
-          <div class="evidence-box" onclick="document.getElementById('evidenceUpload').click()">
-            <i class="fa-solid fa-file-audio"></i>
-            <span id="evidenceLabel" style="color:#fff; font-weight:bold;">11. Upload Additional Evidence</span>
-            <p style="color:var(--text-muted); font-size:12px; margin-top:5px;">Audio recording or short video</p>
-            <input type="file" id="evidenceUpload" style="display:none;" accept="audio/*,video/*" />
-          </div>
-        </div>
 
         <button type="submit" class="auth-btn-submit" style="background:var(--danger); color:#fff; box-shadow: 0 8px 20px rgba(255,23,68,0.2); padding:18px; font-size:18px;" id="submitBtn">
           Submit Official Complaint
@@ -153,7 +137,22 @@
     <p>&copy; 2026 Meter-Sathi. <a href="terms.html" style="color:var(--taxi-yellow); text-decoration:none; margin: 0 10px;">Terms of Service</a></p>
   </footer>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyArV1sP0G8-6NwRUclY3uChof3b9TfmGB0",
+      authDomain: "meter-sathi.firebaseapp.com",
+      projectId: "meter-sathi",
+      storageBucket: "meter-sathi.firebasestorage.app",
+      messagingSenderId: "762038628393",
+      appId: "1:762038628393:web:6a03c56a9b945fe36aac38"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     // 1. Strict License Plate Formatting: AA 11 BB 2222
     const plateInput = document.getElementById('licensePlate');
     plateInput.addEventListener('input', function(e) {
@@ -184,33 +183,17 @@
       this.value = formatted;
     });
 
-    // 2. Date formatting & limiting to today (HTML5 handles leap year validation intrinsically)
+    // 2. Date formatting & limiting to today
     const dateInput = document.getElementById('incidentDate');
     const today = new Date().toISOString().split('T')[0];
-    dateInput.max = today; // Prevents selecting future dates
+    dateInput.max = today;
 
-    // 3. File upload visual feedback
-    document.getElementById('photoUpload').addEventListener('change', function() {
-      if(this.files && this.files[0]) {
-        const label = document.getElementById('photoLabel');
-        label.textContent = this.files[0].name;
-        label.style.color = 'var(--taxi-yellow)';
-      }
-    });
 
-    document.getElementById('evidenceUpload').addEventListener('change', function() {
-      if(this.files && this.files[0]) {
-        const label = document.getElementById('evidenceLabel');
-        label.textContent = this.files[0].name;
-        label.style.color = 'var(--taxi-yellow)';
-      }
-    });
-
-    // 4. Form submission handler
-    document.getElementById('complaintForm').addEventListener('submit', function(e) {
+    // 4. Form submission handler with Firebase Integration
+    document.getElementById('complaintForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       
-      // Basic validation for license plate length
+      // --- VALIDATION LOGIC ---
       const rawPlate = plateInput.value.replace(/\s/g, '');
       if (rawPlate.length < 8) {
         alert("Please enter a valid, complete Vehicle Registration Number (e.g., MH 01 AB 1234).");
@@ -218,8 +201,7 @@
         return;
       }
 
-      // Explicit Date & Leap Year Validation Logic
-      const dateVal = dateInput.value; // Expected format YYYY-MM-DD from type="date"
+      const dateVal = dateInput.value; 
       if (!dateVal || (dateInput.validity && dateInput.validity.badInput)) {
           alert("Invalid Date entered.");
           dateInput.focus();
@@ -232,42 +214,59 @@
           const month = parseInt(dateParts[1], 10);
           const day = parseInt(dateParts[2], 10);
           
-          // Days in each month (January to December)
           const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-          
-          // Strict Leap Year Logic
           if ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
-              daysInMonth[1] = 29; // February has 29 days in leap year
+              daysInMonth[1] = 29;
           }
-          
           if (day > daysInMonth[month - 1]) {
               alert("Invalid date: " + day + " is beyond the maximum days for month " + month + " in the year " + year + ".");
               dateInput.focus();
               return;
           }
       }
+      // --- END VALIDATION LOGIC ---
 
       const btn = document.getElementById('submitBtn');
       const status = document.getElementById('formStatus');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing your report...';
+      
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting to Database...';
       btn.disabled = true;
       btn.style.opacity = '0.7';
-      
-      setTimeout(() => {
+
+      try {
+        const formData = {
+          vehicleType: document.getElementById('vehicleType').value,
+          licensePlate: document.getElementById('licensePlate').value,
+          incidentDate: document.getElementById('incidentDate').value,
+          incidentTime: document.getElementById('incidentTime').value,
+          pickupLoc: document.getElementById('pickupLoc').value,
+          dropoffLoc: document.getElementById('dropoffLoc').value,
+          fareDemanded: document.getElementById('fareDemanded').value,
+          officialFare: document.getElementById('officialFare').value,
+          complaintType: document.getElementById('complaintType').value,
+          details: document.getElementById('details').value,
+          timestamp: serverTimestamp()
+        };
+
+        // Add to Firebase Firestore
+        await addDoc(collection(db, "complaints"), formData);
+
+        // Success UI Reset
         btn.innerHTML = 'Submit Official Complaint';
         btn.disabled = false;
         btn.style.opacity = '1';
         status.style.display = 'block';
         this.reset();
-        
-        // Reset file labels
-        document.getElementById('photoLabel').textContent = '10. Add Photo';
-        document.getElementById('photoLabel').style.color = '#fff';
-        document.getElementById('evidenceLabel').textContent = '11. Upload Additional Evidence';
-        document.getElementById('evidenceLabel').style.color = '#fff';
 
         setTimeout(() => status.style.display = 'none', 8000);
-      }, 2500);
+
+      } catch (error) {
+        console.error(error);
+        alert("Error submitting complaint: " + error.message);
+        btn.innerHTML = 'Submit Official Complaint';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      }
     });
   </script>
 </body>

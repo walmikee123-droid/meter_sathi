@@ -44,8 +44,23 @@
     </div>
   </div>
 
-  <script>
-    function togglePassword(btn) {
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyArV1sP0G8-6NwRUclY3uChof3b9TfmGB0",
+      authDomain: "meter-sathi.firebaseapp.com",
+      projectId: "meter-sathi",
+      storageBucket: "meter-sathi.firebasestorage.app",
+      messagingSenderId: "762038628393",
+      appId: "1:762038628393:web:6a03c56a9b945fe36aac38"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.togglePassword = function(btn) {
       const input = document.getElementById("password");
       if (input.type === "password") {
         input.type = "text";
@@ -54,7 +69,41 @@
         input.type = "password";
         btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
       }
-    }
+    };
+
+    const loginForm = document.getElementById("loginForm");
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const submitBtn = document.querySelector(".auth-btn-submit");
+
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.innerHTML = "Logging in...";
+      submitBtn.disabled = true;
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        window.location.href = "welcome.html";
+
+      } catch (error) {
+        console.error("Login Error:", error.code, error.message);
+        
+        let errorMsg = "Login failed. Please check your credentials.";
+        if (error.code === 'auth/invalid-credential') {
+          errorMsg = "Invalid email or password.";
+        } else if (error.code === 'auth/user-not-found') {
+          errorMsg = "No account found with this email.";
+        }
+
+        alert(errorMsg);
+        submitBtn.innerHTML = originalBtnText;
+        submitBtn.disabled = false;
+      }
+    });
   </script>
 </body>
 </html>

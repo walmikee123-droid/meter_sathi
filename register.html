@@ -17,23 +17,27 @@
   --error:#ff4d4d;
 }
 
-body{
-  background:var(--bg);
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-family:'Segoe UI',sans-serif;
+body {
+  background: var(--bg);
+  min-height: 100vh; /* 1. 'height' ko 'min-height' kar diya (taaki lamba ho sake) */
+  display: flex;
+  justify-content: center;
+  /* align-items: center; <-- ISKO UDA DO, ye hi dushman tha! */
+  font-family: 'Segoe UI', sans-serif;
   margin: 0;
+  padding: 40px 20px; /* 2. Upar-neeche space de diya taaki chipke nahi */
+  box-sizing: border-box;
+  overflow-y: auto; /* 3. TERA IDEA: Scrolling ON kar di */
 }
 
-.register-container{
-  background:var(--card);
-  padding:30px;
-  border-radius:12px;
-  width:340px;
+.register-container {
+  background: var(--card);
+  padding: 30px;
+  border-radius: 12px;
+  width: 340px;
   box-shadow: 0 8px 25px rgba(255, 215, 0, 0.1);
   border: 1px solid var(--border);
+  margin: auto; /* 4. MAGIC TRICK: Ye card ko center bhi karega aur top se katne bhi nahi dega! */
 }
 
 /* --- NEW: Stylish Back Button Styles --- */

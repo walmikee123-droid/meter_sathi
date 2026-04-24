@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Us - Meter-Sathi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <style>
+        /* ------------------------------------------------------------
+           PROJECT DESIGN SYSTEM (BLACK & GOLD THEME)
+           ------------------------------------------------------------
+        */
+        :root {
+            --bg-color: #000000;
+            --card-bg: #111111;
+            --gold-primary: #ffcc00;
+            --gold-glow: rgba(255, 204, 0, 0.15);
+            --text-white: #ffffff;
+            --text-dim: #aaaaaa;
+            --border-std: #333333;
+            --error-red: #f44336;
+        }
+
+        /* ------------------------------------------------------------
+           GLOBAL RESET & LAYOUT
+           ------------------------------------------------------------
+        */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-color), #1c1c1c);
+            color: var(--text-white);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ------------------------------------------------------------
+           NAVBAR (SINGLE LINE SCROLLABLE FOR MOBILE)
+           ------------------------------------------------------------
+        */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: #000000;
+            border-bottom: 3px solid var(--gold-primary);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+        }
+
+        .brand {
+            color: var(--gold-primary);
+            font-weight: 900;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            margin-right: 15px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none; /* Firefox */
+            padding: 5px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .nav-links::-webkit-scrollbar { display: none; }
+
+        .nav-links .nav-link {
+            text-decoration: none;
+            color: var(--gold-primary);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .nav-links .nav-link:hover,
+        .nav-links .nav-link.active {
+            background: var(--gold-primary);
+            color: #000000;
+            box-shadow: 0 5px 12px var(--gold-glow);
+        }
+
+        /* ------------------------------------------------------------
+           MAIN CONTAINER & MESSAGE CARD
+           ------------------------------------------------------------
+        */
+        .container {
+            flex: 1;
+            padding: 40px 15px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .message-card {
+            background: var(--card-bg);
+            max-width: 1000px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+            border: 2px solid var(--gold-primary);
+            text-align: center;
+        }
+
+        .message-card h2 {
+            font-size: 36px;
+            color: var(--gold-primary);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 16px;
+            margin-bottom: 35px;
+        }
+
+        /* ------------------------------------------------------------
+           URGENT COMPLAINT BANNER (RED ACCENT)
+           ------------------------------------------------------------
+        */
+        .urgent-banner {
+            background: rgba(244, 67, 54, 0.08);
+            border: 1px solid var(--error-red);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+            gap: 20px;
+        }
+        
+        .urgent-text h3 {
+            color: #ff4444;
+            font-size: 19px;
+            margin-bottom: 5px;
+        }
+        
+        .urgent-text p {
+            color: #eeeeee;
+            font-size: 14px;
+        }
+        
+        .btn-report {
+            background: var(--error-red);
+            color: #ffffff;
+            padding: 14px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+        }
+
+        .btn-report:hover {
+            background: #d32f2f;
+            transform: translateY(-3px);
+        }
+
+        /* ------------------------------------------------------------
+           CONTACT WRAPPER (INFO + FORM)
+           ------------------------------------------------------------
+        */
+        .contact-wrapper {
+            display: flex;
+            gap: 40px;
+            text-align: left;
+        }
+
+        .contact-info, .contact-form { flex: 1; }
+
+        .info-item {
+            background: #1a1a1a;
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+            transition: border-color 0.3s;
+        }
+
+        .info-item:hover { border-color: var(--gold-primary); }
+
+        .info-item h3 {
+            color: var(--gold-primary);
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .info-item p { color: #eeeeee; font-size: 15px; }
+
+        /* Form Styling */
+        .contact-form form { display: flex; flex-direction: column; gap: 18px; }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #333;
+            background: #000000;
+            color: #ffffff;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus { border-color: var(--gold-primary); background: #111; }
+
+        .contact-form textarea { resize: vertical; min-height: 140px; }
+
+        .submit-btn {
+            padding: 18px;
+            background: var(--gold-primary);
+            color: #000000;
+            font-size: 18px;
+            font-weight: 800;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 8px 20px rgba(255,204,0,0.2);
+        }
+
+        .submit-btn:hover { transform: translateY(-3px); background: #e6b800; }
+
+        /* ------------------------------------------------------------
+           FOOTER (UNIFIED SINGLE LINE)
+           ------------------------------------------------------------
+        */
+        footer {
+            background: #000000;
+            color: var(--gold-primary);
+            text-align: center;
+            padding: 35px 20px;
+            border-top: 4px solid var(--gold-primary);
+            margin-top: auto;
+        }
+
+        footer a {
+            color: var(--gold-primary);
+            text-decoration: none;
+            margin: 0 12px;
+            font-weight: 700;
+        }
+
+        footer a:hover { text-decoration: underline; }
+
+        /* ------------------------------------------------------------
+           MOBILE VIEWPORT ADJUSTMENTS
+           ------------------------------------------------------------
+        */
+        @media (max-width: 900px) {
+            .contact-wrapper { flex-direction: column; }
+            
+            .urgent-banner {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .btn-report { width: 100%; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .navbar { padding: 12px 15px; }
+            .brand { font-size: 16px; }
+            .message-card { padding: 25px 15px; border-radius: 16px; }
+            .message-card h2 { font-size: 28px; }
+            .container { padding: 25px 10px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="brand">Meter-Sathi</div>
+        <div class="nav-links" role="menubar">
+            <a href="welcome.html" role="menuitem" class="nav-link">Home</a>
+            <a href="about.html" role="menuitem" class="nav-link">About</a>
+            <a href="services.html" role="menuitem" class="nav-link">Services</a>
+            <a href="faq.html" role="menuitem" class="nav-link">FAQ</a>
+            <a href="contact.html" role="menuitem" class="nav-link active">Contact</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="message-card">
+            <h2>Get in touch</h2>
+            <p class="subtitle">Have questions or feedback? The Meter-Sathi team is here to assist you.</p>
+            
+            <div class="urgent-banner">
+                <div class="urgent-text">
+                    <h3>🚨 Need to report a driver?</h3>
+                    <p>For fare disputes or rogue drivers, please use our formal complaint system for faster processing.</p>
+                </div>
+                <a href="complaint.html" class="btn-report">Complaint an issue</a>
+            </div>
+            
+            <div class="contact-wrapper">
+                
+                <div class="contact-info">
+                    <div class="info-item">
+                        <h3>📍 Our location</h3>
+                        <p>Meter-Sathi Headquarters<br>Mumbai, Maharashtra, India</p>
+                    </div>
+                    <div class="info-item">
+                        <h3>✉️ Email support</h3>
+                        <p>support@meter-sathi.in<br>feedback@meter-sathi.in</p>
+                    </div>
+                    <div class="info-item">
+                        <h3>🕒 Support availability</h3>
+                        <p>24 Hours / 7 Days a week<br>Committed to your safe commute.</p>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <input type="text" placeholder="Full name" required>
+                        <input type="email" placeholder="Email address" required>
+                        <input type="text" placeholder="Message subject" required>
+                        <textarea placeholder="How can we help you today?" required></textarea>
+                        <button type="submit" class="submit-btn">Send message</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer>
+    <p>© 2026 Meter-Sathi | 
+      <a href="privacy.html">Privacy Policy</a> | 
+      <a href="terms.html">Terms and Conditions</a>
+    </p>
+  </footer>
+
+    <script>
+        // Highlight Active Link Dynamically
+        (function () {
+            const links = document.querySelectorAll('.nav-links .nav-link');
+            const current = location.pathname.split('/').pop() || 'welcome.html';
+            links.forEach(a => {
+                if (a.getAttribute('href') === current) a.classList.add('active');
+            });
+        })();
+
+        // Form Submission Handler
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // User-provided alert functionality
+            alert('Thank you! Your message has been received by the Meter-Sathi team.');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

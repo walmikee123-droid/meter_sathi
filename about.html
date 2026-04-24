@@ -1,305 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-IN">
 <head>
-  <meta charset="UTF-8">
-  <title>About - Meter-Sathi</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1400" />
+  <title>About Us - Meter-Sathi</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background: linear-gradient(135deg, #000000, #1c1c1c);
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    /* --- Navbar (copied exactly from services.html) --- */
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 40px;
-      background: #000000;
-      border-bottom: 4px solid #ffcc00;
-      z-index: 50;
-    }
-
-    .brand {
-      color: #ffcc00;
-      font-weight: 900;
-      font-size: 20px;
-      letter-spacing: 0.4px;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .nav-links .nav-link {
-      text-decoration: none;
-      color: #ffcc00;
-      padding: 8px 14px;
-      border-radius: 20px;
-      font-weight: 600;
-      transition: background-color .18s ease, color .18s ease, transform .12s ease;
-    }
-
-    .nav-links .nav-link:hover {
-      background-color: #ffcc00;
-      color: #000000;
-      transform: translateY(-2px);
-    }
-
-    .nav-links .nav-link:focus {
-      outline: 3px solid rgba(255,204,0,0.28);
-      outline-offset: 3px;
-      border-radius: 18px;
-    }
-
-    .nav-links .nav-link.active {
-      background: #ffcc00;
-      color: #000;
-      box-shadow: 0 8px 20px rgba(255,204,0,0.12);
-    }
-    /* --- End navbar CSS --- */
-
-    /* --- Main Container --- */
-    .container {
-      flex: 1;
-      padding: 60px 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .about-card {
-      background: #111111;
-      max-width: 950px;
-      width: 100%;
-      padding: 50px;
-      border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(255, 204, 0, 0.15);
-      border: 1px solid #333;
-      border-top: 4px solid #ffcc00;
-      text-align: center;
-    }
-
-    .about-header {
-      margin-bottom: 35px;
-    }
-
-    .about-header h2 {
-      font-size: 38px;
-      color: #ffcc00;
-      margin-bottom: 10px;
-      letter-spacing: 1px;
-    }
-
-    .about-header h3 {
-      font-size: 18px;
-      color: #aaaaaa;
-      font-weight: 400;
-    }
-
-    .about-content {
-      line-height: 1.8;
-      font-size: 17px;
-      color: #dddddd;
-      margin-bottom: 40px;
-      text-align: left;
-    }
-
-    .about-content p {
-      margin-bottom: 20px;
-    }
-
-    .values-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 25px;
-      margin-bottom: 40px;
-    }
-
-    .value-box {
-      background: #1a1a1a;
-      padding: 25px;
-      border-radius: 12px;
-      border: 1px solid #222;
-      text-align: center;
-      transition: transform 0.3s, border-color 0.3s;
-    }
-
-    .value-box:hover {
-      transform: translateY(-5px);
-      border-color: #ffcc00;
-    }
-
-    .value-icon {
-      font-size: 32px;
-      margin-bottom: 15px;
-    }
-
-    .value-box h4 {
-      color: #ffcc00;
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .value-box p {
-      color: #bbbbbb;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 12px 35px;
-      background: #ffcc00;
-      color: #000000;
-      border-radius: 25px;
-      text-decoration: none;
-      font-size: 16px;
-      font-weight: bold;
-      transition: all 0.3s;
-      border: 2px solid #ffcc00;
-    }
-
-    .btn:hover {
-      background: transparent;
-      color: #ffcc00;
-    }
-
-    footer {
-      background: #000000;
-      color: #ffcc00;
-      text-align: center;
-      padding: 20px;
-      border-top: 4px solid #ffcc00;
-    }
-
-    footer a {
-      color: #ffcc00;
-      text-decoration: none;
-      margin: 0 10px;
-      transition: opacity 0.3s;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-      opacity: 0.8;
-    }
-
-    @media (max-width: 768px) {
-      .navbar {
-        flex-direction: column;
-        gap: 15px;
-        padding: 15px 20px;
-      }
-      .about-card {
-        padding: 30px 20px;
-      }
-      .about-header h2 {
-        font-size: 28px;
-      }
-    }
+    .about-card { padding: 50px; }
+    .about-text { font-size: 18px; line-height: 1.8; color: #ccc; margin-bottom: 25px; }
+    .mission-box { background: rgba(255,193,7,0.05); border-left: 4px solid var(--taxi-yellow); padding: 30px; border-radius: 8px; margin: 40px 0; }
+    .vision-box { background: rgba(0,230,118,0.05); border-left: 4px solid var(--success); padding: 30px; border-radius: 8px; margin: 40px 0; }
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 40px; }
+    .team-member { text-align: left; background: rgba(0,0,0,0.4); padding: 30px; border-radius: 12px; border: 1px solid var(--glass-border); transition: all 0.3s; }
+    .team-member:hover { transform: translateY(-5px); border-color: var(--taxi-yellow); box-shadow: 0 10px 20px rgba(255,193,7,0.1); }
+    .team-member i { font-size: 40px; color: var(--taxi-yellow); margin-bottom: 20px; display: block; }
+    .stat-row { display: flex; gap: 30px; margin-top: 40px; flex-wrap: wrap; }
+    .stat-box { flex: 1; min-width: 150px; text-align: center; padding: 20px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid var(--glass-border); }
+    .stat-box h4 { font-size: 36px; color: #fff; margin-bottom: 5px; font-weight: 900; }
+    .stat-box p { color: var(--taxi-yellow); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
   </style>
 </head>
-
 <body>
-
-  <nav class="navbar" role="navigation" aria-label="Main navigation">
-    <div class="brand">Meter-Sathi</div>
-    <div class="nav-links" role="menubar" aria-label="Primary">
-      <a href="welcome.html" role="menuitem" class="nav-link">Home</a>
-      <a href="about.html" role="menuitem" class="nav-link active">About</a>
-      <a href="services.html" role="menuitem" class="nav-link">Services</a>
-      <a href="faq.html" role="menuitem" class="nav-link">FAQ</a>
-      <a href="contact.html" role="menuitem" class="nav-link">Contact Us</a>
+  <nav class="navbar">
+    <a href="welcome.html" class="nav-brand"><i class="fa-solid fa-taxi"></i> Meter-Sathi</a>
+    <div class="nav-links">
+      <a href="about.html" style="color:var(--taxi-yellow);">About</a>
+      <a href="services.html">Services</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contact.html">Contact Us</a>
     </div>
   </nav>
 
-  <div class="container">
-    <div class="about-card">
+  <main class="container">
+    <div class="glass-card about-card" style="animation: fadeInUp 0.8s forwards;">
+      <h1 class="hero-title" style="font-size: 56px; text-align: left; margin-bottom: 10px;">The Story Behind Meter-Sathi</h1>
+      <p style="font-size: 22px; color: var(--text-muted); margin-bottom: 40px;">Building trust between commuters and drivers through technology.</p>
       
-      <div class="about-header">
-        <h2>About Meter-Sathi</h2>
-        <h3>Empowering commuters with transparent, real-time fare tracking.</h3>
+      <p class="about-text">
+        Every day, millions of people rely on Auto Rickshaws and Taxis to commute across the city. Unfortunately, fare disputes, inaccurate meters, and confusion over night surcharges have become a daily frustration for many. Meter-Sathi was born out of a simple necessity: the need for absolute transparency and fairness in public transportation.
+      </p>
+      <p class="about-text">
+        By tapping into the high-precision GPS hardware already built into your smartphone, Meter-Sathi acts as a highly accurate, incorruptible digital meter. We cross-reference your movement against exact municipal tariff data to guarantee that the price you see is the exact price you should pay.
+      </p>
+
+      <div class="mission-box">
+        <h3 style="color: var(--taxi-yellow); font-size: 24px; margin-bottom: 15px;"><i class="fa-solid fa-bullseye"></i> Our Mission</h3>
+        <p style="color: #fff; font-size: 18px; line-height: 1.8;">To empower everyday commuters with real-time, tamper-proof fare transparency, while providing a seamless framework to resolve disputes and promote fair practices among drivers.</p>
       </div>
 
-      <div class="about-content">
-        <p>
-          Navigating bustling streets in and around Mumbai shouldn't come with the stress of fare disputes. <strong>Meter-Sathi</strong> was born out of a simple idea: every commuter deserves to pay exactly what is fair, without second-guessing the meter.
-        </p>
-        <p>
-          We bridge the gap between official regional transport tariffs and daily travel. By utilizing real-time GPS tracking and up-to-date government fare charts, our platform instantly calculates your journey's true cost—accounting for base fares, per-kilometer rates, and even night surcharges. 
-        </p>
+      <div class="vision-box">
+        <h3 style="color: var(--success); font-size: 24px; margin-bottom: 15px;"><i class="fa-solid fa-eye"></i> Our Vision</h3>
+        <p style="color: #fff; font-size: 18px; line-height: 1.8;">To become the absolute standard for ride verification across all major Indian cities, eliminating fare anxiety completely and fostering a culture of honest transportation.</p>
       </div>
 
-      <div class="values-grid">
-        <div class="value-box">
-          <div class="value-icon">⚖️</div>
-          <h4>Fair Pricing</h4>
-          <p>We eliminate the guesswork. Compare your driver's meter against official tariffs instantly.</p>
+      <div class="stat-row">
+        <div class="stat-box">
+          <h4>100%</h4>
+          <p>Accuracy Focus</p>
         </div>
-        <div class="value-box">
-          <div class="value-icon">📍</div>
-          <h4>Live Accuracy</h4>
-          <p>Powered by precise location tracking to ensure your distance and fares are calculated flawlessly.</p>
+        <div class="stat-box">
+          <h4>3</h4>
+          <p>Vehicle Types</p>
         </div>
-        <div class="value-box">
-          <div class="value-icon">🛡️</div>
-          <h4>Commuter Trust</h4>
-          <p>Designed to build trust and transparency between transport providers and daily passengers.</p>
-        </div>
-        
-        <div class="value-box">
-          <div class="value-icon">🌙</div>
-          <h4>Day & Night Fares</h4>
-          <p>Seamlessly adapts to official night surcharges, so you are never caught off guard.</p>
-        </div>
-        <div class="value-box">
-          <div class="value-icon">🔒</div>
-          <h4>Privacy First</h4>
-          <p>Your location data is processed locally just for the ride. We never save your travel history.</p>
-        </div>
-        <div class="value-box">
-          <div class="value-icon">📱</div>
-          <h4>Commuter Friendly</h4>
-          <p>A clean, intuitive app design built specifically for passengers on the go. No complex setups.</p>
+        <div class="stat-box">
+          <h4>24/7</h4>
+          <p>Live Tracking</p>
         </div>
       </div>
 
-      <a href="welcome.html" class="btn">Start Your Ride</a>
-
+      <h2 style="font-size: 32px; color: #fff; margin-top: 60px; margin-bottom: 20px;">The Core Pillars of Meter-Sathi</h2>
+      <div class="team-grid">
+        <div class="team-member">
+          <i class="fa-solid fa-satellite-dish"></i>
+          <h3 style="color:#fff; font-size:22px; margin-bottom:10px;">Precision GPS Engineering</h3>
+          <p style="color:#ccc; font-size:15px; line-height:1.6;">Our algorithms filter out GPS drift and spikes. We sample your location every second and use advanced smoothing to calculate true distance, totally immune to physical meter tampering.</p>
+        </div>
+        <div class="team-member">
+          <i class="fa-solid fa-scale-balanced"></i>
+          <h3 style="color:#fff; font-size:22px; margin-bottom:10px;">Dynamic Municipal Tariffs</h3>
+          <p style="color:#ccc; font-size:15px; line-height:1.6;">Whether you enter a ride at 11:55 PM or 4:00 AM, our system automatically segments your distance to accurately apply standard rates and 25% night surcharges flawlessly.</p>
+        </div>
+        <div class="team-member">
+          <i class="fa-solid fa-shield-halved"></i>
+          <h3 style="color:#fff; font-size:22px; margin-bottom:10px;">Commuter Protection</h3>
+          <p style="color:#ccc; font-size:15px; line-height:1.6;">We don't just calculate fares; we arm you with the data. If you are overcharged, our integrated complaint routing system lets you file a report backed by hard, irrefutable GPS logs.</p>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <footer>
-    <p>© 2026 Meter-Sathi | 
-      <a href="privacy.html">Privacy Policy</a> | 
-      <a href="terms.html">Terms and Conditions</a>
-    </p>
+  </main>
+  
+  <footer style="text-align:center; padding:30px; color:var(--text-muted); font-size:15px; background:#000; margin-top:40px; border-top:1px solid var(--taxi-yellow);">
+    <p>&copy; 2026 Meter-Sathi. <a href="terms.html" style="color:var(--taxi-yellow); text-decoration:none; margin: 0 10px;">Terms of Service</a> | <a href="privacy.html" style="color:var(--taxi-yellow); text-decoration:none; margin: 0 10px;">Privacy Policy</a></p>
   </footer>
 
   <script>
-    (function () {
-      const links = document.querySelectorAll('.nav-links .nav-link');
-      const current = location.pathname.split('/').pop() || 'welcome.html';
-      links.forEach(a => {
-        if (a.getAttribute('href') === current) a.classList.add('active');
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.team-member, .stat-box');
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.animation = `fadeInUp 0.6s ${index * 0.1}s forwards`;
       });
-    })();
+    });
   </script>
-
 </body>
 </html>

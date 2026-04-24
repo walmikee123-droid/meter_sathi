@@ -350,54 +350,61 @@
         const db = getFirestore(app);
         const storage = getStorage(app);
 
-        // --- SMART DATE AUTO-CORRECTOR ---
-        const dateInput = document.getElementById('incidentDate');
-        dateInput.addEventListener('input', function(e) {
-            if (e.inputType === 'deleteContentBackward') return;
+        // --- SMART DATE AUTO-CORRECTOR (WITH FUTURE DATE BLOCK) ---
+const dateInput = document.getElementById('incidentDate');
+dateInput.addEventListener('input', function(e) {
+    if (e.inputType === 'deleteContentBackward') return;
+    
+    let v = this.value.replace(/\D/g, ''); 
+    const today = new Date();
+    const curDD = today.getDate();
+    const curMM = today.getMonth() + 1; // Months are 0-indexed
+    const curYYYY = today.getFullYear();
+
+    if (v.length >= 2) {
+        let dd = parseInt(v.substring(0, 2));
+        if (dd === 0) dd = 1;
+        if (dd > 31) dd = 31;
+        v = dd.toString().padStart(2, '0') + v.substring(2);
+    }
+    
+    if (v.length >= 4) {
+        let mm = parseInt(v.substring(2, 4));
+        if (mm === 0) mm = 1;
+        if (mm > 12) mm = 12; 
+        
+        let dd = parseInt(v.substring(0, 2));
+        let yyyy = curYYYY; 
+        
+        if (v.length === 8) {
+            yyyy = parseInt(v.substring(4, 8));
             
-            let v = this.value.replace(/\D/g, ''); 
+            // --- FUTURE BLOCKING LOGIC START ---
+            const inputDate = new Date(yyyy, mm - 1, dd);
             
-            if (v.length >= 2) {
-                let dd = parseInt(v.substring(0, 2));
-                if (dd === 0) dd = 1;
-                if (dd > 31) dd = 31;
-                v = dd.toString().padStart(2, '0') + v.substring(2);
+            if (inputDate > today) {
+                // Agar date future ki hai, toh reset to TODAY
+                dd = curDD;
+                mm = curMM;
+                yyyy = curYYYY;
             }
-            
-            if (v.length >= 4) {
-                let mm = parseInt(v.substring(2, 4));
-                if (mm === 0) mm = 1;
-                if (mm > 12) mm = 12; 
-                
-                let dd = parseInt(v.substring(0, 2));
-                
-                let yyyy = 2024; 
-                
-                if (v.length === 8) {
-                    yyyy = parseInt(v.substring(4, 8));
-                    const currentYear = new Date().getFullYear();
-                    if (yyyy > currentYear) {
-                        yyyy = currentYear;
-                    }
-                }
-                
-                let maxDays = new Date(yyyy, mm, 0).getDate(); 
-                
-                if (dd > maxDays) {
-                    dd = maxDays;
-                }
-                
-                v = dd.toString().padStart(2, '0') + mm.toString().padStart(2, '0') + (v.length > 4 ? (v.length === 8 ? yyyy.toString() : v.substring(4)) : '');
-            }
-            
-            if (v.length >= 5) {
-                this.value = v.substring(0, 2) + '/' + v.substring(2, 4) + '/' + v.substring(4, 8);
-            } else if (v.length >= 3) {
-                this.value = v.substring(0, 2) + '/' + v.substring(2, 4);
-            } else {
-                this.value = v;
-            }
-        });
+            // --- FUTURE BLOCKING LOGIC END ---
+        }
+        
+        let maxDays = new Date(yyyy, mm, 0).getDate(); 
+        if (dd > maxDays) dd = maxDays;
+        
+        v = dd.toString().padStart(2, '0') + mm.toString().padStart(2, '0') + (v.length > 4 ? (v.length === 8 ? yyyy.toString() : v.substring(4)) : '');
+    }
+    
+    if (v.length >= 5) {
+        this.value = v.substring(0, 2) + '/' + v.substring(2, 4) + '/' + v.substring(4, 8);
+    } else if (v.length >= 3) {
+        this.value = v.substring(0, 2) + '/' + v.substring(2, 4);
+    } else {
+        this.value = v;
+    }
+});
 
         // --- STRICT VEHICLE NUMBER FORMATTER ---
         const vehicleInput = document.getElementById('vehicleNumber');

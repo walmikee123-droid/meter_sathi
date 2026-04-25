@@ -37,7 +37,7 @@
             <p id="distance">0.00 <span style="font-size:16px; color:var(--text-muted);">km</span></p>
           </div>
           <div class="metric-box" style="border-color: rgba(255,193,7,0.3);">
-            <h3 style="color:var(--taxi-yellow);">Expected Tariff</h3>
+            <h3 style="color:var(--taxi-yellow);">Expected Fare</h3>
             <p class="highlight" id="tariffFare">₹31.00</p>
           </div>
           <div class="metric-box">
@@ -259,8 +259,18 @@
       const chargeableNightMeters = Math.max(0, nightMeters - baseAllocatedNight);
       const distanceFareDay = (chargeableDayMeters / 1000) * PER_KM_RATE;
       const distanceFareNight = (chargeableNightMeters / 1000) * PER_KM_RATE;
-      const baseShareDay = BASE_FARE * (baseAllocatedDay / BASE_DISTANCE_M);
-      const baseShareNight = BASE_FARE * (baseAllocatedNight / BASE_DISTANCE_M);
+      
+      const traveledBase = baseAllocatedDay + baseAllocatedNight;
+      let baseShareDay = BASE_FARE, baseShareNight = 0;
+      if (traveledBase > 0) {
+        baseShareDay = BASE_FARE * (baseAllocatedDay / traveledBase);
+        baseShareNight = BASE_FARE * (baseAllocatedNight / traveledBase);
+      } else if (points.length > 0) {
+        if (getModeAtTimestamp(points[0].timestamp) === 'night') {
+          baseShareDay = 0; baseShareNight = BASE_FARE;
+        }
+      }
+
       const rawDayFare = baseShareDay + distanceFareDay;
       const rawNightFare = baseShareNight + distanceFareNight;
       const finalNightFare = rawNightFare * (1 + NIGHT_SURCHARGE);

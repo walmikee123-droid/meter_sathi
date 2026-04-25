@@ -118,12 +118,7 @@
     const NIGHT_SURCHARGE = 0.25;
 
     /* GPS / detection tuning (robust & fast) */
-    const MIN_MOVE_METERS = 2;
-    const MIN_SPEED_KMH = 1;
-    const CONSECUTIVE_VALID = 1;
-    const MEDIAN_WINDOW = 3;
-    const STATIONARY_THRESHOLD_METERS = 2;
-    const STATIONARY_WINDOW_MS = 4 * 1000;
+    const MIN_MOVE_METERS = 5;
     const MAX_PLAUSIBLE_SPEED_KMH = 120;
     const DEBUG = false;
 
@@ -155,10 +150,6 @@
     let rideSummary = null;
     let rideActive = false;
     let paused = false;
-
-    let recentFixes = [];
-    let consecutiveValidMoves = 0;
-    let windowFixes = [];
     let fareChecked = false;
 
     /* Helpers */
@@ -179,12 +170,6 @@
       const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
       return R * c;
-    }
-    function medianCoord(points){
-      const lats = points.map(p=>p.lat).sort((a,b)=>a-b);
-      const lons = points.map(p=>p.lon).sort((a,b)=>a-b);
-      const mid = Math.floor(points.length/2);
-      return { lat: lats[mid], lon: lons[mid] };
     }
     function getModeAtTimestamp(ts){
       const d = new Date(ts);
@@ -349,7 +334,6 @@
       startBtn.disabled = true; endBtn.disabled = false; resetBtn.disabled = true;
       pauseBtn.disabled = false; pauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Pause'; paused = false;
 
-      recentFixes = []; consecutiveValidMoves = 0; windowFixes = [];
       watchId = navigator.geolocation.watchPosition(onPosition, onError, { enableHighAccuracy:true, maximumAge:1000, timeout:10000 });
     }
 
@@ -375,27 +359,23 @@
       updateGpsPulse(false);
       resetBtn.disabled = true;
       pauseBtn.disabled = true; pauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Pause'; paused = false;
-      recentFixes = []; consecutiveValidMoves = 0; windowFixes = [];
     }
 
     function onPosition(pos){
       if (paused) return;
       const { latitude, longitude, accuracy } = pos.coords;
       const ts = pos.timestamp || Date.now();
-      recentFixes.push({ lat: latitude, lon: longitude, ts, accuracy });
-      if (recentFixes.length > MEDIAN_WINDOW) recentFixes.shift();
-      const median = medianCoord(recentFixes);
-      const current = { lat: median.lat, lon: median.lon, timestamp: ts, accuracy };
-
-      if (current.accuracy > 200) {
-        gpsStatusEl.textContent = `Poor accuracy (${Math.round(current.accuracy)}m)`;
+      
+      if (accuracy > 100) {
+        gpsStatusEl.textContent = `Poor accuracy (${Math.round(accuracy)}m)`;
         updateGpsPulse(false); return;
       }
 
+      const current = { lat: latitude, lon: longitude, timestamp: ts, accuracy };
+
       if (gpsPoints.length === 0) {
         gpsPoints.push(current);
-        windowFixes = [{ lat: current.lat, lon: current.lon, ts: current.timestamp }];
-        gpsStatusEl.textContent = `Fix OK (${Math.round(current.accuracy)}m)`;
+        gpsStatusEl.textContent = `Fix OK (${Math.round(accuracy)}m)`;
         updateGpsPulse(false); updateDisplays(); return;
       }
 
@@ -405,42 +385,19 @@
       const speedKmh = (d / dtSec) * 3.6;
 
       if (speedKmh > MAX_PLAUSIBLE_SPEED_KMH) {
-        consecutiveValidMoves = Math.max(0, consecutiveValidMoves - 1);
         gpsStatusEl.textContent = `Spike ignored`;
         updateGpsPulse(false); return;
       }
 
-      windowFixes.push({ lat: current.lat, lon: current.lon, ts: current.timestamp });
-      const windowStart = current.timestamp - STATIONARY_WINDOW_MS;
-      while (windowFixes.length && windowFixes[0].ts < windowStart) windowFixes.shift();
-
-      let windowDistance = 0;
-      for (let i=0;i<windowFixes.length-1;i++){
-        windowDistance += haversineDistance(windowFixes[i].lat, windowFixes[i].lon, windowFixes[i+1].lat, windowFixes[i+1].lon);
-      }
-
-      if (windowDistance < STATIONARY_THRESHOLD_METERS) {
-        consecutiveValidMoves = 0;
+      if (d < MIN_MOVE_METERS) {
         gpsStatusEl.textContent = `Stationary`;
-        updateGpsPulse(false); return;
-      }
-
-      if (d < MIN_MOVE_METERS || speedKmh < MIN_SPEED_KMH) {
-        consecutiveValidMoves = Math.max(0, consecutiveValidMoves - 1);
-        gpsStatusEl.textContent = `Waiting for movement`;
-        updateGpsPulse(false); return;
-      }
-
-      consecutiveValidMoves++;
-      if (consecutiveValidMoves < CONSECUTIVE_VALID) {
-        gpsStatusEl.textContent = `Validating...`;
         updateGpsPulse(false); return;
       }
 
       gpsPoints.push(current);
       totalDistanceMeters += d;
       rideSummary = computeRideBreakdown(gpsPoints);
-      consecutiveValidMoves = 0; windowFixes = [];
+      
       gpsStatusEl.textContent = `Moving (${Math.round(speedKmh)} km/h)`;
       updateGpsPulse(true);
       updateDisplays();
